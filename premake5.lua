@@ -18,6 +18,9 @@ project "Engine"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "engpch.h"
+	pchsource "Engine/src/engpch.cpp"
+
 	files
 	{
 		"%{prj.name}/src/**.h",
