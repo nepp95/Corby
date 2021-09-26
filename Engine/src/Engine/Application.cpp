@@ -1,27 +1,59 @@
 #include "engpch.h"
 #include "Application.h"
 
-#include "Events/ApplicationEvent.h"
 #include "Log.h"
 
+#include <glad/glad.h>
+
 namespace Engine {
+#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
+
 	Application::Application() {
+		m_window = std::unique_ptr<Window>(Window::create());
+		m_window->setEventCallback(BIND_EVENT_FN(onEvent));
 	}
 
 	Application::~Application() {
 	}
 
 	void Application::run() {
-		WindowResizeEvent e(1280, 720);
+		while (m_running) {
+			glClearColor(1, 0, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-		if (e.isInCategory(EventCategoryApplication)) {
-			ENGINE_TRACE(e);
+			for (Layer* layer : m_layerStack) {
+				layer->onUpdate();
+			}
+
+			m_window->onUpdate();
+		}
+	}
+
+	void Application::onEvent(Event& e) {
+		EventDispatcher dispatcher(e);
+		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+
+		for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
+			(*--it)->onEvent(e);
+
+			if (e.handled) {
+				break;
+			}
 		}
 
-		if (e.isInCategory(EventCategoryInput)) {
-			ENGINE_TRACE(e);
-		}
+		ENGINE_CORE_TRACE("{0}", e);
+	}
 
-		while (true);
+	void Application::pushLayer(Layer* layer) {
+		m_layerStack.pushLayer(layer);
+	}
+
+	void Application::pushOverlay(Layer* layer) {
+		m_layerStack.pushOverlay(layer);
+	}
+
+	bool Application::onWindowClose(WindowCloseEvent& e) {
+		m_running = false;
+		return true;
 	}
 }

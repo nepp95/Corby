@@ -40,7 +40,7 @@ namespace Engine {
 		EVENT_CLASS_TYPE(MouseScrolled);
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput);
 	private:
-		m_xOffset, m_yOffset;
+		float m_xOffset, m_yOffset;
 	};
 
 	class ENGINE_API MouseButtonEvent : public Event {

@@ -29,6 +29,9 @@ namespace Engine {
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed);
+
+	private:
+		int m_repeatCount;
 	};
 
 	class ENGINE_API KeyReleasedEvent : public KeyEvent {
