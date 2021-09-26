@@ -1,4 +1,4 @@
-project "glad"
+project "Glad"
     kind "StaticLib"
     language "C"
     
