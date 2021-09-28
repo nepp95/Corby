@@ -28,7 +28,7 @@ namespace Engine {
 
 	void WindowsWindow::init(const WindowProps& props) {
 		m_data.title = props.title;
-		m_data.width = props.height;
+		m_data.width = props.width;
 		m_data.height = props.height;
 
 		ENGINE_CORE_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);

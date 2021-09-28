@@ -11,7 +11,7 @@ namespace Engine {
 		unsigned int width;
 		unsigned int height;
 
-		WindowProps(const std::string& title = "Game engine", unsigned int width = 1280, unsigned int height = 720) : title(title), width(width), height(height) {}
+		WindowProps(const std::string& p_title = "Game engine", unsigned int p_width = 1280, unsigned int p_height = 720) : title(p_title), width(p_width), height(p_height) {}
 	};
 
 	class ENGINE_API Window {

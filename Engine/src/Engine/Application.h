@@ -18,6 +18,9 @@ namespace Engine {
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* layer);
 
+		inline Window& getWindow() { return *m_window; }
+		inline static Application& get() { return *s_instance; }
+
 	private:
 		bool onWindowClose(WindowCloseEvent& e);
 
@@ -25,6 +28,8 @@ namespace Engine {
 		std::unique_ptr<Window> m_window;
 		bool m_running = true;
 		LayerStack m_layerStack;
+
+		static Application* s_instance;
 	};
 
 	// To be defined in a client!

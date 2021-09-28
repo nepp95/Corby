@@ -8,7 +8,12 @@
 namespace Engine {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
+	Application* Application::s_instance = nullptr;
+
 	Application::Application() {
+		ENGINE_CORE_ASSERT(!s_instance, "Application already exists!");
+		s_instance = this;
+
 		m_window = std::unique_ptr<Window>(Window::create());
 		m_window->setEventCallback(BIND_EVENT_FN(onEvent));
 	}
@@ -46,10 +51,12 @@ namespace Engine {
 
 	void Application::pushLayer(Layer* layer) {
 		m_layerStack.pushLayer(layer);
+		layer->onAttach();
 	}
 
 	void Application::pushOverlay(Layer* layer) {
 		m_layerStack.pushOverlay(layer);
+		layer->onAttach();
 	}
 
 	bool Application::onWindowClose(WindowCloseEvent& e) {
