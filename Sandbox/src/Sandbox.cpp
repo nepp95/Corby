@@ -7,7 +7,6 @@ public:
 	}
 
 	void onUpdate() override {
-		ENGINE_INFO("ExampleLayer::update");
 	}
 
 	void onEvent(Engine::Event& event) override {
