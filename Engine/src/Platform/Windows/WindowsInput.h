@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Input.h"
+#include "Engine/Input/Input.h"
 
 namespace Engine {
 	class WindowsInput : public Input {

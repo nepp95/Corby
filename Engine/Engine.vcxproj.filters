@@ -10,6 +10,9 @@
     <Filter Include="Engine\ImGui">
       <UniqueIdentifier>{45756795-31D8-F639-DA5D-2FF0C69FC2BC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Input">
+      <UniqueIdentifier>{1AB06895-0613-F839-AF98-30F09BDAC3BC}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Platform">
       <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
     </Filter>
@@ -46,8 +49,14 @@
     <ClInclude Include="src\Engine\ImGui\ImGuiLayer.h">
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Input.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="src\Engine\Input\Input.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Input\KeyCodes.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Input\MouseButtonCodes.h">
+      <Filter>Engine\Input</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Layer.h">
       <Filter>Engine</Filter>

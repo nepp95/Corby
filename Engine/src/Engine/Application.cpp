@@ -2,7 +2,7 @@
 #include "Application.h"
 
 #include "Log.h"
-#include "Input.h"
+#include "Input/Input.h"
 
 #include <glad/glad.h>
 
@@ -46,8 +46,6 @@ namespace Engine {
 				break;
 			}
 		}
-
-		ENGINE_CORE_TRACE("{0}", e);
 	}
 
 	void Application::pushLayer(Layer* layer) {

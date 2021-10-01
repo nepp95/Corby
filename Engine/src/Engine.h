@@ -5,6 +5,10 @@
 #include "Engine/Layer.h"
 #include "Engine/Log.h"
 
+#include "Engine/Input/Input.h"
+#include "Engine/Input/KeyCodes.h"
+#include "Engine/Input/MouseButtonCodes.h"
+
 #include "Engine/ImGui/ImGuiLayer.h"
 
 // Entrypoint

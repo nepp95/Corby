@@ -7,10 +7,10 @@ public:
 	}
 
 	void onUpdate() override {
+
 	}
 
 	void onEvent(Engine::Event& event) override {
-		ENGINE_TRACE("{0}", event);
 	}
 };
 
