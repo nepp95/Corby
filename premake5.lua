@@ -1,6 +1,6 @@
 workspace "Engine"
 	architecture "x64"
-
+	
 	configurations
 	{
 		"Debug",
@@ -8,16 +8,16 @@ workspace "Engine"
 		"Dist"
 	}
 
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-IncludeDir = {}
-IncludeDir["GLFW"] = "Engine/vendor/GLFW/include"
-IncludeDir["Glad"] = "Engine/vendor/glad/include"
-IncludeDir["ImGui"] = "Engine/vendor/imgui"
-IncludeDir["glm"] = "Engine/vendor/glm"
+	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+	IncludeDir = {}
+	IncludeDir["GLFW"] = "Engine/vendor/GLFW/include"
+	IncludeDir["Glad"] = "Engine/vendor/glad/include"
+	IncludeDir["ImGui"] = "Engine/vendor/imgui"
+	IncludeDir["glm"] = "Engine/vendor/glm"
 
-include "Engine/vendor/GLFW"
-include "Engine/vendor/glad"
-include "Engine/vendor/imgui"
+	include "Engine/vendor/GLFW"
+	include "Engine/vendor/glad"
+	include "Engine/vendor/imgui"
 
 project "Engine"
 	location "Engine"
@@ -71,6 +71,23 @@ project "Engine"
 			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
 		}
 
+	filter "system:macosx"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines
+		{
+			"ENGINE_PLATFORM_MACOSX",
+			"ENGINE_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
+        }
+
+		postbuildcommands
+		{
+			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+        }
+
 	filter "configurations:Debug"
 		defines "ENGINE_DEBUG"
 		buildoptions "/MDd"
@@ -121,6 +138,16 @@ project "Sandbox"
 		{
 			"ENGINE_PLATFORM_WINDOWS"
 		}
+
+	filter "system:macosx"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines
+		{
+			"ENGINE_PLATFORM_MACOSX"
+        }
 
 	filter "configurations:Debug"
 		defines "ENGINE_DEBUG"
