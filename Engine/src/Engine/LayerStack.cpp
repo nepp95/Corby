@@ -29,13 +29,18 @@ namespace Engine {
 		if (it != m_layers.end()) {
 			m_layers.erase(it);
 			m_layerInsertIndex--;
+
+			layer->onDetach();
 		}
 	}
 
 	void LayerStack::popOverlay(Layer* overlay) {
 		auto it = std::find(m_layers.begin(), m_layers.end(), overlay);
 
-		if (it != m_layers.end())
+		if (it != m_layers.end()) {
 			m_layers.erase(it);
+
+			overlay->onDetach();
+		}
 	}
 }
