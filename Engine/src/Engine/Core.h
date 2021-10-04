@@ -1,11 +1,19 @@
 #pragma once
 
 #ifdef ENGINE_PLATFORM_WINDOWS
+#if ENGINE_DYNAMIC_LINK
 #ifdef ENGINE_BUILD_DLL
 #define ENGINE_API __declspec(dllexport)
 #else
 #define ENGINE_API __declspec(dllimport)
 #endif
+#else
+#define ENGINE_API
+#endif
+#endif
+
+#ifdef ENGINE_DEBUG
+#define ENGINE_ENABLE_ASSERTS
 #endif
 
 #ifdef ENGINE_ENABLE_ASSERTS

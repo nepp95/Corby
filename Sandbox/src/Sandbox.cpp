@@ -5,17 +5,12 @@
 class ExampleLayer : public Engine::Layer {
 public:
 	ExampleLayer() : Layer("Example") {
-
 	}
 
 	void onUpdate() override {
-
 	}
 
 	virtual void onImGuiRender() override {
-		ImGui::Begin("Test begin");
-		ImGui::Text("Hello!");
-		ImGui::End();
 	}
 
 	void onEvent(Engine::Event& event) override {
@@ -27,6 +22,7 @@ public:
 	Sandbox() {
 		pushLayer(new ExampleLayer());
 	}
+
 	~Sandbox() {}
 };
 
