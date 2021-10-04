@@ -3,6 +3,7 @@
 #include "Engine/Core.h"
 
 #include "Window.h"
+#include "Engine/ImGui/ImGuiLayer.h"
 #include "Engine/LayerStack.h"
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
@@ -26,6 +27,7 @@ namespace Engine {
 
 	private:
 		std::unique_ptr<Window> m_window;
+		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;
 		LayerStack m_layerStack;
 

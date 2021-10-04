@@ -3,17 +3,16 @@
 
 namespace Engine {
 	LayerStack::LayerStack() {
-		m_layerInsert = m_layers.begin();
 	}
 
 	LayerStack::~LayerStack() {
-		for (Layer* layer : m_layers) {
+		for (Layer* layer : m_layers)
 			delete layer;
-		}
 	}
 
 	void LayerStack::pushLayer(Layer* layer) {
-		m_layerInsert = m_layers.emplace(m_layerInsert, layer);
+		m_layers.emplace(m_layers.begin() + m_layerInsertIndex, layer);
+		m_layerInsertIndex++;
 	}
 
 	void LayerStack::pushOverlay(Layer* overlay) {
@@ -25,15 +24,14 @@ namespace Engine {
 
 		if (it != m_layers.end()) {
 			m_layers.erase(it);
-			m_layerInsert--;
+			m_layerInsertIndex--;
 		}
 	}
 
 	void LayerStack::popOverlay(Layer* overlay) {
 		auto it = std::find(m_layers.begin(), m_layers.end(), overlay);
 
-		if (it != m_layers.end()) {
+		if (it != m_layers.end())
 			m_layers.erase(it);
-		}
 	}
 }

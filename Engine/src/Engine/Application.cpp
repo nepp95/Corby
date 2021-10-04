@@ -17,6 +17,9 @@ namespace Engine {
 
 		m_window = std::unique_ptr<Window>(Window::create());
 		m_window->setEventCallback(BIND_EVENT_FN(onEvent));
+
+		m_imGuiLayer = new ImGuiLayer();
+		pushOverlay(m_imGuiLayer);
 	}
 
 	Application::~Application() {
@@ -27,9 +30,20 @@ namespace Engine {
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			// Layers onUpdate
 			for (Layer* layer : m_layerStack) {
 				layer->onUpdate();
 			}
+
+			// ImGui
+			m_imGuiLayer->begin();
+
+			for (Layer* layer : m_layerStack) {
+				layer->onImGuiRender();
+			}
+
+			m_imGuiLayer->end();
+			//
 
 			m_window->onUpdate();
 		}
