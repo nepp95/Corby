@@ -8,7 +8,6 @@ int main(int argc, char** argv) {
 	Engine::Log::init();
 
 	ENGINE_CORE_WARN("Initialized Log!");
-	ENGINE_INFO("Hello");
 
 	auto app = Engine::createApplication();
 	app->run();
