@@ -27,6 +27,7 @@ namespace Engine {
 
 	void Application::run() {
 		while (m_running) {
+			// Clear screen
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
@@ -37,11 +38,9 @@ namespace Engine {
 
 			// ImGui
 			m_imGuiLayer->begin();
-
 			for (Layer* layer : m_layerStack) {
 				layer->onImGuiRender();
 			}
-
 			m_imGuiLayer->end();
 			//
 
