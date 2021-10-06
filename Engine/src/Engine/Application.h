@@ -4,6 +4,7 @@
 
 #include "Window.h"
 #include "Engine/ImGui/ImGuiLayer.h"
+#include "Engine/Renderer/Shader.h"
 #include "Engine/LayerStack.h"
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
@@ -32,6 +33,7 @@ namespace Engine {
 		LayerStack m_layerStack;
 
 		unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
+		std::unique_ptr<Shader> m_shader;
 
 		static Application* s_instance;
 	};
