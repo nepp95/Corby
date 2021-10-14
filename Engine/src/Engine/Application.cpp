@@ -2,9 +2,8 @@
 #include "Application.h"
 
 #include "Log.h"
+#include "Renderer/Renderer.h"
 #include "Input/Input.h"
-
-#include <glad/glad.h>
 
 namespace Engine {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -158,16 +157,18 @@ namespace Engine {
 	void Application::run() {
 		while (m_running) {
 			// Clear screen
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+			RenderCommand::clear();
+
+			Renderer::beginScene();
 
 			m_blueShader->bind();
-			m_squareVA->bind();
-			glDrawElements(GL_TRIANGLES, m_squareVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::submit(m_squareVA);
 
 			m_shader->bind();
-			m_vertexArray->bind();
-			glDrawElements(GL_TRIANGLES, m_vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::submit(m_vertexArray);
+
+			Renderer::endScene();
 
 			// Layers onUpdate
 			for (Layer* layer : m_layerStack) {
