@@ -141,12 +141,31 @@ public:
 	}
 
 	void onUpdate() override {
+		// Up / Down
+		if (Engine::Input::isKeyPressed(ENG_KEY_W))
+			m_cameraPosition.y += m_cameraMoveSpeed;
+		else if (Engine::Input::isKeyPressed(ENG_KEY_S))
+			m_cameraPosition.y -= m_cameraMoveSpeed;
+
+		// Left / Right
+		if (Engine::Input::isKeyPressed(ENG_KEY_A))
+			m_cameraPosition.x -= m_cameraMoveSpeed;
+		else if (Engine::Input::isKeyPressed(ENG_KEY_D))
+			m_cameraPosition.x += m_cameraMoveSpeed;
+
+		// Rotate left/right
+		if (Engine::Input::isKeyPressed(ENG_KEY_Q))
+			m_cameraRotation += m_cameraRotationSpeed;
+
+		if (Engine::Input::isKeyPressed(ENG_KEY_E))
+			m_cameraRotation -= m_cameraRotationSpeed;
+
 		// Clear screen
 		Engine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Engine::RenderCommand::clear();
 
 		m_camera.setPosition(m_cameraPosition);
-		//m_camera.setRotation(45.0f);
+		m_camera.setRotation(m_cameraRotation);
 
 		Engine::Renderer::beginScene(m_camera);
 
@@ -160,30 +179,14 @@ public:
 	}
 
 	void onEvent(Engine::Event& event) override {
-		Engine::EventDispatcher dispatcher(event);
-		dispatcher.dispatch<Engine::KeyPressedEvent>(ENGINE_BIND_EVENT_FN(ExampleLayer::onKeyPressedEvent));
-	}
-
-	bool onKeyPressedEvent(Engine::KeyPressedEvent& event) {
-		if (event.getKeyCode() == ENG_KEY_W)
-			m_cameraPosition.y += m_cameraSpeed;
-
-		if (event.getKeyCode() == ENG_KEY_A)
-			m_cameraPosition.x -= m_cameraSpeed;
-
-		if (event.getKeyCode() == ENG_KEY_S)
-			m_cameraPosition.y -= m_cameraSpeed;
-
-		if (event.getKeyCode() == ENG_KEY_D)
-			m_cameraPosition.x += m_cameraSpeed;
-
-		return false;
 	}
 
 private:
 	Engine::OrthographicCamera m_camera;
 	glm::vec3 m_cameraPosition;
-	float m_cameraSpeed = 0.1f;
+	float m_cameraMoveSpeed = 0.1f;
+	float m_cameraRotation = 0.0f;
+	float m_cameraRotationSpeed = 0.5f;
 
 	std::shared_ptr<Engine::Shader> m_shader;
 	std::shared_ptr<Engine::VertexArray> m_vertexArray;

@@ -41,8 +41,6 @@ namespace Engine {
 		return nullptr;
 	}
 
-
-
 	void BufferLayout::calculateOffsetsAndStride() {
 		unsigned int offset = 0;
 		m_stride = 0;
