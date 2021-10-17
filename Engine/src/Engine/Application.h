@@ -34,12 +34,7 @@ namespace Engine {
 		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;
 		LayerStack m_layerStack;
-		OrthographicCamera m_camera;
 
-		std::shared_ptr<Shader> m_shader;
-		std::shared_ptr<VertexArray> m_vertexArray;
-		std::shared_ptr<Shader> m_blueShader;
-		std::shared_ptr<VertexArray> m_squareVA;
 
 		static Application* s_instance;
 	};
