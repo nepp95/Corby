@@ -2,9 +2,6 @@
 #include "LayerStack.h"
 
 namespace Engine {
-	LayerStack::LayerStack() {
-	}
-
 	LayerStack::~LayerStack() {
 		for (Layer* layer : m_layers)
 			delete layer;

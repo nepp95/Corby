@@ -8,7 +8,7 @@
 namespace Engine {
 	class ENGINE_API LayerStack {
 	public:
-		LayerStack();
+		LayerStack() {}
 		~LayerStack();
 
 		void pushLayer(Layer* layer);

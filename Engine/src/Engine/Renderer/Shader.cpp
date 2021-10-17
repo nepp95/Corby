@@ -7,7 +7,7 @@
 namespace Engine {
 	Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc) {
 		// Create empty vertex shader handle
-		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
 		// Set the vertex shader source
 		const char* source = vertexSrc.c_str();
@@ -37,7 +37,7 @@ namespace Engine {
 		}
 
 		// Create empty fragment shader handle
-		unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 		// Set the fragment shader source
 		source = fragmentSrc.c_str();

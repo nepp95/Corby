@@ -11,24 +11,7 @@ namespace Engine {
 		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 	};
 
-	static unsigned int ShaderDataTypeSize(ShaderDataType type) {
-		switch (type) {
-			case ShaderDataType::Float:		return 4;
-			case ShaderDataType::Float2:	return 4 * 2;
-			case ShaderDataType::Float3:	return 4 * 3;
-			case ShaderDataType::Float4:	return 4 * 4;
-			case ShaderDataType::Mat3:		return 4 * 3 * 3;
-			case ShaderDataType::Mat4:		return 4 * 4 * 4;
-			case ShaderDataType::Int:		return 4;
-			case ShaderDataType::Int2:		return 4 * 2;
-			case ShaderDataType::Int3:		return 4 * 3;
-			case ShaderDataType::Int4:		return 4 * 4;
-			case ShaderDataType::Bool:		return 1;
-		}
-
-		ENGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
-		return 0;
-	}
+	static unsigned int ShaderDataTypeSize(ShaderDataType type);
 
 	// -----------------------------------------
 	//
@@ -46,32 +29,13 @@ namespace Engine {
 		BufferElement() {}
 		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false) : name(name), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized) {}
 
-		unsigned int getComponentCount() const {
-			switch (type) {
-				case ShaderDataType::Float:		return 1;
-				case ShaderDataType::Float2:	return 2;
-				case ShaderDataType::Float3:	return 3;
-				case ShaderDataType::Float4:	return 4;
-				case ShaderDataType::Mat3:		return 3 * 3;
-				case ShaderDataType::Mat4:		return 4 * 4;
-				case ShaderDataType::Int:		return 1;
-				case ShaderDataType::Int2:		return 2;
-				case ShaderDataType::Int3:		return 3;
-				case ShaderDataType::Int4:		return 4;
-				case ShaderDataType::Bool:		return 1;
-			}
-
-			ENGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
-			return 0;
-		}
+		unsigned int getComponentCount() const;
 	};
 
 	class BufferLayout {
 	public:
 		BufferLayout() {}
-		BufferLayout(const std::initializer_list<BufferElement>& elements) : m_elements(elements) {
-			calculateOffsetsAndStride();
-		}
+		BufferLayout(const std::initializer_list<BufferElement>& elements);
 
 		inline unsigned int getStride() const { return m_stride; }
 		inline const std::vector<BufferElement>& getElements() const { return m_elements; }
