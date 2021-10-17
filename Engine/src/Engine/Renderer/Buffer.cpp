@@ -36,4 +36,15 @@ namespace Engine {
 		ENGINE_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
+
+	void BufferLayout::calculateOffsetsAndStride() {
+		unsigned int offset = 0;
+		m_stride = 0;
+
+		for (auto& element : m_elements) {
+			element.offset = offset;
+			offset += element.size;
+			m_stride += element.size;
+		}
+	}
 }

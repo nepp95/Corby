@@ -82,16 +82,7 @@ namespace Engine {
 		std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); }
 
 	private:
-		void calculateOffsetsAndStride() {
-			unsigned int offset = 0;
-			m_stride = 0;
-
-			for (auto& element : m_elements) {
-				element.offset = offset;
-				offset += element.size;
-				m_stride += element.size;
-			}
-		}
+		void calculateOffsetsAndStride();
 
 	private:
 		std::vector<BufferElement> m_elements;
