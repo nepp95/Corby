@@ -1,5 +1,6 @@
 .vs/
-/bin/
+bin/
+!/vendor/bin
 bin-int/
 
 *.user

@@ -2,14 +2,15 @@
 
 #include "Engine/Core.h"
 
-#include "Window.h"
-#include "Engine/ImGui/ImGuiLayer.h"
-#include "Engine/Renderer/Shader.h"
-#include "Engine/Renderer/Buffer.h"
-#include "Engine/Renderer/VertexArray.h"
-#include "Engine/LayerStack.h"
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
+#include "ImGui/ImGuiLayer.h"
+#include "Renderer/Camera.h"
+#include "Renderer/Buffer.h"
+#include "Renderer/Shader.h"
+#include "Renderer/VertexArray.h"
+#include "LayerStack.h"
+#include "Window.h"
 
 namespace Engine {
 	class ENGINE_API Application {
@@ -33,6 +34,7 @@ namespace Engine {
 		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;
 		LayerStack m_layerStack;
+		OrthographicCamera m_camera;
 
 		std::shared_ptr<Shader> m_shader;
 		std::shared_ptr<VertexArray> m_vertexArray;

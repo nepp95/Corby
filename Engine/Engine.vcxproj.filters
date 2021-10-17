@@ -1380,6 +1380,7 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Engine\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Engine\Renderer\RenderCommand.h" />
+    <ClInclude Include="src\Engine\Renderer\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application.cpp">
@@ -1433,5 +1434,6 @@
     <ClCompile Include="src\Engine\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Engine\Renderer\RenderCommand.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Camera.cpp" />
   </ItemGroup>
 </Project>
