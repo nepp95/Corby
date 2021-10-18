@@ -80,6 +80,7 @@ public:
 			layout(location = 1) in vec4 a_color;
 
 			uniform mat4 u_viewProjection;
+			uniform mat4 u_transform;
  
 			out vec3 v_position;
 			out vec4 v_color;
@@ -88,7 +89,7 @@ public:
 			{
 				v_position = a_position;
 				v_color = a_color;
-				gl_Position = u_viewProjection * vec4(a_position, 1.0f);
+				gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0f);
 			}
 		)";
 
@@ -115,13 +116,14 @@ public:
 			layout(location = 0) in vec3 a_position;
 
 			uniform mat4 u_viewProjection;
+			uniform mat4 u_transform;
  
 			out vec3 v_position;
 
 			void main()
 			{
 				v_position = a_position;
-				gl_Position = u_viewProjection * vec4(a_position, 1.0f);
+				gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0f);
 			}
 		)";
 

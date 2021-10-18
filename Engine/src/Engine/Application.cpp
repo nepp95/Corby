@@ -30,11 +30,23 @@ namespace Engine {
 	}
 
 	void Application::run() {
+		float timePassed = 0.0f;
+		int frames = 0;
+
 		while (m_running) {
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_lastFrameTime;
 			m_lastFrameTime = time;
+			timePassed += timestep;
+			frames++;
 
+			if (timePassed >= 1.0f) {
+				std::string title = std::to_string(frames) + "FPS";
+				glfwSetWindowTitle((GLFWwindow*)m_window->getNativeWindow(), title.c_str());
+
+				timePassed = 0.0f;
+				frames = 0;
+			}
 
 			// Layers onUpdate
 			for (Layer* layer : m_layerStack)
