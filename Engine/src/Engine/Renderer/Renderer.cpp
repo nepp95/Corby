@@ -12,9 +12,11 @@ namespace Engine {
 	}
 
 	void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray) {
+		// Bind the shader
 		shader->bind();
 		shader->uploadUniformMat4("u_viewProjection", m_sceneData->viewProjectionMatrix);
 
+		// Bind the vertex array and render it
 		vertexArray->bind();
 		RenderCommand::drawIndexed(vertexArray);
 	}

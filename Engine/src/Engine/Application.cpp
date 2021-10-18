@@ -5,18 +5,23 @@
 #include "Renderer/Renderer.h"
 #include "Input/Input.h"
 
+#include <glfw/glfw3.h>
+
 namespace Engine {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 	Application* Application::s_instance = nullptr;
 
 	Application::Application() {
+		// Create application instance
 		ENGINE_CORE_ASSERT(!s_instance, "Application already exists!");
 		s_instance = this;
 
+		// Create window and bind event callback
 		m_window = std::unique_ptr<Window>(Window::create());
 		m_window->setEventCallback(BIND_EVENT_FN(onEvent));
 
+		// Create imGui layer and add it to the layerstack
 		m_imGuiLayer = new ImGuiLayer();
 		pushOverlay(m_imGuiLayer);
 	}
@@ -26,9 +31,14 @@ namespace Engine {
 
 	void Application::run() {
 		while (m_running) {
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_lastFrameTime;
+			m_lastFrameTime = time;
+
+
 			// Layers onUpdate
 			for (Layer* layer : m_layerStack)
-				layer->onUpdate();
+				layer->onUpdate(timestep);
 
 			// ImGui
 			m_imGuiLayer->begin();

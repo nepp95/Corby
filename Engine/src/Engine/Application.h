@@ -2,6 +2,7 @@
 
 #include "Engine/Core.h"
 
+#include "Core/Timestep.h"
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
 #include "ImGui/ImGuiLayer.h"
@@ -30,6 +31,7 @@ namespace Engine {
 		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;
 		LayerStack m_layerStack;
+		float m_lastFrameTime = 0.0f;
 
 		static Application* s_instance;
 	};

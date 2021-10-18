@@ -4,6 +4,7 @@
 
 class ExampleLayer : public Engine::Layer {
 public:
+	// Construct with 16:9 aspect ratio
 	ExampleLayer() : Layer("Example"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f), m_cameraPosition(1.0f) {
 		// -----------------------------------------
 		//
@@ -140,39 +141,44 @@ public:
 		m_blueShader.reset(new Engine::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
 	}
 
-	void onUpdate() override {
+	void onUpdate(Engine::Timestep timestep) override {
+		ENGINE_INFO("Delta time: {0}s ({1}ms)", timestep.getSeconds(), timestep.getMilliseconds());
+
 		// Up / Down
 		if (Engine::Input::isKeyPressed(ENG_KEY_W))
-			m_cameraPosition.y += m_cameraMoveSpeed;
+			m_cameraPosition.y += m_cameraMoveSpeed * timestep;
 		else if (Engine::Input::isKeyPressed(ENG_KEY_S))
-			m_cameraPosition.y -= m_cameraMoveSpeed;
+			m_cameraPosition.y -= m_cameraMoveSpeed * timestep;
 
 		// Left / Right
 		if (Engine::Input::isKeyPressed(ENG_KEY_A))
-			m_cameraPosition.x -= m_cameraMoveSpeed;
+			m_cameraPosition.x -= m_cameraMoveSpeed * timestep;
 		else if (Engine::Input::isKeyPressed(ENG_KEY_D))
-			m_cameraPosition.x += m_cameraMoveSpeed;
+			m_cameraPosition.x += m_cameraMoveSpeed * timestep;
 
 		// Rotate left/right
 		if (Engine::Input::isKeyPressed(ENG_KEY_Q))
-			m_cameraRotation += m_cameraRotationSpeed;
+			m_cameraRotation += m_cameraRotationSpeed * timestep;
 
 		if (Engine::Input::isKeyPressed(ENG_KEY_E))
-			m_cameraRotation -= m_cameraRotationSpeed;
+			m_cameraRotation -= m_cameraRotationSpeed * timestep;
 
 		// Clear screen
 		Engine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Engine::RenderCommand::clear();
 
+		// Update camera
 		m_camera.setPosition(m_cameraPosition);
 		m_camera.setRotation(m_cameraRotation);
 
+		// Begin render
 		Engine::Renderer::beginScene(m_camera);
 
 		Engine::Renderer::submit(m_blueShader, m_squareVA);
 		Engine::Renderer::submit(m_shader, m_vertexArray);
 
 		Engine::Renderer::endScene();
+		// End render
 	}
 
 	virtual void onImGuiRender() override {
@@ -184,9 +190,9 @@ public:
 private:
 	Engine::OrthographicCamera m_camera;
 	glm::vec3 m_cameraPosition;
-	float m_cameraMoveSpeed = 0.1f;
+	float m_cameraMoveSpeed = 5.0f;
 	float m_cameraRotation = 0.0f;
-	float m_cameraRotationSpeed = 0.5f;
+	float m_cameraRotationSpeed = 180.0f;
 
 	std::shared_ptr<Engine::Shader> m_shader;
 	std::shared_ptr<Engine::VertexArray> m_vertexArray;

@@ -12,6 +12,7 @@ namespace Engine {
 		return m_position;
 	}
 
+	// Set position of the camera and recalculate the view matrix
 	void OrthographicCamera::setPosition(const glm::vec3& position) {
 		m_position = position;
 		recalculateViewMatrix();
@@ -21,6 +22,7 @@ namespace Engine {
 		return m_rotation;
 	}
 
+	// Rotate camera and recalculate the view matrix
 	void OrthographicCamera::setRotation(float rotation) {
 		m_rotation = rotation;
 		recalculateViewMatrix();

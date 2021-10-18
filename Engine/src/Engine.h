@@ -5,6 +5,8 @@
 #include "Engine/Layer.h"
 #include "Engine/Log.h"
 
+#include "Engine/Core/Timestep.h"
+
 // ImGui
 #include "Engine/ImGui/ImGuiLayer.h"
 

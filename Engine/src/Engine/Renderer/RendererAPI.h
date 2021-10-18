@@ -11,6 +11,7 @@ namespace Engine {
 			None = 0, OpenGL = 1
 		};
 
+		// Override the functions in platform specific API (OpenGL/DirectX/Vulkan etc)
 		virtual void setClearColor(const glm::vec4& color) = 0;
 		virtual void clear() = 0;
 		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
