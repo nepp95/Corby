@@ -39,7 +39,6 @@ namespace Engine {
 			m_imGuiLayer->end();
 			//
 
-
 			m_window->onUpdate();
 		}
 	}

@@ -5,10 +5,6 @@
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
 #include "ImGui/ImGuiLayer.h"
-#include "Renderer/Camera.h"
-#include "Renderer/Buffer.h"
-#include "Renderer/Shader.h"
-#include "Renderer/VertexArray.h"
 #include "LayerStack.h"
 #include "Window.h"
 
@@ -34,7 +30,6 @@ namespace Engine {
 		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;
 		LayerStack m_layerStack;
-
 
 		static Application* s_instance;
 	};
