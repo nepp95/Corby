@@ -1,6 +1,7 @@
 #include <Engine.h>
 
 #include "imgui/imgui.h"
+#include <glm/gtc/type_ptr.hpp>
 
 class ExampleLayer : public Engine::Layer {
 public:
@@ -46,10 +47,10 @@ public:
 		m_squareVA.reset(Engine::VertexArray::create());
 
 		float squareVertices[3 * 4] = {
-			-0.75f, -0.75f, 0.0f,
-			0.75f, -0.75f, 0.0f,
-			0.75f, 0.75f, 0.0f,
-			-0.75f, 0.75f, 0.0f
+			-0.5f, -0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.5f, 0.5f, 0.0f,
+			-0.5f, 0.5f, 0.0f
 		};
 
 		std::shared_ptr<Engine::VertexBuffer> squareVB;
@@ -176,7 +177,17 @@ public:
 		// Begin render
 		Engine::Renderer::beginScene(m_camera);
 
-		Engine::Renderer::submit(m_blueShader, m_squareVA);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+		for (int y = 0; y < 20; y++) {
+			for (int x = 0; x < 20; x++) {
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+
+				Engine::Renderer::submit(m_blueShader, m_squareVA, transform);
+			}
+		}
+
 		Engine::Renderer::submit(m_shader, m_vertexArray);
 
 		Engine::Renderer::endScene();

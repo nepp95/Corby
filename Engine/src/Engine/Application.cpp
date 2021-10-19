@@ -30,13 +30,17 @@ namespace Engine {
 	}
 
 	void Application::run() {
+		// Frame counter
 		float timePassed = 0.0f;
 		int frames = 0;
+		//
 
 		while (m_running) {
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_lastFrameTime;
 			m_lastFrameTime = time;
+
+			// Frame counter
 			timePassed += timestep;
 			frames++;
 
@@ -47,6 +51,7 @@ namespace Engine {
 				timePassed = 0.0f;
 				frames = 0;
 			}
+			//
 
 			// Layers onUpdate
 			for (Layer* layer : m_layerStack)
