@@ -1,6 +1,8 @@
 #include "engpch.h"
 #include "Renderer.h"
 
+#include "Platform/OpenGL/OpenGLShader.h"
+
 namespace Engine {
 	Renderer::SceneData* Renderer::m_sceneData = new Renderer::SceneData;
 
@@ -16,8 +18,8 @@ namespace Engine {
 		shader->bind();
 
 		// Upload uniforms
-		shader->uploadUniformMat4("u_viewProjection", m_sceneData->viewProjectionMatrix);
-		shader->uploadUniformMat4("u_transform", transform);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_viewProjection", m_sceneData->viewProjectionMatrix);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_transform", transform);
 
 		// Bind the vertex array and render it
 		vertexArray->bind();

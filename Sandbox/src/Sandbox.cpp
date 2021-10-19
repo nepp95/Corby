@@ -1,6 +1,9 @@
 #include <Engine.h>
 
+#include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
+
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 class ExampleLayer : public Engine::Layer {
@@ -109,9 +112,9 @@ public:
 			}
 		)";
 
-		m_shader.reset(new Engine::Shader(vertexSrc, fragmentSrc));
+		m_shader.reset(Engine::Shader::create(vertexSrc, fragmentSrc));
 
-		std::string blueShaderVertexSrc = R"(
+		std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
 
 			layout(location = 0) in vec3 a_position;
@@ -128,20 +131,22 @@ public:
 			}
 		)";
 
-		std::string blueShaderFragmentSrc = R"(
+		std::string flatColorShaderFragmentSrc = R"(
 			#version 330 core
 
 			layout(location = 0) out vec4 color;
  
 			in vec3 v_position;
 
+			uniform vec3 u_color;
+
 			void main()
 			{
-				color = vec4(0.2, 0.3, 0.8, 1.0);
+				color = vec4(u_color, 1.0);
 			}
 		)";
 
-		m_blueShader.reset(new Engine::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
+		m_flatColorShader.reset(Engine::Shader::create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
 	}
 
 	void onUpdate(Engine::Timestep timestep) override {
@@ -179,12 +184,15 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_flatColorShader)->bind();
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_flatColorShader)->uploadUniformFloat3("u_color", m_squareColor);
+
 		for (int y = 0; y < 20; y++) {
 			for (int x = 0; x < 20; x++) {
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 
-				Engine::Renderer::submit(m_blueShader, m_squareVA, transform);
+				Engine::Renderer::submit(m_flatColorShader, m_squareVA, transform);
 			}
 		}
 
@@ -195,6 +203,9 @@ public:
 	}
 
 	virtual void onImGuiRender() override {
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_squareColor));
+		ImGui::End();
 	}
 
 	void onEvent(Engine::Event& event) override {
@@ -209,8 +220,10 @@ private:
 
 	std::shared_ptr<Engine::Shader> m_shader;
 	std::shared_ptr<Engine::VertexArray> m_vertexArray;
-	std::shared_ptr<Engine::Shader> m_blueShader;
+	std::shared_ptr<Engine::Shader> m_flatColorShader;
 	std::shared_ptr<Engine::VertexArray> m_squareVA;
+
+	glm::vec3 m_squareColor = { 0.2f, 0.3f, 0.8f };
 };
 
 class Sandbox : public Engine::Application {
