@@ -145,7 +145,7 @@ public:
 	}
 
 	void onUpdate(Engine::Timestep timestep) override {
-		ENGINE_INFO("Delta time: {0}s ({1}ms)", timestep.getSeconds(), timestep.getMilliseconds());
+		ENG_INFO("Delta time: {0}s ({1}ms)", timestep.getSeconds(), timestep.getMilliseconds());
 
 		// Up / Down
 		if (Engine::Input::isKeyPressed(ENG_KEY_W))

@@ -26,7 +26,7 @@ namespace Engine {
 			case ShaderDataType::Bool:		return 1;
 		}
 
-		ENGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		ENG_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -61,7 +61,7 @@ namespace Engine {
 				case ShaderDataType::Bool:		return 1;
 			}
 
-			ENGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			ENG_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			return 0;
 		}
 	};

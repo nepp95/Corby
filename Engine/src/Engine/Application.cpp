@@ -14,7 +14,7 @@ namespace Engine {
 
 	Application::Application() {
 		// Create application instance
-		ENGINE_CORE_ASSERT(!s_instance, "Application already exists!");
+		ENG_CORE_ASSERT(!s_instance, "Application already exists!");
 		s_instance = this;
 
 		// Create window and bind event callback

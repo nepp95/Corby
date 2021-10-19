@@ -19,7 +19,7 @@ namespace Engine {
 			case Engine::ShaderDataType::Bool:		return GL_BOOL;
 		}
 
-		ENGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		ENG_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -40,7 +40,7 @@ namespace Engine {
 	}
 
 	void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) {
-		ENGINE_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "VertexBuffer has no layout!");
+		ENG_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "VertexBuffer has no layout!");
 
 		glBindVertexArray(m_rendererID);
 		vertexBuffer->bind();
