@@ -23,7 +23,7 @@ public:
 			0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		std::shared_ptr<Engine::VertexBuffer> vertexBuffer;
+		Engine::Ref<Engine::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Engine::VertexBuffer::create(vertices, sizeof(vertices)));
 
 		Engine::BufferLayout layout = {
@@ -38,7 +38,7 @@ public:
 			0, 1, 2
 		};
 
-		std::shared_ptr<Engine::IndexBuffer> indexBuffer;
+		Engine::Ref<Engine::IndexBuffer> indexBuffer;
 		indexBuffer.reset(Engine::IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int)));
 		m_vertexArray->setIndexBuffer(indexBuffer);
 
@@ -56,7 +56,7 @@ public:
 			-0.5f, 0.5f, 0.0f
 		};
 
-		std::shared_ptr<Engine::VertexBuffer> squareVB;
+		Engine::Ref<Engine::VertexBuffer> squareVB;
 		squareVB.reset(Engine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
 
 		squareVB->setLayout({
@@ -68,7 +68,7 @@ public:
 			0, 1, 2, 2, 3, 0
 		};
 
-		std::shared_ptr<Engine::IndexBuffer> squareIB;
+		Engine::Ref<Engine::IndexBuffer> squareIB;
 		squareIB.reset(Engine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int)));
 		m_squareVA->setIndexBuffer(squareIB);
 
@@ -218,10 +218,10 @@ private:
 	float m_cameraRotation = 0.0f;
 	float m_cameraRotationSpeed = 180.0f;
 
-	std::shared_ptr<Engine::Shader> m_shader;
-	std::shared_ptr<Engine::VertexArray> m_vertexArray;
-	std::shared_ptr<Engine::Shader> m_flatColorShader;
-	std::shared_ptr<Engine::VertexArray> m_squareVA;
+	Engine::Ref<Engine::Shader> m_shader;
+	Engine::Ref<Engine::VertexArray> m_vertexArray;
+	Engine::Ref<Engine::Shader> m_flatColorShader;
+	Engine::Ref<Engine::VertexArray> m_squareVA;
 
 	glm::vec3 m_squareColor = { 0.2f, 0.3f, 0.8f };
 };

@@ -18,7 +18,7 @@ namespace Engine {
 		s_instance = this;
 
 		// Create window and bind event callback
-		m_window = std::unique_ptr<Window>(Window::create());
+		m_window = Scope<Window>(Window::create());
 		m_window->setEventCallback(BIND_EVENT_FN(onEvent));
 
 		// Create imGui layer and add it to the layerstack
