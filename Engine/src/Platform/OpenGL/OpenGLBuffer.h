@@ -15,7 +15,7 @@ namespace Engine {
 		virtual void setLayout(const BufferLayout& layout) override { m_layout = layout; }
 
 	private:
-		unsigned int m_rendererID;
+		uint32_t m_rendererID;
 		BufferLayout m_layout;
 	};
 
@@ -30,7 +30,7 @@ namespace Engine {
 		virtual unsigned int getCount() const override { return m_count; }
 
 	private:
-		unsigned int m_rendererID;
+		uint32_t m_rendererID;
 		unsigned int m_count;
 	};
 }

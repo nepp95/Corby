@@ -14,7 +14,7 @@ namespace Engine {
 		WindowProps(const std::string& title = "Game engine", unsigned int width = 1280, unsigned int height = 720) : title(title), width(width), height(height) {}
 	};
 
-	class ENGINE_API Window {
+	class Window {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 

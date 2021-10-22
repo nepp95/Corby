@@ -18,7 +18,7 @@ namespace Engine {
 		virtual const std::shared_ptr<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
 
 	private:
-		unsigned int m_rendererID;
+		uint32_t m_rendererID;
 		std::vector<std::shared_ptr<VertexBuffer>> m_vertexBuffers;
 		std::shared_ptr<IndexBuffer> m_indexBuffer;
 	};

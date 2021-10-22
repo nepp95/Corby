@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef ENGINE_PLATFORM_WINDOWS
+#ifdef ENG_PLATFORM_WINDOWS
 
 extern Engine::Application* Engine::createApplication();
 

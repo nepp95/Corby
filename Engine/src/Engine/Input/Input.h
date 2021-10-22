@@ -3,7 +3,7 @@
 #include "Engine/Core.h"
 
 namespace Engine {
-	class ENGINE_API Input {
+	class Input {
 	public:
 		inline static bool isKeyPressed(int keycode) { return s_instance->isKeyPressedImpl(keycode); }
 		inline static bool isMouseButtonPressed(int button) { return s_instance->isMouseButtonPressedImpl(button); }

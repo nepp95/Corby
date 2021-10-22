@@ -69,8 +69,8 @@ project "Engine"
 
 		defines
 		{
-			"ENGINE_PLATFORM_WINDOWS",
-			"ENGINE_BUILD_DLL",
+			"ENG_PLATFORM_WINDOWS",
+			"ENG_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
 
@@ -79,23 +79,23 @@ project "Engine"
 
 		defines
 		{
-			"ENGINE_PLATFORM_MACOSX",
-			"ENGINE_BUILD_DLL",
+			"ENG_PLATFORM_MACOSX",
+			"ENG_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
         }
 
 	filter "configurations:Debug"
-		defines "ENGINE_DEBUG"
+		defines "ENG_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "ENGINE_RELEASE"
+		defines "ENG_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "ENGINE_DIST"
+		defines "ENG_DIST"
 		runtime "Release"
 		optimize "on"
 
@@ -133,7 +133,7 @@ project "Sandbox"
 
 		defines
 		{
-			"ENGINE_PLATFORM_WINDOWS"
+			"ENG_PLATFORM_WINDOWS"
 		}
 
 	filter "system:macosx"
@@ -141,20 +141,20 @@ project "Sandbox"
 
 		defines
 		{
-			"ENGINE_PLATFORM_MACOSX"
+			"ENG_PLATFORM_MACOSX"
         }
 
 	filter "configurations:Debug"
-		defines "ENGINE_DEBUG"
+		defines "ENG_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "ENGINE_RELEASE"
+		defines "ENG_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "ENGINE_DIST"
+		defines "ENG_DIST"
 		runtime "Release"
 		optimize "on"

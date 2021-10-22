@@ -3,7 +3,7 @@
 #include "Event.h"
 
 namespace Engine {
-	class ENGINE_API MouseMovedEvent : public Event {
+	class MouseMovedEvent : public Event {
 	public:
 		MouseMovedEvent(float x, float y) : m_mouseX(x), m_mouseY(y) {}
 
@@ -23,7 +23,7 @@ namespace Engine {
 		float m_mouseX, m_mouseY;
 	};
 
-	class ENGINE_API MouseScrolledEvent : public Event {
+	class MouseScrolledEvent : public Event {
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
 
@@ -43,7 +43,7 @@ namespace Engine {
 		float m_xOffset, m_yOffset;
 	};
 
-	class ENGINE_API MouseButtonEvent : public Event {
+	class MouseButtonEvent : public Event {
 	public:
 		inline int getMouseButton() const { return m_button; }
 
@@ -54,7 +54,7 @@ namespace Engine {
 		int m_button;
 	};
 
-	class ENGINE_API MouseButtonPressedEvent : public MouseButtonEvent {
+	class MouseButtonPressedEvent : public MouseButtonEvent {
 	public:
 		MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
@@ -68,7 +68,7 @@ namespace Engine {
 		EVENT_CLASS_TYPE(MouseButtonPressed);
 	};
 
-	class ENGINE_API MouseButtonReleasedEvent : public MouseButtonEvent {
+	class MouseButtonReleasedEvent : public MouseButtonEvent {
 	public:
 		MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
