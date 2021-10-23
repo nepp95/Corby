@@ -23,7 +23,7 @@ namespace Engine {
 	void LayerStack::popLayer(Layer* layer) {
 		auto it = std::find(m_layers.begin(), m_layers.end(), layer);
 
-		if (it != m_layers.end()) {
+		if (it != m_layers.begin() + m_layerInsertIndex) {
 			layer->onDetach();
 			m_layers.erase(it);
 			m_layerInsertIndex--;
