@@ -49,18 +49,19 @@ public:
 		// -----------------------------------------
 		m_squareVA.reset(Engine::VertexArray::create());
 
-		float squareVertices[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.5f, 0.5f, 0.0f,
-			-0.5f, 0.5f, 0.0f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f
 		};
 
 		Engine::Ref<Engine::VertexBuffer> squareVB;
 		squareVB.reset(Engine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
 
 		squareVB->setLayout({
-			{ Engine::ShaderDataType::Float3, "a_position" }
+			{ Engine::ShaderDataType::Float3, "a_position" },
+			{ Engine::ShaderDataType::Float2, "a_texCoord" }
 			});
 		m_squareVA->addVertexBuffer(squareVB);
 
@@ -147,6 +148,45 @@ public:
 		)";
 
 		m_flatColorShader.reset(Engine::Shader::create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+
+		std::string textureShaderVertexSrc = R"(
+			#version 330 core
+
+			layout(location = 0) in vec3 a_position;
+			layout(location = 1) in vec2 a_texCoord;
+
+			uniform mat4 u_viewProjection;
+			uniform mat4 u_transform;
+ 
+			out vec2 v_texCoord;
+
+			void main()
+			{
+				v_texCoord = a_texCoord;
+				gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0f);
+			}
+		)";
+
+		std::string textureShaderFragmentSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 color;
+ 
+			in vec2 v_texCoord;
+
+			uniform sampler2D u_texture;
+
+			void main()
+			{
+				color = texture(u_texture, v_texCoord);
+			}
+		)";
+
+		m_textureShader.reset(Engine::Shader::create(textureShaderVertexSrc, textureShaderFragmentSrc));
+
+		m_texture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_textureShader)->bind();
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_textureShader)->uploadUniformInt("u_texture", 0);
 	}
 
 	void onUpdate(Engine::Timestep timestep) override {
@@ -196,7 +236,11 @@ public:
 			}
 		}
 
-		Engine::Renderer::submit(m_shader, m_vertexArray);
+		m_texture->bind();
+		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+		// Triangle
+		//Engine::Renderer::submit(m_shader, m_vertexArray);
 
 		Engine::Renderer::endScene();
 		// End render
@@ -218,10 +262,9 @@ private:
 	float m_cameraRotation = 0.0f;
 	float m_cameraRotationSpeed = 180.0f;
 
-	Engine::Ref<Engine::Shader> m_shader;
-	Engine::Ref<Engine::VertexArray> m_vertexArray;
-	Engine::Ref<Engine::Shader> m_flatColorShader;
-	Engine::Ref<Engine::VertexArray> m_squareVA;
+	Engine::Ref<Engine::Shader> m_shader, m_flatColorShader, m_textureShader;
+	Engine::Ref<Engine::VertexArray> m_vertexArray, m_squareVA;
+	Engine::Ref<Engine::Texture2D> m_texture;
 
 	glm::vec3 m_squareColor = { 0.2f, 0.3f, 0.8f };
 };
