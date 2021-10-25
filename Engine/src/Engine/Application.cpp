@@ -21,6 +21,8 @@ namespace Engine {
 		m_window = Scope<Window>(Window::create());
 		m_window->setEventCallback(BIND_EVENT_FN(onEvent));
 
+		Renderer::init();
+
 		// Create imGui layer and add it to the layerstack
 		m_imGuiLayer = new ImGuiLayer();
 		pushOverlay(m_imGuiLayer);

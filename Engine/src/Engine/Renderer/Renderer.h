@@ -7,6 +7,8 @@
 namespace Engine {
 	class Renderer {
 	public:
+		static void init();
+
 		static void beginScene(OrthographicCamera& camera);
 		static void endScene();
 

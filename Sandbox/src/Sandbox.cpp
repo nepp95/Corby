@@ -185,6 +185,7 @@ public:
 		m_textureShader.reset(Engine::Shader::create(textureShaderVertexSrc, textureShaderFragmentSrc));
 
 		m_texture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
+		m_logo = Engine::Texture2D::create("assets/textures/logo.png");
 		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_textureShader)->bind();
 		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_textureShader)->uploadUniformInt("u_texture", 0);
 	}
@@ -238,6 +239,8 @@ public:
 
 		m_texture->bind();
 		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		m_logo->bind();
+		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, -0.25f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		// Triangle
 		//Engine::Renderer::submit(m_shader, m_vertexArray);
@@ -264,7 +267,7 @@ private:
 
 	Engine::Ref<Engine::Shader> m_shader, m_flatColorShader, m_textureShader;
 	Engine::Ref<Engine::VertexArray> m_vertexArray, m_squareVA;
-	Engine::Ref<Engine::Texture2D> m_texture;
+	Engine::Ref<Engine::Texture2D> m_texture, m_logo;
 
 	glm::vec3 m_squareColor = { 0.2f, 0.3f, 0.8f };
 };
