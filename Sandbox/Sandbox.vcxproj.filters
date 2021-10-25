@@ -8,4 +8,7 @@
   <ItemGroup>
     <ClCompile Include="src\Sandbox.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\Texture.glsl" />
+  </ItemGroup>
 </Project>

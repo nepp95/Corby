@@ -5,6 +5,9 @@
 namespace Engine {
 	class Input {
 	public:
+		Input(const Input&) = delete;
+		Input& operator=(const Input&) = delete;
+
 		inline static bool isKeyPressed(int keycode) { return s_instance->isKeyPressedImpl(keycode); }
 		inline static bool isMouseButtonPressed(int button) { return s_instance->isMouseButtonPressedImpl(button); }
 		inline static std::pair<float, float> getMousePosition() { return s_instance->getMousePositionImpl(); }
@@ -12,6 +15,8 @@ namespace Engine {
 		inline static float getMouseY() { return s_instance->getMouseYImpl(); }
 
 	protected:
+		Input() = default;
+
 		virtual bool isKeyPressedImpl(int keycode) = 0;
 		virtual bool isMouseButtonPressedImpl(int button) = 0;
 		virtual std::pair<float, float> getMousePositionImpl() = 0;

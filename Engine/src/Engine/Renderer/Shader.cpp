@@ -5,6 +5,21 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Engine {
+	Shader* Shader::create(const std::string& path) {
+		switch (Renderer::getAPI()) {
+			case RendererAPI::API::None: {
+				ENG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+				return nullptr;
+			}
+
+			case RendererAPI::API::OpenGL: {
+				return new OpenGLShader(path);
+			}
+		}
+
+		ENG_CORE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}
 	Shader* Shader::create(const std::string& vertexSrc, const std::string& fragmentSrc) {
 		switch (Renderer::getAPI()) {
 			case RendererAPI::API::None: {

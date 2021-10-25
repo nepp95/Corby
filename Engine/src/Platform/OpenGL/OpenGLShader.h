@@ -3,9 +3,13 @@
 #include "Engine/Renderer/Shader.h"
 #include <glm/glm.hpp>
 
+// TODO: REMOVE!
+typedef unsigned int GLenum;
+
 namespace Engine {
 	class OpenGLShader : public Shader {
 	public:
+		OpenGLShader(const std::string& filepath);
 		OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
 		virtual ~OpenGLShader();
 
@@ -20,6 +24,10 @@ namespace Engine {
 		void uploadUniformMat3(const std::string& name, const glm::mat3& matrix);
 		void uploadUniformMat4(const std::string& name, const glm::mat4& matrix);
 
+	private:
+		std::string readFile(const std::string& filepath);
+		std::unordered_map<GLenum, std::string> preprocess(const std::string& source);
+		void compile(std::unordered_map<GLenum, std::string> shaderSources);
 	private:
 		uint32_t m_rendererID;
 	};
