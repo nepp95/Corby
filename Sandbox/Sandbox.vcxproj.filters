@@ -6,14 +6,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Layers\MenuLayer.h">
-      <Filter>Layers</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Layers\MenuLayer.cpp">
-      <Filter>Layers</Filter>
-    </ClCompile>
     <ClCompile Include="src\Sandbox.cpp" />
   </ItemGroup>
 </Project>
