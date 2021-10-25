@@ -240,7 +240,7 @@ public:
 		m_texture->bind();
 		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 		m_logo->bind();
-		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, -0.25f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		// Triangle
 		//Engine::Renderer::submit(m_shader, m_vertexArray);
