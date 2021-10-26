@@ -113,7 +113,7 @@ public:
 			}
 		)";
 
-		m_shader.reset(Engine::Shader::create(vertexSrc, fragmentSrc));
+		m_shader = Engine::Shader::create("VertexPosColor", vertexSrc, fragmentSrc);
 
 		std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
@@ -147,13 +147,13 @@ public:
 			}
 		)";
 
-		m_flatColorShader.reset(Engine::Shader::create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
-		m_textureShader.reset(Engine::Shader::create("assets/shaders/Texture.glsl"));
+		m_flatColorShader = Engine::Shader::create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
+		auto textureShader = m_shaderLibrary.load("assets/shaders/Texture.glsl");
 
 		m_texture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
 		m_logo = Engine::Texture2D::create("assets/textures/logo.png");
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_textureShader)->bind();
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_textureShader)->uploadUniformInt("u_texture", 0);
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(textureShader)->bind();
+		std::dynamic_pointer_cast<Engine::OpenGLShader>(textureShader)->uploadUniformInt("u_texture", 0);
 	}
 
 	void onUpdate(Engine::Timestep timestep) override {
@@ -203,10 +203,12 @@ public:
 			}
 		}
 
+		auto textureShader = m_shaderLibrary.get("Texture");
+
 		m_texture->bind();
-		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Engine::Renderer::submit(textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 		m_logo->bind();
-		Engine::Renderer::submit(m_textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Engine::Renderer::submit(textureShader, m_squareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		// Triangle
 		//Engine::Renderer::submit(m_shader, m_vertexArray);
@@ -231,7 +233,8 @@ private:
 	float m_cameraRotation = 0.0f;
 	float m_cameraRotationSpeed = 180.0f;
 
-	Engine::Ref<Engine::Shader> m_shader, m_flatColorShader, m_textureShader;
+	Engine::ShaderLibrary m_shaderLibrary;
+	Engine::Ref<Engine::Shader> m_shader, m_flatColorShader;
 	Engine::Ref<Engine::VertexArray> m_vertexArray, m_squareVA;
 	Engine::Ref<Engine::Texture2D> m_texture, m_logo;
 
