@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Engine/Core/Core.h"
+#include "Engine/Core/LayerStack.h"
 #include "Engine/Core/Timestep.h"
+#include "Engine/Core/Window.h"
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/Event.h"
 #include "Engine/ImGui/ImGuiLayer.h"
-#include "Engine/Core.h"
-#include "Engine/LayerStack.h"
-#include "Engine/Window.h"
 
 namespace Engine {
 	class Application {
@@ -24,11 +24,13 @@ namespace Engine {
 
 	private:
 		bool onWindowClose(WindowCloseEvent& e);
+		bool onWindowResize(WindowResizeEvent& e);
 
 	private:
 		Scope<Window> m_window;
 		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;
+		bool m_minimized = false;
 		LayerStack m_layerStack;
 		float m_lastFrameTime = 0.0f;
 

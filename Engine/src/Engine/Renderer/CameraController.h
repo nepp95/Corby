@@ -3,7 +3,7 @@
 #include "Engine/Core/Timestep.h"
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/MouseEvent.h"
-#include "Engine/Input/Camera.h"
+#include "Engine/Renderer/Camera.h"
 
 namespace Engine {
 	class CameraController {
@@ -15,6 +15,9 @@ namespace Engine {
 
 		OrthographicCamera& getCamera() { return m_camera; }
 		const OrthographicCamera& getCamera() const { return m_camera; }
+
+		float getZoomLevel() const { return m_zoomLevel; }
+		void setZoomLevel(float level) { m_zoomLevel = level; }
 
 	private:
 		bool onMouseScrolled(MouseScrolledEvent& event);

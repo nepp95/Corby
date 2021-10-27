@@ -1,8 +1,8 @@
 #include "engpch.h"
 #include "CameraController.h"
 
-#include "Engine/Input/Input.h"
-#include "Engine/Input/KeyCodes.h"
+#include "Engine/Core/Input.h"
+#include "Engine/Core/KeyCodes.h"
 
 namespace Engine {
 	CameraController::CameraController(float aspectRatio, bool rotation) : m_aspectRatio(aspectRatio), m_camera(-m_aspectRatio * m_zoomLevel, m_aspectRatio* m_zoomLevel, -m_zoomLevel, m_zoomLevel), m_rotation(rotation) {
