@@ -25,3 +25,8 @@ jobs:
         
       - name: Build Engine
         run: msbuild Engine /p:Configuration=Debug /p:Platform="x64"
+        
+      - uses: actions/upload-artifact@master
+        with:
+          name: Engine
+          path: Engine\bin\Debug\Engine.lib
