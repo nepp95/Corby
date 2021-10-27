@@ -1,8 +1,8 @@
 #include "engpch.h"
 #include "VertexArray.h"
 
+#include "Engine/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
-#include "Renderer.h"
 
 namespace Engine {
 	VertexArray* VertexArray::create() {

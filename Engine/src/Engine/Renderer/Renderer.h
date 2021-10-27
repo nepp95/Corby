@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Camera.h"
-#include "RenderCommand.h"
-#include "Shader.h"
+#include "Engine/Renderer/Camera.h"
+#include "Engine/Renderer/RenderCommand.h"
+#include "Engine/Renderer/Shader.h"
 
 namespace Engine {
 	class Renderer {
 	public:
 		static void init();
+		static void onWindowResize(uint32_t width, uint32_t height);
 
 		static void beginScene(OrthographicCamera& camera);
 		static void endScene();
@@ -20,6 +21,6 @@ namespace Engine {
 			glm::mat4 viewProjectionMatrix;
 		};
 
-		static SceneData* m_sceneData;
+		static Scope<SceneData> m_sceneData;
 	};
 }

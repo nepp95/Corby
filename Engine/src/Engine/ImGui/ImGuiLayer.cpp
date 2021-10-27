@@ -1,11 +1,11 @@
 #include "engpch.h"
 #include "ImGuiLayer.h"
 
+#include "Engine/Core/Application.h"
+
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
-
-#include "Engine/Application.h"
 
 // Temporary
 #include <GLFW/glfw3.h>

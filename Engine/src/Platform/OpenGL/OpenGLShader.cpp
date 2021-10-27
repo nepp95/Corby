@@ -92,8 +92,9 @@ namespace Engine {
 
 			// If there is no other type token, take the string till eof. Otherwise take it till the next type token.
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			ENG_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
 			pos = source.find(typeToken, nextLinePos);
-			shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+			shaderSources[ShaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
 		}
 
 		return shaderSources;
@@ -174,8 +175,10 @@ namespace Engine {
 		}
 
 		// Detach shaders because the program is now compiled and linked
-		for (auto id : glShaderIDs)
+		for (auto id : glShaderIDs) {
 			glDetachShader(program, id);
+			glDeleteShader(id);
+		}
 	}
 
 	void OpenGLShader::uploadUniformInt(const std::string& name, int value) {

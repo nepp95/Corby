@@ -4,10 +4,14 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Engine {
-	Renderer::SceneData* Renderer::m_sceneData = new Renderer::SceneData;
+	Scope<Renderer::SceneData> Renderer::m_sceneData = createScope<Renderer::SceneData>();
 
 	void Renderer::init() {
 		RenderCommand::init();
+	}
+
+	void Renderer::onWindowResize(uint32_t width, uint32_t height) {
+		RenderCommand::setViewport(0, 0, width, height);
 	}
 
 	void Renderer::beginScene(OrthographicCamera& camera) {

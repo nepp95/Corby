@@ -4,7 +4,6 @@
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/KeyEvent.h"
 #include "Engine/Events/MouseEvent.h"
-
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Engine {
@@ -43,7 +42,7 @@ namespace Engine {
 
 		m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
 
-		m_context = new OpenGLContext(m_window);
+		m_context = createScope<OpenGLContext>(m_window);
 		m_context->init();
 
 		glfwSetWindowUserPointer(m_window, &m_data);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Event.h"
+#include "Engine/Events/Event.h"
 
 namespace Engine {
 	class WindowResizeEvent : public Event {

@@ -1,11 +1,12 @@
 #include "engpch.h"
 #include "WindowsInput.h"
 
-#include <Engine/Application.h>
+#include "Engine/Core/Application.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Engine {
-	Input* Input::s_instance = new WindowsInput();
+	Scope<Input> Input::s_instance = createScope<WindowsInput>();
 
 	bool WindowsInput::isKeyPressedImpl(int keycode) {
 		auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
