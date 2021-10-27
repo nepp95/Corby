@@ -24,13 +24,13 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.3
         
       - name: Build Glad
-        run: msbuild Glad
+        run: msbuild Engine/vendor/glad/Glad
         
       - name: Build GLFW
-        run: msbuild GLFW
+        run: msbuild Engine/vendor/GLFW/GLFW
         
       - name: Build ImGui
-        run: msbuild ImGui
+        run: msbuild Engine/vendor/imgui/ImGui
         
       - name: Build Engine
-        run: msbuild Engine
+        run: msbuild Engine/Engine
