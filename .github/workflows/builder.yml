@@ -23,5 +23,14 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.3
         
-      - name: Build this thing
+      - name: Build Glad
+        run: msbuild Glad
+        
+      - name: Build GLFW
+        run: msbuild GLFW
+        
+      - name: Build ImGui
+        run: msbuild ImGui
+        
+      - name: Build Engine
         run: msbuild Engine
