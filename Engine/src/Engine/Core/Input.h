@@ -24,6 +24,6 @@ namespace Engine {
 		virtual float getMouseYImpl() = 0;
 
 	private:
-		static Input* s_instance;
+		static Scope<Input> s_instance;
 	};
 }

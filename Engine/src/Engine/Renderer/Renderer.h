@@ -21,6 +21,6 @@ namespace Engine {
 			glm::mat4 viewProjectionMatrix;
 		};
 
-		static SceneData* m_sceneData;
+		static Scope<SceneData> m_sceneData;
 	};
 }

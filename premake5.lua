@@ -78,7 +78,6 @@ project "Engine"
 
 		defines
 		{
-			"ENG_PLATFORM_WINDOWS",
 			"ENG_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
@@ -88,7 +87,6 @@ project "Engine"
 
 		defines
 		{
-			"ENG_PLATFORM_MACOSX",
 			"ENG_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
         }
@@ -140,18 +138,8 @@ project "Sandbox"
 	filter "system:windows"
 		systemversion "latest"
 
-		defines
-		{
-			"ENG_PLATFORM_WINDOWS"
-		}
-
 	filter "system:macosx"
 		systemversion "latest"
-
-		defines
-		{
-			"ENG_PLATFORM_MACOSX"
-        }
 
 	filter "configurations:Debug"
 		defines "ENG_DEBUG"
