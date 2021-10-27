@@ -1,7 +1,7 @@
 #include "engpch.h"
 #include "Texture.h"
 
-#include "Renderer.h"
+#include "Engine/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
 
 namespace Engine {

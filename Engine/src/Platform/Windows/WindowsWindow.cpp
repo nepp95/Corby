@@ -4,7 +4,6 @@
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/KeyEvent.h"
 #include "Engine/Events/MouseEvent.h"
-
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Engine {

@@ -9,7 +9,7 @@
 class ExampleLayer : public Engine::Layer {
 public:
 	// Construct with 16:9 aspect ratio
-	ExampleLayer() : Layer("Example"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f), m_cameraPosition(1.0f) {
+	ExampleLayer() : Layer("Example"), m_cameraController(1280.0f / 720.0f) {
 		// -----------------------------------------
 		//
 		//    Triangle
@@ -159,35 +159,24 @@ public:
 	void onUpdate(Engine::Timestep timestep) override {
 		ENG_INFO("Delta time: {0}s ({1}ms)", timestep.getSeconds(), timestep.getMilliseconds());
 
-		// Up / Down
-		if (Engine::Input::isKeyPressed(ENG_KEY_W))
-			m_cameraPosition.y += m_cameraMoveSpeed * timestep;
-		else if (Engine::Input::isKeyPressed(ENG_KEY_S))
-			m_cameraPosition.y -= m_cameraMoveSpeed * timestep;
+		// -----------------------------------------
+		//
+		//    Update
+		//
+		// -----------------------------------------
+		m_cameraController.onUpdate(timestep);
 
-		// Left / Right
-		if (Engine::Input::isKeyPressed(ENG_KEY_A))
-			m_cameraPosition.x -= m_cameraMoveSpeed * timestep;
-		else if (Engine::Input::isKeyPressed(ENG_KEY_D))
-			m_cameraPosition.x += m_cameraMoveSpeed * timestep;
-
-		// Rotate left/right
-		if (Engine::Input::isKeyPressed(ENG_KEY_Q))
-			m_cameraRotation += m_cameraRotationSpeed * timestep;
-
-		if (Engine::Input::isKeyPressed(ENG_KEY_E))
-			m_cameraRotation -= m_cameraRotationSpeed * timestep;
-
+		// -----------------------------------------
+		//
+		//    Render
+		//
+		// -----------------------------------------
 		// Clear screen
 		Engine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Engine::RenderCommand::clear();
 
-		// Update camera
-		m_camera.setPosition(m_cameraPosition);
-		m_camera.setRotation(m_cameraRotation);
-
 		// Begin render
-		Engine::Renderer::beginScene(m_camera);
+		Engine::Renderer::beginScene(m_cameraController.getCamera());
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -224,14 +213,11 @@ public:
 	}
 
 	void onEvent(Engine::Event& event) override {
+		m_cameraController.onEvent(event);
 	}
 
 private:
-	Engine::OrthographicCamera m_camera;
-	glm::vec3 m_cameraPosition;
-	float m_cameraMoveSpeed = 5.0f;
-	float m_cameraRotation = 0.0f;
-	float m_cameraRotationSpeed = 180.0f;
+	Engine::CameraController m_cameraController;
 
 	Engine::ShaderLibrary m_shaderLibrary;
 	Engine::Ref<Engine::Shader> m_shader, m_flatColorShader;

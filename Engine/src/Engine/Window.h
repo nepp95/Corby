@@ -2,8 +2,8 @@
 
 #include "engpch.h"
 
-#include "Engine/Core.h"
 #include "Engine/Events/event.h"
+#include "Engine/Core.h"
 
 namespace Engine {
 	struct WindowProps {

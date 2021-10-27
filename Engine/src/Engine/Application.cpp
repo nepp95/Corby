@@ -1,9 +1,9 @@
 #include "engpch.h"
 #include "Application.h"
 
-#include "Log.h"
-#include "Renderer/Renderer.h"
-#include "Input/Input.h"
+#include "Engine/Input/Input.h"
+#include "Engine/Renderer/Renderer.h"
+#include "Engine/Log.h"
 
 #include <glfw/glfw3.h>
 

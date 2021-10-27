@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine/Core.h"
 #include "Engine/Core/Timestep.h"
 #include "Engine/Events/Event.h"
+#include "Engine/Core.h"
 
 namespace Engine {
 	class Layer {
