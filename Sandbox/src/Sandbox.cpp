@@ -1,10 +1,13 @@
 #include <Engine.h>
+#include <Engine/Core/Entrypoint.h>
 
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Sandbox2D.h"
 
 class ExampleLayer : public Engine::Layer {
 public:
@@ -15,7 +18,7 @@ public:
 		//    Triangle
 		//
 		// -----------------------------------------
-		m_vertexArray.reset(Engine::VertexArray::create());
+		m_vertexArray = Engine::VertexArray::create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -24,7 +27,7 @@ public:
 		};
 
 		Engine::Ref<Engine::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Engine::VertexBuffer::create(vertices, sizeof(vertices)));
+		vertexBuffer = Engine::VertexBuffer::create(vertices, sizeof(vertices));
 
 		Engine::BufferLayout layout = {
 			{ Engine::ShaderDataType::Float3, "a_position" },
@@ -39,7 +42,7 @@ public:
 		};
 
 		Engine::Ref<Engine::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Engine::IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int)));
+		indexBuffer = Engine::IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int));
 		m_vertexArray->setIndexBuffer(indexBuffer);
 
 		// -----------------------------------------
@@ -47,7 +50,7 @@ public:
 		//    Square
 		//
 		// -----------------------------------------
-		m_squareVA.reset(Engine::VertexArray::create());
+		m_squareVA = Engine::VertexArray::create();
 
 		float squareVertices[5 * 4] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -57,7 +60,7 @@ public:
 		};
 
 		Engine::Ref<Engine::VertexBuffer> squareVB;
-		squareVB.reset(Engine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
+		squareVB = Engine::VertexBuffer::create(squareVertices, sizeof(squareVertices));
 
 		squareVB->setLayout({
 			{ Engine::ShaderDataType::Float3, "a_position" },
@@ -70,7 +73,7 @@ public:
 		};
 
 		Engine::Ref<Engine::IndexBuffer> squareIB;
-		squareIB.reset(Engine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int)));
+		squareIB = Engine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int));
 		m_squareVA->setIndexBuffer(squareIB);
 
 		// -----------------------------------------
@@ -230,7 +233,8 @@ private:
 class Sandbox : public Engine::Application {
 public:
 	Sandbox() {
-		pushLayer(new ExampleLayer());
+		//pushLayer(new ExampleLayer());
+		pushLayer(new Sandbox2D());
 	}
 
 	~Sandbox() {}
