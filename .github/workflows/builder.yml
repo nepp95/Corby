@@ -24,4 +24,4 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.3
         
       - name: Build Engine
-        run: msbuild Engine/Engine /p:Configuration=Debug /p:Platform="x64"
+        run: msbuild Engine /p:Configuration=Debug /p:Platform="x64"
