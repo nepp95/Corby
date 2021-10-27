@@ -23,14 +23,5 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.3
         
-      - name: Build Glad
-        run: msbuild Engine/vendor/Glad /p:Configuration=Debug /p:Platform="x64"
-        
-      - name: Build GLFW
-        run: msbuild Engine/vendor/GLFW /p:Configuration=Debug /p:Platform="x64"
-        
-      - name: Build ImGui
-        run: msbuild Engine/vendor/ImGui /p:Configuration=Debug /p:Platform="x64"
-        
       - name: Build Engine
         run: msbuild Engine/Engine /p:Configuration=Debug /p:Platform="x64"
