@@ -9,7 +9,7 @@ namespace Engine {
 		calculateOffsetsAndStride();
 	}
 
-	VertexBuffer* VertexBuffer::create(float* vertices, unsigned int size) {
+	Ref<VertexBuffer> VertexBuffer::create(float* vertices, unsigned int size) {
 		switch (Renderer::getAPI()) {
 			case RendererAPI::API::None: {
 				ENG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
@@ -17,7 +17,7 @@ namespace Engine {
 			}
 
 			case RendererAPI::API::OpenGL: {
-				return new OpenGLVertexBuffer(vertices, size);
+				return createRef<OpenGLVertexBuffer>(vertices, size);
 			}
 		}
 
@@ -25,7 +25,7 @@ namespace Engine {
 		return nullptr;
 	}
 
-	IndexBuffer* IndexBuffer::create(unsigned int* indices, unsigned int size) {
+	Ref<IndexBuffer> IndexBuffer::create(unsigned int* indices, unsigned int size) {
 		switch (Renderer::getAPI()) {
 			case RendererAPI::API::None: {
 				ENG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
@@ -33,7 +33,7 @@ namespace Engine {
 			}
 
 			case RendererAPI::API::OpenGL: {
-				return new OpenGLIndexBuffer(indices, size);
+				return createRef<OpenGLIndexBuffer>(indices, size);
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace Engine {
 	}
 
 	void BufferLayout::calculateOffsetsAndStride() {
-		unsigned int offset = 0;
+		size_t offset = 0;
 		m_stride = 0;
 
 		for (auto& element : m_elements) {

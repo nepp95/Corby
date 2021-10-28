@@ -1,10 +1,11 @@
 #include <Engine.h>
-
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "imgui/imgui.h"
+#include <Engine/Core/Entrypoint.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <imgui/imgui.h>
+
+#include "Sandbox2D.h"
 
 class ExampleLayer : public Engine::Layer {
 public:
@@ -15,7 +16,7 @@ public:
 		//    Triangle
 		//
 		// -----------------------------------------
-		m_vertexArray.reset(Engine::VertexArray::create());
+		m_vertexArray = Engine::VertexArray::create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -23,8 +24,7 @@ public:
 			0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		Engine::Ref<Engine::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Engine::VertexBuffer::create(vertices, sizeof(vertices)));
+		Engine::Ref<Engine::VertexBuffer> vertexBuffer = Engine::VertexBuffer::create(vertices, sizeof(vertices));
 
 		Engine::BufferLayout layout = {
 			{ Engine::ShaderDataType::Float3, "a_position" },
@@ -38,8 +38,7 @@ public:
 			0, 1, 2
 		};
 
-		Engine::Ref<Engine::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Engine::IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int)));
+		Engine::Ref<Engine::IndexBuffer> indexBuffer = Engine::IndexBuffer::create(indices, sizeof(indices) / sizeof(unsigned int));
 		m_vertexArray->setIndexBuffer(indexBuffer);
 
 		// -----------------------------------------
@@ -47,7 +46,7 @@ public:
 		//    Square
 		//
 		// -----------------------------------------
-		m_squareVA.reset(Engine::VertexArray::create());
+		m_squareVA = Engine::VertexArray::create();
 
 		float squareVertices[5 * 4] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -56,8 +55,7 @@ public:
 			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		Engine::Ref<Engine::VertexBuffer> squareVB;
-		squareVB.reset(Engine::VertexBuffer::create(squareVertices, sizeof(squareVertices)));
+		Engine::Ref<Engine::VertexBuffer> squareVB = Engine::VertexBuffer::create(squareVertices, sizeof(squareVertices));
 
 		squareVB->setLayout({
 			{ Engine::ShaderDataType::Float3, "a_position" },
@@ -69,8 +67,7 @@ public:
 			0, 1, 2, 2, 3, 0
 		};
 
-		Engine::Ref<Engine::IndexBuffer> squareIB;
-		squareIB.reset(Engine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int)));
+		Engine::Ref<Engine::IndexBuffer> squareIB = Engine::IndexBuffer::create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int));
 		m_squareVA->setIndexBuffer(squareIB);
 
 		// -----------------------------------------
@@ -152,8 +149,8 @@ public:
 
 		m_texture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
 		m_logo = Engine::Texture2D::create("assets/textures/logo.png");
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(textureShader)->bind();
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(textureShader)->uploadUniformInt("u_texture", 0);
+		textureShader->bind();
+		textureShader->setInt("u_texture", 0);
 	}
 
 	void onUpdate(Engine::Timestep timestep) override {
@@ -180,8 +177,8 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_flatColorShader)->bind();
-		std::dynamic_pointer_cast<Engine::OpenGLShader>(m_flatColorShader)->uploadUniformFloat3("u_color", m_squareColor);
+		m_flatColorShader->bind();
+		m_flatColorShader->setFloat3("u_color", m_squareColor);
 
 		for (int y = 0; y < 20; y++) {
 			for (int x = 0; x < 20; x++) {
@@ -230,7 +227,8 @@ private:
 class Sandbox : public Engine::Application {
 public:
 	Sandbox() {
-		pushLayer(new ExampleLayer());
+		//pushLayer(new ExampleLayer());
+		pushLayer(new Sandbox2D());
 	}
 
 	~Sandbox() {}
