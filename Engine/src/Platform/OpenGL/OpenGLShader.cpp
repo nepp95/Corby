@@ -55,14 +55,21 @@ namespace Engine {
 		if (in) {
 			// Find out the size of the file and resize the string accordingly
 			in.seekg(0, std::ios::end);
-			result.resize(in.tellg());
+			size_t size = in.tellg();
 
-			// Put the file contents in the string
-			in.seekg(0, std::ios::beg);
-			in.read(&result[0], result.size());
+			if (size != -1) {
+				result.resize(in.tellg());
 
-			// Close it up
-			in.close();
+				// Put the file contents in the string
+				in.seekg(0, std::ios::beg);
+				in.read(&result[0], result.size());
+
+				// Close it up
+				in.close();
+			}
+			else {
+				ENG_CORE_ERROR("Could not read from file '{0}'", filepath);
+			}
 		}
 		else {
 			ENG_CORE_ERROR("Could not open shader file '{0}'", filepath);
@@ -179,6 +186,22 @@ namespace Engine {
 			glDetachShader(program, id);
 			glDeleteShader(id);
 		}
+	}
+
+	void OpenGLShader::setInt(const std::string& name, int value) {
+		uploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::setFloat3(const std::string& name, const glm::vec3& value) {
+		uploadUniformFloat3(name, value);
+	}
+
+	void OpenGLShader::setFloat4(const std::string& name, const glm::vec4& value) {
+		uploadUniformFloat4(name, value);
+	}
+
+	void OpenGLShader::setMat4(const std::string& name, const glm::mat4& value) {
+		uploadUniformMat4(name, value);
 	}
 
 	void OpenGLShader::uploadUniformInt(const std::string& name, int value) {

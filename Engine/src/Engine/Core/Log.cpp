@@ -1,6 +1,8 @@
 #include "engpch.h"
 #include "Log.h"
 
+#include <spdlog/sinks/stdout_color_sinks.h>
+
 namespace Engine {
 	Ref<spdlog::logger> Log::s_coreLogger;
 	Ref<spdlog::logger> Log::s_clientLogger;

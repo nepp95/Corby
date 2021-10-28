@@ -8,8 +8,6 @@
 #include <glfw/glfw3.h>
 
 namespace Engine {
-#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
-
 	Application* Application::s_instance = nullptr;
 
 	Application::Application() {
@@ -19,7 +17,7 @@ namespace Engine {
 
 		// Create window and bind event callback
 		m_window = Scope<Window>(Window::create());
-		m_window->setEventCallback(BIND_EVENT_FN(onEvent));
+		m_window->setEventCallback(ENG_BIND_EVENT_FN(Application::onEvent));
 
 		Renderer::init();
 
@@ -29,6 +27,7 @@ namespace Engine {
 	}
 
 	Application::~Application() {
+		Renderer::shutdown();
 	}
 
 	void Application::run() {
@@ -76,8 +75,8 @@ namespace Engine {
 
 	void Application::onEvent(Event& e) {
 		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
-		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FN(onWindowResize));
+		dispatcher.dispatch<WindowCloseEvent>(ENG_BIND_EVENT_FN(Application::onWindowClose));
+		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(Application::onWindowResize));
 
 		for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
 			(*--it)->onEvent(e);
