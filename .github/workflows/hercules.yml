@@ -9,7 +9,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Hercules
-        uses: nepp95/hercules@master
+        uses: src-d/hercules@master
+        with:
+          args: --burndown
       - uses: actions/upload-artifact@master
         with:
           name: hercules_charts
