@@ -9,6 +9,8 @@ namespace Engine {
 	}
 
 	void CameraController::onUpdate(Timestep timestep) {
+		ENG_PROFILE_FUNCTION();
+
 		// Up / Down
 		if (Input::isKeyPressed(ENG_KEY_W)) {
 			m_cameraPosition.x += -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * timestep;
@@ -52,12 +54,16 @@ namespace Engine {
 	}
 
 	void CameraController::onEvent(Event& event) {
+		ENG_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<MouseScrolledEvent>(ENG_BIND_EVENT_FN(CameraController::onMouseScrolled));
 		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(CameraController::onWindowResized));
 	}
 
 	bool CameraController::onMouseScrolled(MouseScrolledEvent& event) {
+		ENG_PROFILE_FUNCTION();
+
 		m_zoomLevel -= event.getYOffset() * 0.25f;
 		m_zoomLevel = std::max(m_zoomLevel, 0.25f);
 		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
@@ -65,6 +71,8 @@ namespace Engine {
 	}
 
 	bool CameraController::onWindowResized(WindowResizeEvent& event) {
+		ENG_PROFILE_FUNCTION();
+
 		m_aspectRatio = (float)event.getWidth() / (float)event.getHeight();
 		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
 		return false;

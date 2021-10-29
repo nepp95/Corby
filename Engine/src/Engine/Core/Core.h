@@ -45,6 +45,7 @@
 
 #ifdef ENG_DEBUG
 #define ENG_ENABLE_ASSERTS
+#define ENG_PROFILE
 #endif
 
 #ifdef ENG_ENABLE_ASSERTS
@@ -53,6 +54,18 @@
 #else
 #define ENG_ASSERT(x, ...)
 #define ENG_CORE_ASSERT(x, ...)
+#endif
+
+#ifdef ENG_PROFILE
+#define ENG_PROFILE_BEGIN_SESSION(name, filepath) ::Engine::Instrumentor::get().beginSession(name, filepath)
+#define ENG_PROFILE_END_SESSION() ::Engine::Instrumentor::get().endSession()
+#define ENG_PROFILE_SCOPE(name) ::Engine::InstrumentationTimer timer##__LINE__(name);
+#define ENG_PROFILE_FUNCTION() ENG_PROFILE_SCOPE(__FUNCSIG__)
+#else
+#define ENG_PROFILE_BEGIN_SESSION(name, filepath)
+#define ENG_PROFILE_END_SESSION()
+#define ENG_PROFILE_SCOPE(name)
+#define ENG_PROFILE_FUNCTION()
 #endif
 
 #define BIT(x) (1 << x)

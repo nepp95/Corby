@@ -11,6 +11,8 @@ namespace Engine {
 	Application* Application::s_instance = nullptr;
 
 	Application::Application() {
+		ENG_PROFILE_FUNCTION();
+
 		// Create application instance
 		ENG_CORE_ASSERT(!s_instance, "Application already exists!");
 		s_instance = this;
@@ -27,16 +29,22 @@ namespace Engine {
 	}
 
 	Application::~Application() {
+		ENG_PROFILE_FUNCTION();
+
 		Renderer::shutdown();
 	}
 
 	void Application::run() {
+		ENG_PROFILE_FUNCTION();
+
 		// Frame counter
 		float timePassed = 0.0f;
 		int frames = 0;
 		//
 
 		while (m_running) {
+			ENG_PROFILE_SCOPE("RunLoop");
+
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_lastFrameTime;
 			m_lastFrameTime = time;
@@ -56,42 +64,53 @@ namespace Engine {
 
 			// Layers onUpdate
 			if (!m_minimized) {
-				for (Layer* layer : m_layerStack)
-					layer->onUpdate(timestep);
+				{
+					ENG_PROFILE_SCOPE("LayerStack::onUpdate");
+
+					for (Layer* layer : m_layerStack)
+						layer->onUpdate(timestep);
+				}
 			}
 
 			// ImGui
 			m_imGuiLayer->begin();
+			{
+				ENG_PROFILE_SCOPE("LayerStack::onImGuiRender");
 
-			for (Layer* layer : m_layerStack)
-				layer->onImGuiRender();
-
+				for (Layer* layer : m_layerStack)
+					layer->onImGuiRender();
+			}
 			m_imGuiLayer->end();
-			//
 
 			m_window->onUpdate();
 		}
 	}
 
-	void Application::onEvent(Event& e) {
-		EventDispatcher dispatcher(e);
+	void Application::onEvent(Event& event) {
+		ENG_PROFILE_FUNCTION();
+
+		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(ENG_BIND_EVENT_FN(Application::onWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(Application::onWindowResize));
 
-		for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
-			(*--it)->onEvent(e);
+		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
+			(*it)->onEvent(event);
 
-			if (e.handled) {
+			if (event.handled) {
 				break;
 			}
 		}
 	}
 
 	void Application::pushLayer(Layer* layer) {
+		ENG_PROFILE_FUNCTION();
+
 		m_layerStack.pushLayer(layer);
 	}
 
 	void Application::pushOverlay(Layer* layer) {
+		ENG_PROFILE_FUNCTION();
+
 		m_layerStack.pushOverlay(layer);
 	}
 
@@ -101,6 +120,8 @@ namespace Engine {
 	}
 
 	bool Application::onWindowResize(WindowResizeEvent& e) {
+		ENG_PROFILE_FUNCTION();
+
 		if (e.getWidth() == 0 || e.getHeight() == 0) {
 			m_minimized = true;
 			return false;
