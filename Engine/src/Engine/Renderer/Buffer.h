@@ -99,9 +99,12 @@ namespace Engine {
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
+		virtual void setData(const void* data, uint32_t size) = 0;
+
 		virtual const BufferLayout& getLayout() const = 0;
 		virtual void setLayout(const BufferLayout& layout) = 0;
 
+		static Ref<VertexBuffer> create(uint32_t size);
 		static Ref<VertexBuffer> create(float* vertices, unsigned int size);
 	};
 
@@ -119,6 +122,6 @@ namespace Engine {
 
 		virtual unsigned int getCount() const = 0;
 
-		static Ref<IndexBuffer> create(unsigned int* indices, unsigned int size);
+		static Ref<IndexBuffer> create(unsigned int* indices, unsigned int count);
 	};
 }
