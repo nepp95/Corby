@@ -2,48 +2,75 @@
 #include "Instrumentor.h"
 
 namespace Engine {
-	Instrumentor::Instrumentor() : m_currentSession(nullptr), m_profileCount(0) {
+	Instrumentor::Instrumentor() : m_currentSession(nullptr) {
 	}
 
 	void Instrumentor::beginSession(const std::string& name, const std::string& filepath) {
-		m_outputStream.open(filepath);
-		writeHeader();
+		std::lock_guard lock(m_mutex);
 
-		m_currentSession = new InstrumentationSession{ name };
+		if (m_currentSession) {
+			if (Log::getCoreLogger()) {
+				ENG_CORE_ERROR("Instrumentator::BeginSession('{0}') when session '{1}' already open.", name, m_currentSession->name);
+			}
+
+			internalEndSession();
+		}
+
+		m_outputStream.open(filepath);
+
+		if (m_outputStream.is_open()) {
+			m_currentSession = new InstrumentationSession({ name });
+			writeHeader();
+		}
+		else {
+			if (Log::getCoreLogger()) {
+				ENG_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+			}
+		}
 	}
 
 	void Instrumentor::endSession() {
-		writeFooter();
-		m_outputStream.close();
+		std::lock_guard lock(m_mutex);
+		internalEndSession();
+	}
 
-		delete m_currentSession;
-		m_currentSession = nullptr;
+	void Instrumentor::internalEndSession() {
+		if (m_currentSession) {
+			writeFooter();
+			m_outputStream.close();
 
-		m_profileCount = 0;
+			delete m_currentSession;
+			m_currentSession = nullptr;
+		}
 	}
 
 	void Instrumentor::writeProfile(const ProfileResult& result) {
-		if (m_profileCount++ > 0)
-			m_outputStream << ",";
+		std::stringstream json;
 
 		std::string name = result.name;
 		std::replace(name.begin(), name.end(), '"', '\'');
 
-		m_outputStream << "{";
-		m_outputStream << "\"cat\":\"function\",";
-		m_outputStream << "\"dur\":" << (result.end - result.start) << ',';
-		m_outputStream << "\"name\":\"" << name << "\",";
-		m_outputStream << "\"ph\":\"X\",";
-		m_outputStream << "\"pid\":0,";
-		m_outputStream << "\"tid\":" << result.threadID << ",";
-		m_outputStream << "\"ts\":" << result.start;
-		m_outputStream << "}";
+		json << std::setprecision(3) << std::fixed;
+		json << ",{";
+		json << "\"cat\":\"function\",";
+		json << "\"dur\":" << (result.elapsedTime.count()) << ',';
+		json << "\"name\":\"" << name << "\",";
+		json << "\"ph\":\"X\",";
+		json << "\"pid\":0,";
+		json << "\"tid\":" << result.threadID << ",";
+		json << "\"ts\":" << result.start.count();
+		json << "}";
 
-		m_outputStream.flush();
+		std::lock_guard lock(m_mutex);
+
+		if (m_currentSession) {
+			m_outputStream << json.str();
+			m_outputStream.flush();
+		}
 	}
 
 	void Instrumentor::writeHeader() {
-		m_outputStream << "{\"otherData\": {},\"traceEvents\":[";
+		m_outputStream << "{\"otherData\": {},\"traceEvents\":[{}";
 		m_outputStream.flush();
 	}
 
@@ -58,7 +85,7 @@ namespace Engine {
 	}
 
 	InstrumentationTimer::InstrumentationTimer(const char* name) : m_name(name), m_stopped(false) {
-		m_startTimepoint = std::chrono::high_resolution_clock::now();
+		m_startTimepoint = std::chrono::steady_clock::now();
 	}
 
 	InstrumentationTimer::~InstrumentationTimer() {
@@ -67,13 +94,13 @@ namespace Engine {
 	}
 
 	void InstrumentationTimer::stop() {
-		auto endTimepoint = std::chrono::high_resolution_clock::now();
+		auto endTimepoint = std::chrono::steady_clock::now();
 
-		long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimepoint).time_since_epoch().count();
-		long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
+		auto highResStart = floatingPointMicroseconds{ m_startTimepoint.time_since_epoch() };
+		auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch()
+			- std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimepoint).time_since_epoch();
 
-		uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-		Instrumentor::get().writeProfile({ m_name, start, end, threadID });
+		Instrumentor::get().writeProfile({ m_name, highResStart, elapsedTime, std::this_thread::get_id() });
 
 		m_stopped = true;
 	}

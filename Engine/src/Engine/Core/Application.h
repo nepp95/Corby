@@ -8,13 +8,14 @@
 #include "Engine/Events/Event.h"
 #include "Engine/ImGui/ImGuiLayer.h"
 
+int main(int argc, char** argv);
+
 namespace Engine {
 	class Application {
 	public:
 		Application();
 		virtual ~Application();
 
-		void run();
 		void onEvent(Event& e);
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* layer);
@@ -23,6 +24,7 @@ namespace Engine {
 		inline static Application& get() { return *s_instance; }
 
 	private:
+		void run();
 		bool onWindowClose(WindowCloseEvent& e);
 		bool onWindowResize(WindowResizeEvent& e);
 
@@ -35,6 +37,7 @@ namespace Engine {
 		float m_lastFrameTime = 0.0f;
 
 		static Application* s_instance;
+		friend int ::main(int argc, char** argv);
 	};
 
 	// To be defined in a client!

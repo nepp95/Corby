@@ -3,14 +3,18 @@
 #include <algorithm>
 #include <chrono>
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <thread>
 
 namespace Engine {
+	using floatingPointMicroseconds = std::chrono::duration<double, std::micro>;
+
 	struct ProfileResult {
 		std::string name;
-		long long start, end;
-		uint32_t threadID;
+		floatingPointMicroseconds start;
+		std::chrono::microseconds elapsedTime;
+		std::thread::id threadID;
 	};
 
 	struct InstrumentationSession {
@@ -23,6 +27,7 @@ namespace Engine {
 
 		void beginSession(const std::string& name, const std::string& filepath = "results.json");
 		void endSession();
+		void internalEndSession();
 
 		void writeProfile(const ProfileResult& result);
 		void writeHeader();
@@ -32,6 +37,7 @@ namespace Engine {
 
 	private:
 		InstrumentationSession* m_currentSession;
+		std::mutex m_mutex;
 		std::ofstream m_outputStream;
 		int m_profileCount;
 	};
@@ -45,7 +51,7 @@ namespace Engine {
 
 	private:
 		const char* m_name;
-		std::chrono::time_point<std::chrono::high_resolution_clock> m_startTimepoint;
+		std::chrono::time_point<std::chrono::steady_clock> m_startTimepoint;
 		bool m_stopped;
 	};
 }

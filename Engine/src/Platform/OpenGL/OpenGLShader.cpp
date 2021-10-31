@@ -210,6 +210,12 @@ namespace Engine {
 		uploadUniformInt(name, value);
 	}
 
+	void OpenGLShader::setFloat(const std::string& name, float value) {
+		ENG_PROFILE_FUNCTION();
+
+		uploadUniformFloat(name, value);
+	}
+
 	void OpenGLShader::setFloat3(const std::string& name, const glm::vec3& value) {
 		ENG_PROFILE_FUNCTION();
 
