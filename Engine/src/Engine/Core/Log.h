@@ -10,8 +10,8 @@ namespace Engine {
 	public:
 		static void init();
 
-		inline static Ref<spdlog::logger>& getCoreLogger() { return s_coreLogger; }
-		inline static Ref<spdlog::logger>& getClientLogger() { return s_clientLogger; }
+		static Ref<spdlog::logger>& getCoreLogger() { return s_coreLogger; }
+		static Ref<spdlog::logger>& getClientLogger() { return s_clientLogger; }
 	private:
 		static Ref<spdlog::logger> s_coreLogger;
 		static Ref<spdlog::logger> s_clientLogger;
