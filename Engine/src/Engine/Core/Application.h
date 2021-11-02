@@ -20,8 +20,8 @@ namespace Engine {
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* layer);
 
-		inline Window& getWindow() { return *m_window; }
-		inline static Application& get() { return *s_instance; }
+		Window& getWindow() { return *m_window; }
+		static Application& get() { return *s_instance; }
 
 	private:
 		void run();
