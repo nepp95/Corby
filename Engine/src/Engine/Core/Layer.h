@@ -16,7 +16,7 @@ namespace Engine {
 		virtual void onImGuiRender() {}
 		virtual void onEvent(Event& event) {}
 
-		const std::string& getName() const { return m_debugName; }
+		inline const std::string& getName() const { return m_debugName; }
 
 	protected:
 		std::string m_debugName;
