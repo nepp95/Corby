@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Core.h"
+#include "Engine/Core/Core.h"
 
 namespace Engine {
 	class Input {
@@ -24,6 +24,6 @@ namespace Engine {
 		virtual float getMouseYImpl() = 0;
 
 	private:
-		static Input* s_instance;
+		static Scope<Input> s_instance;
 	};
 }

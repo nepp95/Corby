@@ -39,8 +39,8 @@ namespace Engine {
 	struct BufferElement {
 		ShaderDataType type;
 		std::string name;
-		unsigned int size;
-		unsigned int offset;
+		uint32_t size;
+		size_t offset;
 		bool normalized;
 
 		BufferElement() {}
@@ -99,10 +99,13 @@ namespace Engine {
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
+		virtual void setData(const void* data, uint32_t size) = 0;
+
 		virtual const BufferLayout& getLayout() const = 0;
 		virtual void setLayout(const BufferLayout& layout) = 0;
 
-		static VertexBuffer* create(float* vertices, unsigned int size);
+		static Ref<VertexBuffer> create(uint32_t size);
+		static Ref<VertexBuffer> create(float* vertices, unsigned int size);
 	};
 
 	// -----------------------------------------
@@ -119,6 +122,6 @@ namespace Engine {
 
 		virtual unsigned int getCount() const = 0;
 
-		static IndexBuffer* create(unsigned int* indices, unsigned int size);
+		static Ref<IndexBuffer> create(unsigned int* indices, unsigned int count);
 	};
 }

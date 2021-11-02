@@ -1,9 +1,15 @@
-.vs/
-bin/
-!/vendor/bin
+# Binaries
+**/bin/
+!vendor/bin/premake/
 bin-int/
 
-*.user
-*.sln
-*.vcxproj*
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+# Generated files
 imgui.ini
+*.json

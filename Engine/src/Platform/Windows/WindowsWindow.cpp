@@ -4,46 +4,61 @@
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/KeyEvent.h"
 #include "Engine/Events/MouseEvent.h"
-
+#include "Engine/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Engine {
-	static bool s_GLFWInitialized = false;
+	static uint8_t s_GLFWWindowCount = 0;
 	static void GLFWErrorCallback(int error, const char* description) {
 		ENG_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Window* Window::create(const WindowProps& props) {
-		return new WindowsWindow(props);
+	Scope<Window> Window::create(const WindowProps& props) {
+		return createScope<WindowsWindow>(props);
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& props) {
+		ENG_PROFILE_FUNCTION();
+
 		init(props);
 	}
 
 	WindowsWindow::~WindowsWindow() {
+		ENG_PROFILE_FUNCTION();
+
 		shutdown();
 	}
 
 	void WindowsWindow::init(const WindowProps& props) {
+		ENG_PROFILE_FUNCTION();
+
 		m_data.title = props.title;
 		m_data.width = props.width;
 		m_data.height = props.height;
 
 		ENG_CORE_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);
 
-		if (!s_GLFWInitialized) {
-			int success = glfwInit();
+		if (s_GLFWWindowCount == 0) {
+			ENG_PROFILE_SCOPE("glfwInit");
 
+			int success = glfwInit();
 			ENG_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
-
-			s_GLFWInitialized = true;
 		}
 
-		m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
+		{
+			ENG_PROFILE_SCOPE("glfwCreateWindow");
 
-		m_context = new OpenGLContext(m_window);
+			#ifdef ENG_DEBUG
+			if (Renderer::getAPI() == RendererAPI::API::OpenGL)
+				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+			#endif
+
+			m_window = glfwCreateWindow((int)props.width, (int)props.height, m_data.title.c_str(), nullptr, nullptr);
+			++s_GLFWWindowCount;
+		}
+
+		m_context = GraphicsContext::create(m_window);
 		m_context->init();
 
 		glfwSetWindowUserPointer(m_window, &m_data);
@@ -136,16 +151,27 @@ namespace Engine {
 	}
 
 	void WindowsWindow::shutdown() {
+		ENG_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_window);
+		--s_GLFWWindowCount;
+
+		if (s_GLFWWindowCount == 0) {
+			glfwTerminate();
+		}
 	}
 
 	void WindowsWindow::onUpdate() {
+		ENG_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 
 		m_context->swapBuffers();
 	}
 
 	void WindowsWindow::setVSync(bool enabled) {
+		ENG_PROFILE_FUNCTION();
+
 		if (enabled) {
 			glfwSwapInterval(1);
 		}

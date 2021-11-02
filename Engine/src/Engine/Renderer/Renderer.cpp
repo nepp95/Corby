@@ -1,13 +1,24 @@
 #include "engpch.h"
 #include "Renderer.h"
 
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Engine/Renderer/Renderer2D.h"
 
 namespace Engine {
-	Renderer::SceneData* Renderer::m_sceneData = new Renderer::SceneData;
+	Scope<Renderer::SceneData> Renderer::m_sceneData = createScope<Renderer::SceneData>();
 
 	void Renderer::init() {
+		ENG_PROFILE_FUNCTION();
+
 		RenderCommand::init();
+		Renderer2D::init();
+	}
+
+	void Renderer::shutdown() {
+		Renderer2D::shutdown();
+	}
+
+	void Renderer::onWindowResize(uint32_t width, uint32_t height) {
+		RenderCommand::setViewport(0, 0, width, height);
 	}
 
 	void Renderer::beginScene(OrthographicCamera& camera) {
@@ -22,8 +33,8 @@ namespace Engine {
 		shader->bind();
 
 		// Upload uniforms
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_viewProjection", m_sceneData->viewProjectionMatrix);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_transform", transform);
+		shader->setMat4("u_viewProjection", m_sceneData->viewProjectionMatrix);
+		shader->setMat4("u_transform", transform);
 
 		// Bind the vertex array and render it
 		vertexArray->bind();

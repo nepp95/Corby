@@ -6,17 +6,17 @@
 namespace Engine {
 	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
 		switch (type) {
-			case Engine::ShaderDataType::Float:		return GL_FLOAT;
-			case Engine::ShaderDataType::Float2:	return GL_FLOAT;
-			case Engine::ShaderDataType::Float3:	return GL_FLOAT;
-			case Engine::ShaderDataType::Float4:	return GL_FLOAT;
-			case Engine::ShaderDataType::Mat3:		return GL_FLOAT;
-			case Engine::ShaderDataType::Mat4:		return GL_FLOAT;
-			case Engine::ShaderDataType::Int:		return GL_INT;
-			case Engine::ShaderDataType::Int2:		return GL_INT;
-			case Engine::ShaderDataType::Int3:		return GL_INT;
-			case Engine::ShaderDataType::Int4:		return GL_INT;
-			case Engine::ShaderDataType::Bool:		return GL_BOOL;
+			case ShaderDataType::Float:		return GL_FLOAT;
+			case ShaderDataType::Float2:	return GL_FLOAT;
+			case ShaderDataType::Float3:	return GL_FLOAT;
+			case ShaderDataType::Float4:	return GL_FLOAT;
+			case ShaderDataType::Mat3:		return GL_FLOAT;
+			case ShaderDataType::Mat4:		return GL_FLOAT;
+			case ShaderDataType::Int:		return GL_INT;
+			case ShaderDataType::Int2:		return GL_INT;
+			case ShaderDataType::Int3:		return GL_INT;
+			case ShaderDataType::Int4:		return GL_INT;
+			case ShaderDataType::Bool:		return GL_BOOL;
 		}
 
 		ENG_CORE_ASSERT(false, "Unknown ShaderDataType!");
@@ -24,22 +24,32 @@ namespace Engine {
 	}
 
 	OpenGLVertexArray::OpenGLVertexArray() {
+		ENG_PROFILE_FUNCTION();
+
 		glCreateVertexArrays(1, &m_rendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray() {
+		ENG_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &m_rendererID);
 	}
 
 	void OpenGLVertexArray::bind() const {
+		ENG_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_rendererID);
 	}
 
 	void OpenGLVertexArray::unbind() const {
+		ENG_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
+		ENG_PROFILE_FUNCTION();
+
 		ENG_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "VertexBuffer has no layout!");
 
 		glBindVertexArray(m_rendererID);
@@ -54,7 +64,7 @@ namespace Engine {
 				ShaderDataTypeToOpenGLBaseType(element.type),
 				element.normalized ? GL_TRUE : GL_FALSE,
 				layout.getStride(),
-				(const void*)(intptr_t)element.offset);
+				(const void*)element.offset);
 
 			m_vertexBufferIndex++;
 		}
@@ -63,6 +73,8 @@ namespace Engine {
 	}
 
 	void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuffer) {
+		ENG_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_rendererID);
 		indexBuffer->bind();
 

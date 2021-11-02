@@ -6,6 +6,9 @@ namespace Engine {
 	class OrthographicCamera {
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
+
+		void setProjection(float left, float right, float bottom, float top);
+
 		const glm::vec3& getPosition() const;
 		void setPosition(const glm::vec3& position);
 
