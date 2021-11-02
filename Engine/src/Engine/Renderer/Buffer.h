@@ -71,8 +71,8 @@ namespace Engine {
 		BufferLayout() {}
 		BufferLayout(const std::initializer_list<BufferElement>& elements);
 
-		inline unsigned int getStride() const { return m_stride; }
-		inline const std::vector<BufferElement>& getElements() const { return m_elements; }
+		unsigned int getStride() const { return m_stride; }
+		const std::vector<BufferElement>& getElements() const { return m_elements; }
 
 		std::vector<BufferElement>::iterator begin() { return m_elements.begin(); }
 		std::vector<BufferElement>::iterator end() { return m_elements.end(); }

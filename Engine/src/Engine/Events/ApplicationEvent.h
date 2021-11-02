@@ -7,8 +7,8 @@ namespace Engine {
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height) : m_width(width), m_height(height) {}
 
-		inline unsigned int getWidth() const { return m_width; }
-		inline unsigned int getHeight() const { return m_height; }
+		unsigned int getWidth() const { return m_width; }
+		unsigned int getHeight() const { return m_height; }
 
 		std::string ToString() const override {
 			std::stringstream ss;

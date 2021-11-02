@@ -5,7 +5,7 @@
 namespace Engine {
 	class KeyEvent : public Event {
 	public:
-		inline int getKeyCode() const { return m_keyCode; }
+		int getKeyCode() const { return m_keyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
 
@@ -19,7 +19,7 @@ namespace Engine {
 	public:
 		KeyPressedEvent(int keycode, int repeatCount) : KeyEvent(keycode), m_repeatCount(repeatCount) {}
 
-		inline int getRepeatCount() const { return m_repeatCount; }
+		int getRepeatCount() const { return m_repeatCount; }
 
 		std::string ToString() const override {
 			std::stringstream ss;
