@@ -44,13 +44,24 @@
 #endif // End of platform detection
 
 #ifdef ENG_DEBUG
+#if defined(ENG_PLATFORM_WINDOWS)
+#define ENG_DEBUGBREAK() __debugbreak()
+#elif defined(ENG_PLATFORM_LINUX)
+#include <signal.h>
+#define ENG_DEBUGBREAK() raise(SIGTRAP)
+#else
+#error "Platform does not support debugbreak yet!"
+#endif
 #define ENG_ENABLE_ASSERTS
-#define ENG_PROFILE
+#else
+#define ENG_DEBUGREAK()
 #endif
 
+#define ENG_PROFILE
+
 #ifdef ENG_ENABLE_ASSERTS
-#define ENG_ASSERT(x, ...) { if(!(x)) { ENG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-#define ENG_CORE_ASSERT(x, ...) { if(!(x)) { ENG_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#define ENG_ASSERT(x, ...) { if(!(x)) { ENG_ERROR("Assertion Failed: {0}", __VA_ARGS__); ENG_DEBUGBREAK(); } }
+#define ENG_CORE_ASSERT(x, ...) { if(!(x)) { ENG_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); ENG_DEBUGBREAK(); } }
 #else
 #define ENG_ASSERT(x, ...)
 #define ENG_CORE_ASSERT(x, ...)
