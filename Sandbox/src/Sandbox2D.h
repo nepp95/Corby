@@ -21,5 +21,8 @@ private:
 	Engine::Ref<Engine::VertexArray> m_squareVA;
 	Engine::Ref<Engine::Shader> m_flatColorShader;
 	Engine::Ref<Engine::Texture2D> m_checkerboardTexture;
+	Engine::Ref<Engine::Texture2D> m_tileset;
+	Engine::Ref<Engine::SubTexture2D> m_textureRoad;
+	//Engine::Ref<Engine::Tileset> m_tileset;
 	glm::vec4 m_squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 };

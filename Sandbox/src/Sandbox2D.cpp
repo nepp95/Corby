@@ -11,6 +11,8 @@ void Sandbox2D::onAttach() {
 	ENG_PROFILE_FUNCTION();
 
 	m_checkerboardTexture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
+	m_tileset = Engine::Texture2D::create("assets/textures/tileset.png");
+	m_textureRoad = Engine::SubTexture2D::createFromCoords(m_tileset, { 0, 0 }, { 64, 64 });
 }
 
 void Sandbox2D::onDetach() {
@@ -36,7 +38,7 @@ void Sandbox2D::onUpdate(Engine::Timestep timestep) {
 
 	{
 		ENG_PROFILE_SCOPE("Renderer Prep");
-		Engine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+		Engine::RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
 		Engine::RenderCommand::clear();
 	}
 
@@ -45,22 +47,26 @@ void Sandbox2D::onUpdate(Engine::Timestep timestep) {
 		rotation += timestep * 50.0f;
 
 		ENG_PROFILE_SCOPE("Renderer Draw");
-		Engine::Renderer2D::beginScene(m_cameraController.getCamera());
+		/*Engine::Renderer2D::beginScene(m_cameraController.getCamera());
 		Engine::Renderer2D::drawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
 		Engine::Renderer2D::drawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 		Engine::Renderer2D::drawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, m_squareColor);
 		Engine::Renderer2D::drawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_checkerboardTexture, 10.0f);
 		Engine::Renderer2D::drawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, rotation, m_checkerboardTexture, 20.0f);
-		Engine::Renderer2D::endScene();
+		Engine::Renderer2D::endScene();*/
 
 		Engine::Renderer2D::beginScene(m_cameraController.getCamera());
+		Engine::Renderer2D::drawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_textureRoad);
+		Engine::Renderer2D::endScene();
+
+		/*Engine::Renderer2D::beginScene(m_cameraController.getCamera());
 		for (float y = -5.0f; y < 5.0f; y += 0.5f) {
 			for (float x = -5.0f; x < 5.0f; x += 0.5f) {
 				glm::vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
 				Engine::Renderer2D::drawQuad({ x, y }, { 0.45f, 0.45f }, color);
 			}
 		}
-		Engine::Renderer2D::endScene();
+		Engine::Renderer2D::endScene();*/
 	}
 
 }

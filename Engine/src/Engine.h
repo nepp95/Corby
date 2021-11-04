@@ -1,7 +1,7 @@
 #pragma once
 
 // Core
-#include "Engine/Core/Core.h"
+#include "Engine/Core/Base.h"
 
 #include "Engine/Core/Application.h"
 #include "Engine/Core/Input.h"

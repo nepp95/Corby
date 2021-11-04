@@ -54,4 +54,34 @@ namespace Engine {
 		std::chrono::time_point<std::chrono::steady_clock> m_startTimepoint;
 		bool m_stopped;
 	};
+
+	namespace InstrumentorUtils {
+		template <size_t N>
+		struct changeResult {
+			char data[N];
+		};
+
+		template <size_t N, size_t K>
+		constexpr auto cleanupOutputString(const char(&expr)[N], const char(&remove)[K]) {
+			changeResult<N> result = {};
+
+			size_t srcIndex = 0;
+			size_t dstIndex = 0;
+
+			while (srcIndex < N) {
+				size_t matchIndex = 0;
+
+				while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
+					matchIndex++;
+
+				if (matchIndex == K - 1)
+					srcIndex += matchIndex;
+
+				result.data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
+				srcIndex++;
+			}
+
+			return result;
+		}
+	}
 }
