@@ -4,15 +4,43 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 
+static const uint32_t s_mapWidth = 24;
+static const char* s_mapTiles =
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWDDDDDDDDDWWWWWWWW"
+"WWWWWDDDDDDDDDDDDDWWWWWW"
+"WWWWWDDDDDDDDDDDDDWWWWWW"
+"WWWWWDDDDDDDDDDDDDWWWWWW"
+"WWWWWWWDDDDDDDDDWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWDDDDDDDDDWWWWWWWW"
+"WWWWWDDDDDDDDDDDDDWWWWWW"
+"WWWWWDDDDDDDDDDDDDWWWWWW"
+"WWWWWDDDDDDDDDDDDDWWWWWW"
+"WWWWWWWDDDDDDDDDWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+"WWWWWWWWWWWWWWWWWWWWWWWW"
+;
+
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), m_cameraController(1280.0f / 720.0f) {
 }
 
 void Sandbox2D::onAttach() {
 	ENG_PROFILE_FUNCTION();
 
+	m_cameraController.setZoomLevel(5.0f);
+
+	m_mapWidth = s_mapWidth;
+	m_mapHeight = strlen(s_mapTiles) / s_mapWidth;
+
 	m_checkerboardTexture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
-	m_tileset = Engine::Texture2D::create("assets/textures/tileset.png");
-	m_textureRoad = Engine::SubTexture2D::createFromCoords(m_tileset, { 0, 0 }, { 64, 64 });
+	m_tileset = Engine::Texture2D::create("assets/textures/tilesetkenney.png");
+	m_textureMap['D'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 6, 11 }, { 128, 128 });
+	m_textureMap['W'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 11, 11 }, { 128, 128 });
+
+	m_textureGrass = Engine::SubTexture2D::createFromCoords(m_tileset, { 1, 11 }, { 128, 128 });
 }
 
 void Sandbox2D::onDetach() {
@@ -56,7 +84,21 @@ void Sandbox2D::onUpdate(Engine::Timestep timestep) {
 		Engine::Renderer2D::endScene();*/
 
 		Engine::Renderer2D::beginScene(m_cameraController.getCamera());
-		Engine::Renderer2D::drawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_textureRoad);
+
+		for (uint32_t y = 0; y < m_mapHeight; y++) {
+			for (uint32_t x = 0; x < m_mapWidth; x++) {
+				char tileType = s_mapTiles[x + y * m_mapWidth];
+				Engine::Ref<Engine::SubTexture2D> texture;
+				if (m_textureMap.find(tileType) != m_textureMap.end())
+					texture = m_textureMap[tileType];
+				else
+					texture = m_textureGrass;
+
+				Engine::Renderer2D::drawQuad({ x - m_mapWidth / 2.0f, y - m_mapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
+			}
+		}
+
+		//Engine::Renderer2D::drawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_textureGrass);
 		Engine::Renderer2D::endScene();
 
 		/*Engine::Renderer2D::beginScene(m_cameraController.getCamera());
