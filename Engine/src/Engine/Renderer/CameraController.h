@@ -17,9 +17,11 @@ namespace Engine {
 		const OrthographicCamera& getCamera() const { return m_camera; }
 
 		float getZoomLevel() const { return m_zoomLevel; }
-		void setZoomLevel(float level) { m_zoomLevel = level; }
+		void setZoomLevel(float level) { m_zoomLevel = level; calculateView(); }
 
 	private:
+		void calculateView();
+
 		bool onMouseScrolled(MouseScrolledEvent& event);
 		bool onWindowResized(WindowResizeEvent& event);
 
