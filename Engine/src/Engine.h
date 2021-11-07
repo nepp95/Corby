@@ -8,7 +8,7 @@
 #include "Engine/Core/KeyCodes.h"
 #include "Engine/Core/Layer.h"
 #include "Engine/Core/Log.h"
-#include "Engine/Core/MouseButtonCodes.h"
+#include "Engine/Core/MouseCodes.h"
 #include "Engine/Core/Timestep.h"
 
 // ImGui

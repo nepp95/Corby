@@ -11,6 +11,6 @@ bin-int/
 **.vcxproj.user
 
 # User files
-imgui.ini
+Sandbox/imgui.ini
 *.json
 *.ai

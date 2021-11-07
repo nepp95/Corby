@@ -17,6 +17,7 @@ namespace Engine {
 
 	private:
 		CameraController m_cameraController;
+		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 
 		// Temp

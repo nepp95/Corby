@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Core/Input.h"
 #include "Engine/Events/Event.h"
 
 namespace Engine {
@@ -45,18 +46,18 @@ namespace Engine {
 
 	class MouseButtonEvent : public Event {
 	public:
-		inline int getMouseButton() const { return m_button; }
+		inline MouseCode getMouseButton() const { return m_button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput);
 	protected:
-		MouseButtonEvent(int button) : m_button(button) {}
+		MouseButtonEvent(MouseCode button) : m_button(button) {}
 
-		int m_button;
+		MouseCode m_button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent {
 	public:
-		MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
+		MouseButtonPressedEvent(MouseCode button) : MouseButtonEvent(button) {}
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -70,7 +71,7 @@ namespace Engine {
 
 	class MouseButtonReleasedEvent : public MouseButtonEvent {
 	public:
-		MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+		MouseButtonReleasedEvent(MouseCode button) : MouseButtonEvent(button) {}
 
 		std::string ToString() const override {
 			std::stringstream ss;
