@@ -10,7 +10,7 @@
 namespace Engine {
 	Application* Application::s_instance = nullptr;
 
-	Application::Application() {
+	Application::Application(const std::string& name) {
 		ENG_PROFILE_FUNCTION();
 
 		// Create application instance
@@ -18,7 +18,7 @@ namespace Engine {
 		s_instance = this;
 
 		// Create window and bind event callback
-		m_window = Scope<Window>(Window::create());
+		m_window = Scope<Window>(Window::create(WindowProps(name)));
 		m_window->setEventCallback(ENG_BIND_EVENT_FN(Application::onEvent));
 
 		Renderer::init();

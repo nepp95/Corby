@@ -20,7 +20,6 @@ private:
 	// Temp
 	Engine::Ref<Engine::VertexArray> m_squareVA;
 	Engine::Ref<Engine::Shader> m_flatColorShader;
-	Engine::Ref<Engine::Framebuffer> m_framebuffer;
 
 	Engine::Ref<Engine::Texture2D> m_checkerboardTexture;
 	Engine::Ref<Engine::Texture2D> m_tileset;
