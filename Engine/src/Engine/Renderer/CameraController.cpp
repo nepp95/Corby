@@ -61,20 +61,33 @@ namespace Engine {
 		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(CameraController::onWindowResized));
 	}
 
+	void CameraController::onResize(float width, float height)
+	{
+		m_aspectRatio = width / height;
+		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+	}
+
+	void CameraController::calculateView() {
+		ENG_PROFILE_FUNCTION();
+
+		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+	}
+
 	bool CameraController::onMouseScrolled(MouseScrolledEvent& event) {
 		ENG_PROFILE_FUNCTION();
 
 		m_zoomLevel -= event.getYOffset() * 0.25f;
 		m_zoomLevel = std::max(m_zoomLevel, 0.25f);
-		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+		calculateView();
+
 		return false;
 	}
 
 	bool CameraController::onWindowResized(WindowResizeEvent& event) {
 		ENG_PROFILE_FUNCTION();
 
-		m_aspectRatio = (float)event.getWidth() / (float)event.getHeight();
-		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+		onResize((float)event.getWidth(), (float)event.getHeight());
+
 		return false;
 	}
 }

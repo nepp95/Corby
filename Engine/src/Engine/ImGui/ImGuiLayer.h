@@ -13,10 +13,14 @@ namespace Engine {
 
 		virtual void onAttach() override;
 		virtual void onDetach() override;
+		virtual void onEvent(Event& event) override;
 
 		void begin();
 		void end();
+
+		void blockEvents(bool block) { m_blockEvents = block; }
 	private:
+		bool m_blockEvents = true;
 		float m_time = 0.0f;
 	};
 }

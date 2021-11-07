@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Core/Core.h"
+#include "Engine/Core/Base.h"
 #include "Engine/Core/LayerStack.h"
 #include "Engine/Core/Timestep.h"
 #include "Engine/Core/Window.h"
@@ -13,13 +13,15 @@ int main(int argc, char** argv);
 namespace Engine {
 	class Application {
 	public:
-		Application();
+		Application(const std::string& name = "Engine App");
 		virtual ~Application();
 
+		void close();
 		void onEvent(Event& e);
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* layer);
 
+		ImGuiLayer* getImGuiLayer() { return m_imGuiLayer; }
 		Window& getWindow() { return *m_window; }
 		static Application& get() { return *s_instance; }
 

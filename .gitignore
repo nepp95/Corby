@@ -10,6 +10,7 @@ bin-int/
 **.vcxproj.filters
 **.vcxproj.user
 
-# Generated files
-imgui.ini
+# User files
+Sandbox/imgui.ini
 *.json
+*.ai

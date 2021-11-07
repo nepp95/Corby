@@ -47,14 +47,11 @@ namespace Engine {
 	void Instrumentor::writeProfile(const ProfileResult& result) {
 		std::stringstream json;
 
-		std::string name = result.name;
-		std::replace(name.begin(), name.end(), '"', '\'');
-
 		json << std::setprecision(3) << std::fixed;
 		json << ",{";
 		json << "\"cat\":\"function\",";
 		json << "\"dur\":" << (result.elapsedTime.count()) << ',';
-		json << "\"name\":\"" << name << "\",";
+		json << "\"name\":\"" << result.name << "\",";
 		json << "\"ph\":\"X\",";
 		json << "\"pid\":0,";
 		json << "\"tid\":" << result.threadID << ",";

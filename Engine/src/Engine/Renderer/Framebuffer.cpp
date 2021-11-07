@@ -1,11 +1,11 @@
 #include "engpch.h"
-#include "GraphicsContext.h"
+#include "Framebuffer.h"
 
 #include "Engine/Renderer/Renderer.h"
-#include "Platform/OpenGL/OpenGLContext.h"
+#include "Platform/OpenGL/OpenGLFramebuffer.h"
 
 namespace Engine {
-	Scope<GraphicsContext> GraphicsContext::create(void* window) {
+	Ref<Framebuffer> Framebuffer::create(const FramebufferSpecification& spec) {
 		switch (Renderer::getAPI()) {
 			case RendererAPI::API::None: {
 				ENG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
@@ -13,7 +13,7 @@ namespace Engine {
 			}
 
 			case RendererAPI::API::OpenGL: {
-				return createScope<OpenGLContext>(static_cast<GLFWwindow*>(window));
+				return createRef<OpenGLFramebuffer>(spec);
 			}
 		}
 

@@ -10,7 +10,7 @@
 namespace Engine {
 	Application* Application::s_instance = nullptr;
 
-	Application::Application() {
+	Application::Application(const std::string& name) {
 		ENG_PROFILE_FUNCTION();
 
 		// Create application instance
@@ -18,7 +18,7 @@ namespace Engine {
 		s_instance = this;
 
 		// Create window and bind event callback
-		m_window = Scope<Window>(Window::create());
+		m_window = Scope<Window>(Window::create(WindowProps(name)));
 		m_window->setEventCallback(ENG_BIND_EVENT_FN(Application::onEvent));
 
 		Renderer::init();
@@ -32,6 +32,38 @@ namespace Engine {
 		ENG_PROFILE_FUNCTION();
 
 		Renderer::shutdown();
+	}
+
+
+
+	void Application::close() {
+		m_running = false;
+	}
+
+	void Application::onEvent(Event& event) {
+		ENG_PROFILE_FUNCTION();
+
+		EventDispatcher dispatcher(event);
+		dispatcher.dispatch<WindowCloseEvent>(ENG_BIND_EVENT_FN(Application::onWindowClose));
+		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(Application::onWindowResize));
+
+		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
+			if (event.handled)
+				break;
+			(*it)->onEvent(event);
+		}
+	}
+
+	void Application::pushLayer(Layer* layer) {
+		ENG_PROFILE_FUNCTION();
+
+		m_layerStack.pushLayer(layer);
+	}
+
+	void Application::pushOverlay(Layer* layer) {
+		ENG_PROFILE_FUNCTION();
+
+		m_layerStack.pushOverlay(layer);
 	}
 
 	void Application::run() {
@@ -84,34 +116,6 @@ namespace Engine {
 
 			m_window->onUpdate();
 		}
-	}
-
-	void Application::onEvent(Event& event) {
-		ENG_PROFILE_FUNCTION();
-
-		EventDispatcher dispatcher(event);
-		dispatcher.dispatch<WindowCloseEvent>(ENG_BIND_EVENT_FN(Application::onWindowClose));
-		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(Application::onWindowResize));
-
-		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
-			(*it)->onEvent(event);
-
-			if (event.handled) {
-				break;
-			}
-		}
-	}
-
-	void Application::pushLayer(Layer* layer) {
-		ENG_PROFILE_FUNCTION();
-
-		m_layerStack.pushLayer(layer);
-	}
-
-	void Application::pushOverlay(Layer* layer) {
-		ENG_PROFILE_FUNCTION();
-
-		m_layerStack.pushOverlay(layer);
 	}
 
 	bool Application::onWindowClose(WindowCloseEvent& e) {
