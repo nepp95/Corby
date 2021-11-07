@@ -17,6 +17,7 @@ namespace Engine {
 
 	private:
 		CameraController m_cameraController;
+		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 
 		// Temp
 		Ref<VertexArray> m_squareVA;

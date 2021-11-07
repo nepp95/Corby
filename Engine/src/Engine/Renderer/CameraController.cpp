@@ -61,6 +61,12 @@ namespace Engine {
 		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(CameraController::onWindowResized));
 	}
 
+	void CameraController::onResize(float width, float height)
+	{
+		m_aspectRatio = width / height;
+		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+	}
+
 	void CameraController::calculateView() {
 		ENG_PROFILE_FUNCTION();
 
@@ -80,8 +86,7 @@ namespace Engine {
 	bool CameraController::onWindowResized(WindowResizeEvent& event) {
 		ENG_PROFILE_FUNCTION();
 
-		m_aspectRatio = (float)event.getWidth() / (float)event.getHeight();
-		calculateView();
+		onResize((float)event.getWidth(), (float)event.getHeight());
 
 		return false;
 	}
