@@ -220,7 +220,7 @@ namespace Engine {
 	}
 
 	void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
-		drawQuad(position, size, subtexture, tilingFactor, tintColor);
+		drawQuad({ position.x, position.y, 0.0f }, size, subtexture, tilingFactor, tintColor);
 	}
 
 	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
@@ -347,7 +347,7 @@ namespace Engine {
 	}
 
 	void Renderer2D::drawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
-		drawRotatedQuad(position, size, rotation, subtexture, tilingFactor, tintColor);
+		drawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, subtexture, tilingFactor, tintColor);
 	}
 
 	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {

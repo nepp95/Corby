@@ -24,7 +24,7 @@ static const char* s_mapTiles =
 "WWWWWWWWWWWWWWWWWWWWWWWW"
 ;
 
-Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), m_cameraController(1280.0f / 720.0f) {
+Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), m_cameraController(1280.0f / 720.0f), m_mapWidth(s_mapWidth), m_mapHeight(strlen(s_mapTiles) / s_mapWidth) {
 }
 
 void Sandbox2D::onAttach() {
@@ -32,14 +32,10 @@ void Sandbox2D::onAttach() {
 
 	m_cameraController.setZoomLevel(5.0f);
 
-	m_mapWidth = s_mapWidth;
-	m_mapHeight = strlen(s_mapTiles) / s_mapWidth;
-
 	m_checkerboardTexture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
 	m_tileset = Engine::Texture2D::create("assets/textures/tilesetkenney.png");
 	m_textureMap['D'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 6, 11 }, { 128, 128 });
 	m_textureMap['W'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 11, 11 }, { 128, 128 });
-
 	m_textureGrass = Engine::SubTexture2D::createFromCoords(m_tileset, { 1, 11 }, { 128, 128 });
 
 	Engine::FramebufferSpecification fbSpec;

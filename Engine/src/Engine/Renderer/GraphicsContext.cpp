@@ -16,5 +16,8 @@ namespace Engine {
 				return createScope<OpenGLContext>(static_cast<GLFWwindow*>(window));
 			}
 		}
+
+		ENG_CORE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
 	}
 }
