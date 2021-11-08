@@ -59,6 +59,7 @@
 
 #define ENG_PROFILE
 
+// TODO: Make this macro able to take in no arguments except condition
 #ifdef ENG_ENABLE_ASSERTS
 #define ENG_ASSERT(x, ...) { if(!(x)) { ENG_ERROR("Assertion Failed: {0}", __VA_ARGS__); ENG_DEBUGBREAK(); } }
 #define ENG_CORE_ASSERT(x, ...) { if(!(x)) { ENG_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); ENG_DEBUGBREAK(); } }
