@@ -11,7 +11,7 @@ namespace Engine {
 		virtual void onAttach() override;
 		virtual void onDetach() override;
 
-		void onUpdate(Timestep timestep) override;
+		void onUpdate(Timestep ts) override;
 		virtual void onImGuiRender() override;
 		void onEvent(Event& e) override;
 

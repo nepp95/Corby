@@ -40,17 +40,17 @@ namespace Engine {
 		m_running = false;
 	}
 
-	void Application::onEvent(Event& event) {
+	void Application::onEvent(Event& e) {
 		ENG_PROFILE_FUNCTION();
 
-		EventDispatcher dispatcher(event);
+		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(ENG_BIND_EVENT_FN(Application::onWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(Application::onWindowResize));
 
 		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
-			if (event.handled)
+			if (e.handled)
 				break;
-			(*it)->onEvent(event);
+			(*it)->onEvent(e);
 		}
 	}
 
@@ -78,11 +78,11 @@ namespace Engine {
 			ENG_PROFILE_SCOPE("RunLoop");
 
 			float time = (float)glfwGetTime();
-			Timestep timestep = time - m_lastFrameTime;
+			Timestep ts = time - m_lastFrameTime;
 			m_lastFrameTime = time;
 
 			// Frame counter
-			timePassed += timestep;
+			timePassed += ts;
 			frames++;
 
 			if (timePassed >= 1.0f) {
@@ -100,7 +100,7 @@ namespace Engine {
 					ENG_PROFILE_SCOPE("LayerStack::onUpdate");
 
 					for (Layer* layer : m_layerStack)
-						layer->onUpdate(timestep);
+						layer->onUpdate(ts);
 				}
 			}
 

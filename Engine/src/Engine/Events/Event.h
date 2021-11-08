@@ -46,7 +46,7 @@ namespace Engine {
 
 	class EventDispatcher {
 	public:
-		EventDispatcher(Event& event) : m_event(event) {}
+		EventDispatcher(Event& e) : m_event(e) {}
 
 		template<typename T, typename F>
 		bool dispatch(const F& func) {

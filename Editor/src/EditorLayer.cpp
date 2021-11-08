@@ -33,23 +33,23 @@ namespace Engine {
 
 		m_cameraController.setZoomLevel(5.0f);
 
-		m_checkerboardTexture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
-		m_tileset = Engine::Texture2D::create("assets/textures/tilesetkenney.png");
-		m_textureMap['D'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 6, 11 }, { 128, 128 });
-		m_textureMap['W'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 11, 11 }, { 128, 128 });
-		m_textureGrass = Engine::SubTexture2D::createFromCoords(m_tileset, { 1, 11 }, { 128, 128 });
+		m_checkerboardTexture = Texture2D::create("assets/textures/Checkerboard.png");
+		m_tileset = Texture2D::create("assets/textures/tilesetkenney.png");
+		m_textureMap['D'] = SubTexture2D::createFromCoords(m_tileset, { 6, 11 }, { 128, 128 });
+		m_textureMap['W'] = SubTexture2D::createFromCoords(m_tileset, { 11, 11 }, { 128, 128 });
+		m_textureGrass = SubTexture2D::createFromCoords(m_tileset, { 1, 11 }, { 128, 128 });
 
-		Engine::FramebufferSpecification fbSpec;
+		FramebufferSpecification fbSpec;
 		fbSpec.width = 1280;
 		fbSpec.height = 720;
-		m_framebuffer = Engine::Framebuffer::create(fbSpec);
+		m_framebuffer = Framebuffer::create(fbSpec);
 	}
 
 	void EditorLayer::onDetach() {
 		ENG_PROFILE_FUNCTION();
 	}
 
-	void EditorLayer::onUpdate(Engine::Timestep timestep) {
+	void EditorLayer::onUpdate(Timestep ts) {
 		ENG_PROFILE_FUNCTION();
 
 		// -----------------------------------------
@@ -57,44 +57,54 @@ namespace Engine {
 		//    Update
 		//
 		// -----------------------------------------
+
+		// Resize
+		if (FramebufferSpecification spec = m_framebuffer->getSpecification();
+			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
+			(spec.width != m_viewportSize.x || spec.height != m_viewportSize.y)) {
+			m_framebuffer->resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+			m_cameraController.onResize(m_viewportSize.x, m_viewportSize.y);
+		}
+
+		// Camera
 		if (m_viewportFocused)
-			m_cameraController.onUpdate(timestep);
+			m_cameraController.onUpdate(ts);
 
 		// -----------------------------------------
 		//
 		//    Render
 		//
 		// -----------------------------------------
-		Engine::Renderer2D::resetStats();
+		Renderer2D::resetStats();
 
 		{
 			ENG_PROFILE_SCOPE("Renderer Prep");
 			m_framebuffer->bind();
-			Engine::RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
-			Engine::RenderCommand::clear();
+			RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
+			RenderCommand::clear();
 		}
 
 		{
 			static float rotation = 0.0f;
-			rotation += timestep * 50.0f;
+			rotation += ts * 50.0f;
 
 			ENG_PROFILE_SCOPE("Renderer Draw");
-			Engine::Renderer2D::beginScene(m_cameraController.getCamera());
+			Renderer2D::beginScene(m_cameraController.getCamera());
 
 			for (uint32_t y = 0; y < m_mapHeight; y++) {
 				for (uint32_t x = 0; x < m_mapWidth; x++) {
 					char tileType = s_mapTiles[x + y * m_mapWidth];
-					Engine::Ref<Engine::SubTexture2D> texture;
+					Ref<SubTexture2D> texture;
 					if (m_textureMap.find(tileType) != m_textureMap.end())
 						texture = m_textureMap[tileType];
 					else
 						texture = m_textureGrass;
 
-					Engine::Renderer2D::drawQuad({ x - m_mapWidth / 2.0f, y - m_mapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
+					Renderer2D::drawQuad({ x - m_mapWidth / 2.0f, y - m_mapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
 				}
 			}
 
-			Engine::Renderer2D::endScene();
+			Renderer2D::endScene();
 			m_framebuffer->unbind();
 		}
 
@@ -155,7 +165,7 @@ namespace Engine {
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
 				if (ImGui::MenuItem("Exit"))
-					Engine::Application::get().close();
+					Application::get().close();
 
 				ImGui::EndMenu();
 			}
@@ -165,7 +175,7 @@ namespace Engine {
 
 		ImGui::Begin("Settings");
 
-		auto stats = Engine::Renderer2D::getStats();
+		auto stats = Renderer2D::getStats();
 		ImGui::Text("Renderer2D Statistics:");
 		ImGui::Text("Draw calls: %d", stats.drawCalls);
 		ImGui::Text("Quads: %d", stats.quadCount);
@@ -184,12 +194,7 @@ namespace Engine {
 		Application::get().getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-
-		if (m_viewportSize != *((glm::vec2*)&viewportPanelSize)) {
-			m_framebuffer->resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-			m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-			m_cameraController.onResize(viewportPanelSize.x, viewportPanelSize.y);
-		}
+		m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
 		ImGui::Image((void*)textureID, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -199,7 +204,7 @@ namespace Engine {
 		ImGui::End();
 	}
 
-	void EditorLayer::onEvent(Engine::Event& e) {
+	void EditorLayer::onEvent(Event& e) {
 		m_cameraController.onEvent(e);
 	}
 }

@@ -12,9 +12,9 @@ namespace Engine {
 
 		virtual void onAttach() {}
 		virtual void onDetach() {}
-		virtual void onUpdate(Timestep timestep) {}
+		virtual void onUpdate(Timestep ts) {}
 		virtual void onImGuiRender() {}
-		virtual void onEvent(Event& event) {}
+		virtual void onEvent(Event& e) {}
 
 		const std::string& getName() const { return m_debugName; }
 
