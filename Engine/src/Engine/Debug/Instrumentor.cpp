@@ -2,9 +2,6 @@
 #include "Instrumentor.h"
 
 namespace Engine {
-	Instrumentor::Instrumentor() : m_currentSession(nullptr) {
-	}
-
 	void Instrumentor::beginSession(const std::string& name, const std::string& filepath) {
 		std::lock_guard lock(m_mutex);
 
