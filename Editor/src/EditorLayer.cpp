@@ -43,6 +43,13 @@ namespace Engine {
 		fbSpec.width = 1280;
 		fbSpec.height = 720;
 		m_framebuffer = Framebuffer::create(fbSpec);
+
+		m_activeScene = createRef<Scene>();
+
+		auto square = m_activeScene->createEntity("Green Square");
+		square.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+
+		m_squareEntity = square;
 	}
 
 	void EditorLayer::onDetach() {
@@ -76,38 +83,16 @@ namespace Engine {
 		//
 		// -----------------------------------------
 		Renderer2D::resetStats();
+		m_framebuffer->bind();
+		RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
+		RenderCommand::clear();
 
-		{
-			ENG_PROFILE_SCOPE("Renderer Prep");
-			m_framebuffer->bind();
-			RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
-			RenderCommand::clear();
-		}
+		// Update scene
+		Renderer2D::beginScene(m_cameraController.getCamera());
+		m_activeScene->onUpdate(ts);
+		Renderer2D::endScene();
 
-		{
-			static float rotation = 0.0f;
-			rotation += ts * 50.0f;
-
-			ENG_PROFILE_SCOPE("Renderer Draw");
-			Renderer2D::beginScene(m_cameraController.getCamera());
-
-			for (uint32_t y = 0; y < m_mapHeight; y++) {
-				for (uint32_t x = 0; x < m_mapWidth; x++) {
-					char tileType = s_mapTiles[x + y * m_mapWidth];
-					Ref<SubTexture2D> texture;
-					if (m_textureMap.find(tileType) != m_textureMap.end())
-						texture = m_textureMap[tileType];
-					else
-						texture = m_textureGrass;
-
-					Renderer2D::drawQuad({ x - m_mapWidth / 2.0f, y - m_mapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
-				}
-			}
-
-			Renderer2D::endScene();
-			m_framebuffer->unbind();
-		}
-
+		m_framebuffer->unbind();
 	}
 
 	void EditorLayer::onImGuiRender() {
@@ -173,6 +158,11 @@ namespace Engine {
 			ImGui::EndMenuBar();
 		}
 
+		// -----------------------------------------
+		//
+		//    Settings
+		//
+		// -----------------------------------------
 		ImGui::Begin("Settings");
 
 		auto stats = Renderer2D::getStats();
@@ -182,10 +172,23 @@ namespace Engine {
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
 
-		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_squareColor));
+		if (m_squareEntity) {
+			ImGui::Separator();
+			std::string tag = m_squareEntity.getComponent<TagComponent>();
+			ImGui::Text("%s", tag.c_str());
+
+			auto& squareColor = m_squareEntity.getComponent<SpriteRendererComponent>().color;
+			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+			ImGui::Separator();
+		}
 
 		ImGui::End();
 
+		// -----------------------------------------
+		//
+		//    Viewport
+		//
+		// -----------------------------------------
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
 

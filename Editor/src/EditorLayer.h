@@ -24,6 +24,8 @@ namespace Engine {
 		Ref<VertexArray> m_squareVA;
 		Ref<Shader> m_flatColorShader;
 		Ref<Framebuffer> m_framebuffer;
+		Ref<Scene> m_activeScene;
+		Entity m_squareEntity;
 
 		Ref<Texture2D> m_checkerboardTexture;
 		Ref<Texture2D> m_tileset;
@@ -31,7 +33,5 @@ namespace Engine {
 
 		uint32_t m_mapWidth, m_mapHeight;
 		std::unordered_map<char, Ref<SubTexture2D>> m_textureMap;
-		//Ref<Tileset> m_tileset;
-		glm::vec4 m_squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 	};
 }

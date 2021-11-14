@@ -21,6 +21,7 @@ workspace "Engine"
 	IncludeDir["ImGui"] = "Engine/vendor/imgui"
 	IncludeDir["glm"] = "Engine/vendor/glm"
 	IncludeDir["stb_image"] = "Engine/vendor/stb_image"
+	IncludeDir["entt"] = "Engine/vendor/entt/include"
 	
 	group "Dependencies"
 		include "Engine/vendor/GLFW"
@@ -65,7 +66,8 @@ project "Engine"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -130,7 +132,8 @@ project "Sandbox"
 		"Engine/vendor/spdlog/include",
 		"Engine/src",
 		"Engine/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -180,7 +183,8 @@ project "Editor"
 		"Engine/vendor/spdlog/include",
 		"Engine/src",
 		"Engine/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links

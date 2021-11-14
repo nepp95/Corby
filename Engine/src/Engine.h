@@ -25,3 +25,8 @@
 #include "Engine/Renderer/Shader.h"
 #include "Engine/Renderer/Texture.h"
 #include "Engine/Renderer/VertexArray.h"
+
+// Scene
+#include "Engine/Scene/Components.h"
+#include "Engine/Scene/Entity.h"
+#include "Engine/Scene/Scene.h"
