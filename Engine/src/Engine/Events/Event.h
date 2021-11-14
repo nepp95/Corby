@@ -1,7 +1,7 @@
 #pragma once
-
 #include "engpch.h"
-#include "Engine/Core.h"
+
+#include "Engine/Core/Base.h"
 
 namespace Engine {
 	enum class EventType {
@@ -21,16 +21,17 @@ namespace Engine {
 		EventCategoryMouseButton = BIT(4)
 	};
 
-#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
-virtual EventType GetEventType() const override { return GetStaticType(); }\
-virtual const char* GetName() const override { return #type; }
+	#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\
+	virtual EventType GetEventType() const override { return GetStaticType(); }\
+	virtual const char* GetName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
+	#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
 	class Event {
 		friend class EventDispatcher;
 
 	public:
+		virtual ~Event() = default;
 		bool handled = false;
 
 		virtual EventType GetEventType() const = 0;
@@ -38,7 +39,7 @@ virtual const char* GetName() const override { return #type; }
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
-		inline bool isInCategory(EventCategory category) {
+		bool isInCategory(EventCategory category) {
 			return GetCategoryFlags() & category;
 		}
 	};

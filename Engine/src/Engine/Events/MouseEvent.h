@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Event.h"
+#include "Engine/Core/Input.h"
+#include "Engine/Events/Event.h"
 
 namespace Engine {
 	class MouseMovedEvent : public Event {
 	public:
 		MouseMovedEvent(float x, float y) : m_mouseX(x), m_mouseY(y) {}
 
-		inline float getX() const { return m_mouseX; }
-		inline float getY() const { return m_mouseY; }
+		float getX() const { return m_mouseX; }
+		float getY() const { return m_mouseY; }
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -27,8 +28,8 @@ namespace Engine {
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
 
-		inline float getXOffset() const { return m_xOffset; }
-		inline float getYOffset() const { return m_yOffset; }
+		float getXOffset() const { return m_xOffset; }
+		float getYOffset() const { return m_yOffset; }
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -45,18 +46,18 @@ namespace Engine {
 
 	class MouseButtonEvent : public Event {
 	public:
-		inline int getMouseButton() const { return m_button; }
+		inline MouseCode getMouseButton() const { return m_button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput);
 	protected:
-		MouseButtonEvent(int button) : m_button(button) {}
+		MouseButtonEvent(MouseCode button) : m_button(button) {}
 
-		int m_button;
+		MouseCode m_button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent {
 	public:
-		MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
+		MouseButtonPressedEvent(MouseCode button) : MouseButtonEvent(button) {}
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -70,7 +71,7 @@ namespace Engine {
 
 	class MouseButtonReleasedEvent : public MouseButtonEvent {
 	public:
-		MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+		MouseButtonReleasedEvent(MouseCode button) : MouseButtonEvent(button) {}
 
 		std::string ToString() const override {
 			std::stringstream ss;

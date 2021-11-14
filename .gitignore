@@ -1,9 +1,16 @@
-.vs/
-bin/
-!/vendor/bin
+# Binaries
+**/bin/
+!vendor/bin/premake/
 bin-int/
 
-*.user
-*.sln
-*.vcxproj*
-imgui.ini
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+# User files
+Sandbox/imgui.ini
+*.json
+*.ai

@@ -1,11 +1,11 @@
 #include "engpch.h"
 #include "VertexArray.h"
 
+#include "Engine/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
-#include "Renderer.h"
 
 namespace Engine {
-	VertexArray* VertexArray::create() {
+	Ref<VertexArray> VertexArray::create() {
 		switch (Renderer::getAPI()) {
 			case RendererAPI::API::None: {
 				ENG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
@@ -13,7 +13,7 @@ namespace Engine {
 			}
 
 			case RendererAPI::API::OpenGL: {
-				return new OpenGLVertexArray();
+				return createRef<OpenGLVertexArray>();
 			}
 		}
 

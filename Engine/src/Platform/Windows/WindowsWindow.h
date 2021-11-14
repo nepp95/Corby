@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Engine/Core/Window.h"
 #include "Engine/Renderer/GraphicsContext.h"
-#include "Engine/Window.h"
 
 #include <GLFW/glfw3.h>
 
@@ -13,14 +13,14 @@ namespace Engine {
 
 		void onUpdate() override;
 
-		inline unsigned int getWidth() const override { return m_data.width; }
-		inline unsigned int getHeight() const override { return m_data.height; }
+		unsigned int getWidth() const override { return m_data.width; }
+		unsigned int getHeight() const override { return m_data.height; }
 
-		inline void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallback = callback; }
+		void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallback = callback; }
 		void setVSync(bool enabled) override;
 		bool isVSync() const override;
 
-		virtual inline void* getNativeWindow() const { return m_window; }
+		virtual void* getNativeWindow() const { return m_window; }
 
 	private:
 		virtual void init(const WindowProps& props);
@@ -28,7 +28,7 @@ namespace Engine {
 
 	private:
 		GLFWwindow* m_window;
-		GraphicsContext* m_context;
+		Scope<GraphicsContext> m_context;
 
 		struct WindowData {
 			std::string title;

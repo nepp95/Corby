@@ -39,8 +39,8 @@ namespace Engine {
 	struct BufferElement {
 		ShaderDataType type;
 		std::string name;
-		unsigned int size;
-		unsigned int offset;
+		uint32_t size;
+		size_t offset;
 		bool normalized;
 
 		BufferElement() {}
@@ -52,8 +52,8 @@ namespace Engine {
 				case ShaderDataType::Float2:	return 2;
 				case ShaderDataType::Float3:	return 3;
 				case ShaderDataType::Float4:	return 4;
-				case ShaderDataType::Mat3:		return 3 * 3;
-				case ShaderDataType::Mat4:		return 4 * 4;
+				case ShaderDataType::Mat3:		return 3;
+				case ShaderDataType::Mat4:		return 4;
 				case ShaderDataType::Int:		return 1;
 				case ShaderDataType::Int2:		return 2;
 				case ShaderDataType::Int3:		return 3;
@@ -71,8 +71,8 @@ namespace Engine {
 		BufferLayout() {}
 		BufferLayout(const std::initializer_list<BufferElement>& elements);
 
-		inline unsigned int getStride() const { return m_stride; }
-		inline const std::vector<BufferElement>& getElements() const { return m_elements; }
+		unsigned int getStride() const { return m_stride; }
+		const std::vector<BufferElement>& getElements() const { return m_elements; }
 
 		std::vector<BufferElement>::iterator begin() { return m_elements.begin(); }
 		std::vector<BufferElement>::iterator end() { return m_elements.end(); }
@@ -99,10 +99,13 @@ namespace Engine {
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
+		virtual void setData(const void* data, uint32_t size) = 0;
+
 		virtual const BufferLayout& getLayout() const = 0;
 		virtual void setLayout(const BufferLayout& layout) = 0;
 
-		static VertexBuffer* create(float* vertices, unsigned int size);
+		static Ref<VertexBuffer> create(uint32_t size);
+		static Ref<VertexBuffer> create(float* vertices, unsigned int size);
 	};
 
 	// -----------------------------------------
@@ -119,6 +122,6 @@ namespace Engine {
 
 		virtual unsigned int getCount() const = 0;
 
-		static IndexBuffer* create(unsigned int* indices, unsigned int size);
+		static Ref<IndexBuffer> create(unsigned int* indices, unsigned int count);
 	};
 }

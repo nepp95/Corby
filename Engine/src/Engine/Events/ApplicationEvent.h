@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Event.h"
+#include "Engine/Events/Event.h"
 
 namespace Engine {
 	class WindowResizeEvent : public Event {
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height) : m_width(width), m_height(height) {}
 
-		inline unsigned int getWidth() const { return m_width; }
-		inline unsigned int getHeight() const { return m_height; }
+		unsigned int getWidth() const { return m_width; }
+		unsigned int getHeight() const { return m_height; }
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -26,7 +26,7 @@ namespace Engine {
 
 	class WindowCloseEvent : public Event {
 	public:
-		WindowCloseEvent() {}
+		WindowCloseEvent() = default;
 
 		EVENT_CLASS_TYPE(WindowClose);
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);
@@ -34,7 +34,7 @@ namespace Engine {
 
 	class AppTickEvent : public Event {
 	public:
-		AppTickEvent() {}
+		AppTickEvent() = default;
 
 		EVENT_CLASS_TYPE(AppTick);
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);
@@ -42,7 +42,7 @@ namespace Engine {
 
 	class AppUpdateEvent : public Event {
 	public:
-		AppUpdateEvent() {}
+		AppUpdateEvent() = default;
 
 		EVENT_CLASS_TYPE(AppUpdate);
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);
@@ -50,7 +50,7 @@ namespace Engine {
 
 	class AppRenderEvent : public Event {
 	public:
-		AppRenderEvent() {}
+		AppRenderEvent() = default;
 
 		EVENT_CLASS_TYPE(AppRender);
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);

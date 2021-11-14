@@ -1,6 +1,6 @@
 workspace "Engine"
-	architecture "x64"
-	startproject "Sandbox"
+	architecture "x86_64"
+	startproject "Editor"
 	
 	configurations
 	{
@@ -21,10 +21,13 @@ workspace "Engine"
 	IncludeDir["ImGui"] = "Engine/vendor/imgui"
 	IncludeDir["glm"] = "Engine/vendor/glm"
 	IncludeDir["stb_image"] = "Engine/vendor/stb_image"
+	
+	group "Dependencies"
+		include "Engine/vendor/GLFW"
+		include "Engine/vendor/glad"
+		include "Engine/vendor/imgui"
 
-	include "Engine/vendor/GLFW"
-	include "Engine/vendor/glad"
-	include "Engine/vendor/imgui"
+	group ""
 
 project "Engine"
 	location "Engine"
@@ -78,7 +81,6 @@ project "Engine"
 
 		defines
 		{
-			"ENG_PLATFORM_WINDOWS",
 			"ENG_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
@@ -88,7 +90,6 @@ project "Engine"
 
 		defines
 		{
-			"ENG_PLATFORM_MACOSX",
 			"ENG_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
         }
@@ -127,9 +128,9 @@ project "Sandbox"
 	includedirs
 	{
 		"Engine/vendor/spdlog/include",
-		"%{IncludeDir.glm}",
 		"Engine/src",
-		"Engine/vendor"
+		"Engine/vendor",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -140,18 +141,58 @@ project "Sandbox"
 	filter "system:windows"
 		systemversion "latest"
 
-		defines
-		{
-			"ENG_PLATFORM_WINDOWS"
-		}
-
 	filter "system:macosx"
 		systemversion "latest"
 
-		defines
-		{
-			"ENG_PLATFORM_MACOSX"
-        }
+	filter "configurations:Debug"
+		defines "ENG_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "ENG_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "ENG_DIST"
+		runtime "Release"
+		optimize "on"
+
+project "Editor"
+	location "Editor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"Engine/vendor/spdlog/include",
+		"Engine/src",
+		"Engine/vendor",
+		"%{IncludeDir.glm}"
+	}
+
+	links
+	{
+		"Engine"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+	filter "system:macosx"
+		systemversion "latest"
 
 	filter "configurations:Debug"
 		defines "ENG_DEBUG"
