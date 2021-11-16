@@ -46,10 +46,15 @@ namespace Engine {
 
 		m_activeScene = createRef<Scene>();
 
-		auto square = m_activeScene->createEntity("Green Square");
-		square.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		m_squareEntity = m_activeScene->createEntity("Green Square");
+		m_squareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-		m_squareEntity = square;
+		m_cameraEntity = m_activeScene->createEntity("Camera Entity");
+		m_cameraEntity.addComponent<CameraComponent>();
+
+		m_secondCameraEntity = m_activeScene->createEntity("Clip-Space Entity");
+		auto& cc = m_secondCameraEntity.addComponent<CameraComponent>();
+		cc.primary = false;
 	}
 
 	void EditorLayer::onDetach() {
@@ -71,6 +76,7 @@ namespace Engine {
 			(spec.width != m_viewportSize.x || spec.height != m_viewportSize.y)) {
 			m_framebuffer->resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
 			m_cameraController.onResize(m_viewportSize.x, m_viewportSize.y);
+			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
 		}
 
 		// Camera
@@ -88,9 +94,7 @@ namespace Engine {
 		RenderCommand::clear();
 
 		// Update scene
-		Renderer2D::beginScene(m_cameraController.getCamera());
 		m_activeScene->onUpdate(ts);
-		Renderer2D::endScene();
 
 		m_framebuffer->unbind();
 	}
@@ -180,6 +184,21 @@ namespace Engine {
 			auto& squareColor = m_squareEntity.getComponent<SpriteRendererComponent>().color;
 			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
 			ImGui::Separator();
+		}
+
+		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_cameraEntity.getComponent<TransformComponent>().transform[3]));
+
+		if (ImGui::Checkbox("Camera A", &m_primaryCamera)) {
+			m_cameraEntity.getComponent<CameraComponent>().primary = m_primaryCamera;
+			m_secondCameraEntity.getComponent<CameraComponent>().primary = !m_primaryCamera;
+		}
+
+		{
+			auto& camera = m_secondCameraEntity.getComponent<CameraComponent>().camera;
+			float orthoSize = camera.getOrthographicSize();
+
+			if (ImGui::DragFloat("Second camera ortho size", &orthoSize))
+				camera.setOrthographicSize(orthoSize);
 		}
 
 		ImGui::End();

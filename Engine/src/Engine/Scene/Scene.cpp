@@ -38,12 +38,51 @@ namespace Engine {
 
 	void Scene::onUpdate(Timestep ts)
 	{
-		auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+		Camera* mainCamera = nullptr;
+		glm::mat4* cameraTransform = nullptr;
 
-		for (auto entity : group) {
-			auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+		{
+			auto view = m_registry.view<TransformComponent, CameraComponent>();
 
-			Renderer2D::drawQuad(transform, sprite.color);
+			for (auto entity : view) {
+				auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+
+				if (camera.primary) {
+					mainCamera = &camera.camera;
+					cameraTransform = &transform.transform;
+
+					break;
+				}
+			}
+		}
+
+		if (mainCamera) {
+			Renderer2D::beginScene(mainCamera->getProjection(), *cameraTransform);
+
+			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+
+			for (auto entity : group) {
+				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+
+				Renderer2D::drawQuad(transform, sprite.color);
+			}
+
+			Renderer2D::endScene();
+		}
+	}
+
+	void Scene::onViewportResize(uint32_t width, uint32_t height)
+	{
+		m_viewportWidth = width;
+		m_viewportHeight = height;
+
+		auto view = m_registry.view<CameraComponent>();
+
+		for (auto entity : view) {
+			auto& cameraComponent = view.get<CameraComponent>(entity);
+
+			if (!cameraComponent.fixedAspectRatio)
+				cameraComponent.camera.setViewportSize(width, height);
 		}
 	}
 }

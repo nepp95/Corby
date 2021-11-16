@@ -26,6 +26,10 @@ namespace Engine {
 		Ref<Framebuffer> m_framebuffer;
 		Ref<Scene> m_activeScene;
 		Entity m_squareEntity;
+		Entity m_cameraEntity;
+		Entity m_secondCameraEntity;
+
+		bool m_primaryCamera = true;
 
 		Ref<Texture2D> m_checkerboardTexture;
 		Ref<Texture2D> m_tileset;

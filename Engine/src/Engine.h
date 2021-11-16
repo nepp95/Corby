@@ -16,10 +16,10 @@
 
 // Renderer
 #include "Engine/Renderer/Buffer.h"
-#include "Engine/Renderer/Camera.h"
 #include "Engine/Renderer/CameraController.h"
 #include "Engine/Renderer/Framebuffer.h"
 #include "Engine/Renderer/RenderCommand.h"
+#include "Engine/Renderer/OrthographicCamera.h"
 #include "Engine/Renderer/Renderer.h"
 #include "Engine/Renderer/Renderer2D.h"
 #include "Engine/Renderer/Shader.h"
@@ -30,3 +30,4 @@
 #include "Engine/Scene/Components.h"
 #include "Engine/Scene/Entity.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/Scene/SceneCamera.h"
