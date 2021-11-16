@@ -111,6 +111,20 @@ namespace Engine {
 		delete[] s_data.quadVertexBufferBase;
 	}
 
+	void Renderer2D::beginScene(const Camera& camera, const glm::mat4& transform) {
+		ENG_PROFILE_FUNCTION();
+
+		glm::mat4 viewProjection = camera.getProjection() * glm::inverse(transform);
+
+		s_data.textureShader->bind();
+		s_data.textureShader->setMat4("u_viewProjection", viewProjection);
+
+		s_data.quadIndexCount = 0;
+		s_data.quadVertexBufferPtr = s_data.quadVertexBufferBase;
+
+		s_data.textureSlotIndex = 1;
+	}
+
 	void Renderer2D::beginScene(const OrthographicCamera& camera) {
 		ENG_PROFILE_FUNCTION();
 

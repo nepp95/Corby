@@ -3,7 +3,7 @@
 #include "Engine/Core/Timestep.h"
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/MouseEvent.h"
-#include "Engine/Renderer/Camera.h"
+#include "Engine/Renderer/OrthographicCamera.h"
 
 namespace Engine {
 	class CameraController {

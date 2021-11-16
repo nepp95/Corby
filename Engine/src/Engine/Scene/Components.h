@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Engine/Scene/SceneCamera.h"
+
 #include <glm/glm.hpp>
 
 namespace Engine {
@@ -8,7 +10,8 @@ namespace Engine {
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
-		TagComponent(const std::string& tag) : tag(tag) {}
+		TagComponent(const std::string& tag)
+			: tag(tag) {}
 
 		operator std::string& () { return tag; }
 		operator const std::string& () const { return tag; }
@@ -19,7 +22,8 @@ namespace Engine {
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::mat4& transform) : transform(transform) {}
+		TransformComponent(const glm::mat4& transform)
+			: transform(transform) {}
 
 		operator glm::mat4& () { return transform; }
 		operator const glm::mat4& () const { return transform; }
@@ -30,6 +34,16 @@ namespace Engine {
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
-		SpriteRendererComponent(const glm::vec4& color) : color(color) {}
+		SpriteRendererComponent(const glm::vec4& color)
+			: color(color) {}
+	};
+
+	struct CameraComponent {
+		SceneCamera camera;
+		bool primary = true;
+		bool fixedAspectRatio = false;
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
 	};
 }
