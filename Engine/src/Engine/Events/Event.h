@@ -1,7 +1,9 @@
 #pragma once
-#include "engpch.h"
 
 #include "Engine/Core/Base.h"
+#include "Engine/Debug/Instrumentor.h"
+
+#include <functional>
 
 namespace Engine {
 	enum class EventType {

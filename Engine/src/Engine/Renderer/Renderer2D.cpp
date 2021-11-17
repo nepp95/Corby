@@ -93,6 +93,7 @@ namespace Engine {
 		s_data.textureShader->bind();
 		s_data.textureShader->setIntArray("u_textures", samplers, s_data.maxTextureSlots);
 
+		// Set first texture slot to 0
 		s_data.textureSlots[0] = s_data.whiteTexture;
 
 		s_data.quadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
@@ -230,7 +231,7 @@ namespace Engine {
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_data.textureSlotIndex; i++)
 		{
-			if (*s_data.textureSlots[i].get() == *texture.get())
+			if (*s_data.textureSlots[i] == *texture)
 			{
 				textureIndex = (float)i;
 				break;

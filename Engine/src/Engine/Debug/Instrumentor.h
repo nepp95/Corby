@@ -1,11 +1,15 @@
 #pragma once
 
+#include "Engine/Core/Log.h"
+
 #include <algorithm>
 #include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <sstream>
 
 namespace Engine {
 	using floatingPointMicroseconds = std::chrono::duration<double, std::micro>;

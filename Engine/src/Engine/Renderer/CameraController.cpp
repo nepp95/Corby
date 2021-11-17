@@ -12,21 +12,21 @@ namespace Engine {
 		ENG_PROFILE_FUNCTION();
 
 		// Up / Down
-		if (Input::isKeyPressed(ENG_KEY_W)) {
+		if (Input::isKeyPressed(Key::W)) {
 			m_cameraPosition.x += -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 		}
-		else if (Input::isKeyPressed(ENG_KEY_S)) {
+		else if (Input::isKeyPressed(Key::S)) {
 			m_cameraPosition.x -= -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 		}
 
 		// Left / Right
-		if (Input::isKeyPressed(ENG_KEY_A)) {
+		if (Input::isKeyPressed(Key::A)) {
 			m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 		}
-		else if (Input::isKeyPressed(ENG_KEY_D)) {
+		else if (Input::isKeyPressed(Key::D)) {
 			m_cameraPosition.x += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 		}
@@ -35,10 +35,10 @@ namespace Engine {
 		if (m_rotation)
 		{
 			// Rotate left/right
-			if (Input::isKeyPressed(ENG_KEY_Q))
+			if (Input::isKeyPressed(Key::Q))
 				m_cameraRotation += m_cameraRotationSpeed * ts;
 
-			if (Input::isKeyPressed(ENG_KEY_E))
+			if (Input::isKeyPressed(Key::E))
 				m_cameraRotation -= m_cameraRotationSpeed * ts;
 
 			if (m_cameraRotation > 180.0f)

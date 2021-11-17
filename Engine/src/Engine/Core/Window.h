@@ -1,9 +1,9 @@
 #pragma once
 
-#include "engpch.h"
-
 #include "Engine/Core/Base.h"
 #include "Engine/Events/event.h"
+
+#include <sstream>
 
 namespace Engine {
 	struct WindowProps {
