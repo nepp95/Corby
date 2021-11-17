@@ -55,6 +55,27 @@ namespace Engine {
 		m_secondCameraEntity = m_activeScene->createEntity("Clip-Space Entity");
 		auto& cc = m_secondCameraEntity.addComponent<CameraComponent>();
 		cc.primary = false;
+
+		class CameraController : public ScriptableEntity {
+		public:
+			void onCreate() {}
+			void onDestroy() {}
+			void onUpdate(Timestep ts) {
+				auto& transform = getComponent<TransformComponent>().transform;
+				float speed = 5.0f;
+
+				if (Input::isKeyPressed(Key::A))
+					transform[3][0] -= speed * ts;
+				if (Input::isKeyPressed(Key::D))
+					transform[3][0] += speed * ts;
+				if (Input::isKeyPressed(Key::W))
+					transform[3][1] += speed * ts;
+				if (Input::isKeyPressed(Key::S))
+					transform[3][1] -= speed * ts;
+			}
+		};
+
+		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 	}
 
 	void EditorLayer::onDetach() {

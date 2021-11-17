@@ -31,3 +31,4 @@
 #include "Engine/Scene/Entity.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Scene/SceneCamera.h"
+#include "Engine/Scene/ScriptableEntity.h"

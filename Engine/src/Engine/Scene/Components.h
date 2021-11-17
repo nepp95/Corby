@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Scene/SceneCamera.h"
+#include "Engine/Scene/ScriptableEntity.h"
 
 #include <glm/glm.hpp>
 
@@ -45,5 +46,29 @@ namespace Engine {
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
+	};
+
+	struct NativeScriptComponent {
+		ScriptableEntity* instance = nullptr;
+
+		std::function<void()> instantiateFunction;
+		std::function<void()> destroyInstanceFunction;
+
+		std::function<void(ScriptableEntity*)> onCreateFunction;
+		std::function<void(ScriptableEntity*)> onDestroyFunction;
+		std::function<void(ScriptableEntity*, Timestep)> onUpdateFunction;
+
+		template<typename T>
+		void bind() {
+			instantiateFunction = [&]() { instance = new T(); };
+			destroyInstanceFunction = [&]() {
+				delete (T*)instance;
+				instance = nullptr;
+			};
+
+			onCreateFunction = [](ScriptableEntity* instance) { ((T*)instance)->onCreate(); };
+			onDestroyFunction = [](ScriptableEntity* instance) { ((T*)instance)->onDestroy(); };
+			onUpdateFunction = [](ScriptableEntity* instance, Timestep ts) { ((T*)instance)->onUpdate(ts); };
+		}
 	};
 }
