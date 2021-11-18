@@ -82,6 +82,8 @@ namespace Engine {
 
 		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+
+		m_sceneHierarchyPanel.setContext(m_activeScene);
 	}
 
 	void EditorLayer::onDetach() {
@@ -188,6 +190,8 @@ namespace Engine {
 
 			ImGui::EndMenuBar();
 		}
+
+		m_sceneHierarchyPanel.onImGuiRender();
 
 		// -----------------------------------------
 		//

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine.h>
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace Engine {
 	class EditorLayer : public Layer {
@@ -19,6 +20,9 @@ namespace Engine {
 		CameraController m_cameraController;
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
+
+		// Panels
+		SceneHierarchyPanel m_sceneHierarchyPanel;
 
 		// Temp
 		Ref<VertexArray> m_squareVA;
