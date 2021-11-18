@@ -8,14 +8,6 @@
 #include <glm/glm.hpp>
 
 namespace Engine {
-	static void doMath(const glm::mat4& transform) {
-
-	}
-
-	static void onTransformConstruct(entt::registry& registry, entt::entity entity) {
-
-	}
-
 	Scene::Scene()
 	{
 	}
@@ -42,18 +34,15 @@ namespace Engine {
 		{
 			m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
 				if (!nsc.instance) {
-					nsc.instantiateFunction();
+					nsc.instance = nsc.instantiateScript();
 					nsc.instance->m_entity = Entity{ entity, this };
 
-					if (nsc.onCreateFunction)
-						nsc.onCreateFunction(nsc.instance);
+					nsc.instance->onCreate();
 				}
-
-				if (nsc.onUpdateFunction)
-					nsc.onUpdateFunction(nsc.instance, ts);
+				
+				nsc.instance->onUpdate(ts);
 			});
 		}
-
 
 		// Render 2D
 		Camera* mainCamera = nullptr;
@@ -63,7 +52,7 @@ namespace Engine {
 			auto view = m_registry.view<TransformComponent, CameraComponent>();
 
 			for (auto entity : view) {
-				auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+				auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
 				if (camera.primary) {
 					mainCamera = &camera.camera;
@@ -80,7 +69,7 @@ namespace Engine {
 			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
 			for (auto entity : group) {
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
 				Renderer2D::drawQuad(transform, sprite.color);
 			}

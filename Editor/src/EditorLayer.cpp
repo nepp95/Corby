@@ -58,8 +58,13 @@ namespace Engine {
 
 		class CameraController : public ScriptableEntity {
 		public:
-			void onCreate() {}
+			void onCreate() {
+				auto& transform = getComponent<TransformComponent>().transform;
+				transform[3][0] = rand() % 10 - 5.0f;
+			}
+
 			void onDestroy() {}
+
 			void onUpdate(Timestep ts) {
 				auto& transform = getComponent<TransformComponent>().transform;
 				float speed = 5.0f;
@@ -76,6 +81,7 @@ namespace Engine {
 		};
 
 		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 	}
 
 	void EditorLayer::onDetach() {
