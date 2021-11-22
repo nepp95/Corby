@@ -18,6 +18,7 @@ namespace Engine {
 
 	private:
 		void drawEntityNode(Entity entity);
+		void drawComponents(Entity entity);
 
 	private:
 		Ref<Scene> m_context;

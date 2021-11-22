@@ -29,7 +29,7 @@ namespace Engine {
 		Ref<Shader> m_flatColorShader;
 		Ref<Framebuffer> m_framebuffer;
 		Ref<Scene> m_activeScene;
-		Entity m_squareEntity;
+		Entity m_squareEntity, m_redSquareEntity;
 		Entity m_cameraEntity;
 		Entity m_secondCameraEntity;
 

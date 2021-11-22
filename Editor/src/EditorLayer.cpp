@@ -48,6 +48,8 @@ namespace Engine {
 
 		m_squareEntity = m_activeScene->createEntity("Green Square");
 		m_squareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		m_redSquareEntity = m_activeScene->createEntity("Red Square");
+		m_redSquareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
 		m_cameraEntity = m_activeScene->createEntity("Camera Entity");
 		m_cameraEntity.addComponent<CameraComponent>();
@@ -58,14 +60,14 @@ namespace Engine {
 
 		class CameraController : public ScriptableEntity {
 		public:
-			void onCreate() {
+			virtual void onCreate() override {
 				auto& transform = getComponent<TransformComponent>().transform;
 				transform[3][0] = rand() % 10 - 5.0f;
 			}
 
-			void onDestroy() {}
+			virtual void onDestroy() override {}
 
-			void onUpdate(Timestep ts) {
+			virtual void onUpdate(Timestep ts) override {
 				auto& transform = getComponent<TransformComponent>().transform;
 				float speed = 5.0f;
 
