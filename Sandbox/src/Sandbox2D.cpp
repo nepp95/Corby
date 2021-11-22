@@ -43,7 +43,7 @@ void Sandbox2D::onDetach() {
 	ENG_PROFILE_FUNCTION();
 }
 
-void Sandbox2D::onUpdate(Engine::Timestep timestep) {
+void Sandbox2D::onUpdate(Engine::Timestep ts) {
 	ENG_PROFILE_FUNCTION();
 
 	// -----------------------------------------
@@ -51,7 +51,7 @@ void Sandbox2D::onUpdate(Engine::Timestep timestep) {
 	//    Update
 	//
 	// -----------------------------------------
-	m_cameraController.onUpdate(timestep);
+	m_cameraController.onUpdate(ts);
 
 	// -----------------------------------------
 	//
@@ -68,7 +68,7 @@ void Sandbox2D::onUpdate(Engine::Timestep timestep) {
 
 	{
 		static float rotation = 0.0f;
-		rotation += timestep * 50.0f;
+		rotation += ts * 50.0f;
 
 		ENG_PROFILE_SCOPE("Renderer Draw");
 		Engine::Renderer2D::beginScene(m_cameraController.getCamera());

@@ -1,7 +1,9 @@
 #pragma once
-#include "engpch.h"
 
 #include "Engine/Core/Base.h"
+#include "Engine/Debug/Instrumentor.h"
+
+#include <functional>
 
 namespace Engine {
 	enum class EventType {
@@ -46,7 +48,7 @@ namespace Engine {
 
 	class EventDispatcher {
 	public:
-		EventDispatcher(Event& event) : m_event(event) {}
+		EventDispatcher(Event& e) : m_event(e) {}
 
 		template<typename T, typename F>
 		bool dispatch(const F& func) {

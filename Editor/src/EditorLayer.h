@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine.h>
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace Engine {
 	class EditorLayer : public Layer {
@@ -11,7 +12,7 @@ namespace Engine {
 		virtual void onAttach() override;
 		virtual void onDetach() override;
 
-		void onUpdate(Timestep timestep) override;
+		void onUpdate(Timestep ts) override;
 		virtual void onImGuiRender() override;
 		void onEvent(Event& e) override;
 
@@ -20,10 +21,19 @@ namespace Engine {
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 
+		// Panels
+		SceneHierarchyPanel m_sceneHierarchyPanel;
+
 		// Temp
 		Ref<VertexArray> m_squareVA;
 		Ref<Shader> m_flatColorShader;
 		Ref<Framebuffer> m_framebuffer;
+		Ref<Scene> m_activeScene;
+		Entity m_squareEntity, m_redSquareEntity;
+		Entity m_cameraEntity;
+		Entity m_secondCameraEntity;
+
+		bool m_primaryCamera = true;
 
 		Ref<Texture2D> m_checkerboardTexture;
 		Ref<Texture2D> m_tileset;
@@ -31,7 +41,5 @@ namespace Engine {
 
 		uint32_t m_mapWidth, m_mapHeight;
 		std::unordered_map<char, Ref<SubTexture2D>> m_textureMap;
-		//Ref<Tileset> m_tileset;
-		glm::vec4 m_squareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 	};
 }

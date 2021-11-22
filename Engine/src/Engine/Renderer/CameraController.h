@@ -3,15 +3,15 @@
 #include "Engine/Core/Timestep.h"
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/MouseEvent.h"
-#include "Engine/Renderer/Camera.h"
+#include "Engine/Renderer/OrthographicCamera.h"
 
 namespace Engine {
 	class CameraController {
 	public:
 		CameraController(float aspectRatio, bool rotation = false);
 
-		void onUpdate(Timestep timestep);
-		void onEvent(Event& event);
+		void onUpdate(Timestep ts);
+		void onEvent(Event& e);
 		void onResize(float width, float height);
 
 		OrthographicCamera& getCamera() { return m_camera; }
@@ -23,8 +23,8 @@ namespace Engine {
 	private:
 		void calculateView();
 
-		bool onMouseScrolled(MouseScrolledEvent& event);
-		bool onWindowResized(WindowResizeEvent& event);
+		bool onMouseScrolled(MouseScrolledEvent& e);
+		bool onWindowResized(WindowResizeEvent& e);
 
 	private:
 		float m_aspectRatio;

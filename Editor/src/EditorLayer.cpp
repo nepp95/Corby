@@ -33,23 +33,66 @@ namespace Engine {
 
 		m_cameraController.setZoomLevel(5.0f);
 
-		m_checkerboardTexture = Engine::Texture2D::create("assets/textures/Checkerboard.png");
-		m_tileset = Engine::Texture2D::create("assets/textures/tilesetkenney.png");
-		m_textureMap['D'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 6, 11 }, { 128, 128 });
-		m_textureMap['W'] = Engine::SubTexture2D::createFromCoords(m_tileset, { 11, 11 }, { 128, 128 });
-		m_textureGrass = Engine::SubTexture2D::createFromCoords(m_tileset, { 1, 11 }, { 128, 128 });
+		m_checkerboardTexture = Texture2D::create("assets/textures/Checkerboard.png");
+		m_tileset = Texture2D::create("assets/textures/tilesetkenney.png");
+		m_textureMap['D'] = SubTexture2D::createFromCoords(m_tileset, { 6, 11 }, { 128, 128 });
+		m_textureMap['W'] = SubTexture2D::createFromCoords(m_tileset, { 11, 11 }, { 128, 128 });
+		m_textureGrass = SubTexture2D::createFromCoords(m_tileset, { 1, 11 }, { 128, 128 });
 
-		Engine::FramebufferSpecification fbSpec;
+		FramebufferSpecification fbSpec;
 		fbSpec.width = 1280;
 		fbSpec.height = 720;
-		m_framebuffer = Engine::Framebuffer::create(fbSpec);
+		m_framebuffer = Framebuffer::create(fbSpec);
+
+		m_activeScene = createRef<Scene>();
+
+		m_squareEntity = m_activeScene->createEntity("Green Square");
+		m_squareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		m_redSquareEntity = m_activeScene->createEntity("Red Square");
+		m_redSquareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+
+		m_cameraEntity = m_activeScene->createEntity("Camera Entity");
+		m_cameraEntity.addComponent<CameraComponent>();
+
+		m_secondCameraEntity = m_activeScene->createEntity("Clip-Space Entity");
+		auto& cc = m_secondCameraEntity.addComponent<CameraComponent>();
+		cc.primary = false;
+
+		class CameraController : public ScriptableEntity {
+		public:
+			virtual void onCreate() override {
+				auto& transform = getComponent<TransformComponent>().transform;
+				transform[3][0] = rand() % 10 - 5.0f;
+			}
+
+			virtual void onDestroy() override {}
+
+			virtual void onUpdate(Timestep ts) override {
+				auto& transform = getComponent<TransformComponent>().transform;
+				float speed = 5.0f;
+
+				if (Input::isKeyPressed(Key::A))
+					transform[3][0] -= speed * ts;
+				if (Input::isKeyPressed(Key::D))
+					transform[3][0] += speed * ts;
+				if (Input::isKeyPressed(Key::W))
+					transform[3][1] += speed * ts;
+				if (Input::isKeyPressed(Key::S))
+					transform[3][1] -= speed * ts;
+			}
+		};
+
+		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+
+		m_sceneHierarchyPanel.setContext(m_activeScene);
 	}
 
 	void EditorLayer::onDetach() {
 		ENG_PROFILE_FUNCTION();
 	}
 
-	void EditorLayer::onUpdate(Engine::Timestep timestep) {
+	void EditorLayer::onUpdate(Timestep ts) {
 		ENG_PROFILE_FUNCTION();
 
 		// -----------------------------------------
@@ -57,47 +100,34 @@ namespace Engine {
 		//    Update
 		//
 		// -----------------------------------------
+
+		// Resize
+		if (FramebufferSpecification spec = m_framebuffer->getSpecification();
+			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
+			(spec.width != m_viewportSize.x || spec.height != m_viewportSize.y)) {
+			m_framebuffer->resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+			m_cameraController.onResize(m_viewportSize.x, m_viewportSize.y);
+			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+		}
+
+		// Camera
 		if (m_viewportFocused)
-			m_cameraController.onUpdate(timestep);
+			m_cameraController.onUpdate(ts);
 
 		// -----------------------------------------
 		//
 		//    Render
 		//
 		// -----------------------------------------
-		Engine::Renderer2D::resetStats();
+		Renderer2D::resetStats();
+		m_framebuffer->bind();
+		RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
+		RenderCommand::clear();
 
-		{
-			ENG_PROFILE_SCOPE("Renderer Prep");
-			m_framebuffer->bind();
-			Engine::RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
-			Engine::RenderCommand::clear();
-		}
+		// Update scene
+		m_activeScene->onUpdate(ts);
 
-		{
-			static float rotation = 0.0f;
-			rotation += timestep * 50.0f;
-
-			ENG_PROFILE_SCOPE("Renderer Draw");
-			Engine::Renderer2D::beginScene(m_cameraController.getCamera());
-
-			for (uint32_t y = 0; y < m_mapHeight; y++) {
-				for (uint32_t x = 0; x < m_mapWidth; x++) {
-					char tileType = s_mapTiles[x + y * m_mapWidth];
-					Engine::Ref<Engine::SubTexture2D> texture;
-					if (m_textureMap.find(tileType) != m_textureMap.end())
-						texture = m_textureMap[tileType];
-					else
-						texture = m_textureGrass;
-
-					Engine::Renderer2D::drawQuad({ x - m_mapWidth / 2.0f, y - m_mapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
-				}
-			}
-
-			Engine::Renderer2D::endScene();
-			m_framebuffer->unbind();
-		}
-
+		m_framebuffer->unbind();
 	}
 
 	void EditorLayer::onImGuiRender() {
@@ -155,7 +185,7 @@ namespace Engine {
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
 				if (ImGui::MenuItem("Exit"))
-					Engine::Application::get().close();
+					Application::get().close();
 
 				ImGui::EndMenu();
 			}
@@ -163,19 +193,54 @@ namespace Engine {
 			ImGui::EndMenuBar();
 		}
 
+		m_sceneHierarchyPanel.onImGuiRender();
+
+		// -----------------------------------------
+		//
+		//    Settings
+		//
+		// -----------------------------------------
 		ImGui::Begin("Settings");
 
-		auto stats = Engine::Renderer2D::getStats();
+		auto stats = Renderer2D::getStats();
 		ImGui::Text("Renderer2D Statistics:");
 		ImGui::Text("Draw calls: %d", stats.drawCalls);
 		ImGui::Text("Quads: %d", stats.quadCount);
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
 
-		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_squareColor));
+		if (m_squareEntity) {
+			ImGui::Separator();
+			std::string tag = m_squareEntity.getComponent<TagComponent>();
+			ImGui::Text("%s", tag.c_str());
+
+			auto& squareColor = m_squareEntity.getComponent<SpriteRendererComponent>().color;
+			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+			ImGui::Separator();
+		}
+
+		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_cameraEntity.getComponent<TransformComponent>().transform[3]));
+
+		if (ImGui::Checkbox("Camera A", &m_primaryCamera)) {
+			m_cameraEntity.getComponent<CameraComponent>().primary = m_primaryCamera;
+			m_secondCameraEntity.getComponent<CameraComponent>().primary = !m_primaryCamera;
+		}
+
+		{
+			auto& camera = m_secondCameraEntity.getComponent<CameraComponent>().camera;
+			float orthoSize = camera.getOrthographicSize();
+
+			if (ImGui::DragFloat("Second camera ortho size", &orthoSize))
+				camera.setOrthographicSize(orthoSize);
+		}
 
 		ImGui::End();
 
+		// -----------------------------------------
+		//
+		//    Viewport
+		//
+		// -----------------------------------------
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
 
@@ -184,22 +249,17 @@ namespace Engine {
 		Application::get().getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		if (m_viewportSize != *((glm::vec2*)&viewportPanelSize)) {
-			m_framebuffer->resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-			m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-			m_cameraController.onResize(viewportPanelSize.x, viewportPanelSize.y);
-		}
-
-		uint32_t textureID = m_framebuffer->getColorAttachmentRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		uint64_t textureID = m_framebuffer->getColorAttachmentRendererID();
+		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		ImGui::End();
 		ImGui::PopStyleVar();
 		ImGui::End();
 	}
 
-	void EditorLayer::onEvent(Engine::Event& e) {
+	void EditorLayer::onEvent(Event& e) {
 		m_cameraController.onEvent(e);
 	}
 }

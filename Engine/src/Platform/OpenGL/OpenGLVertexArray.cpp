@@ -91,7 +91,7 @@ namespace Engine {
 							ShaderDataTypeToOpenGLBaseType(element.type),
 							element.normalized ? GL_TRUE : GL_FALSE,
 							layout.getStride(),
-							(const void*)(sizeof(float) * count * i)
+							(const void*)(element.offset +(sizeof(float) * count * i))
 						);
 						m_vertexBufferIndex++;
 					}

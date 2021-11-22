@@ -156,15 +156,15 @@ void ExampleLayer::onDetach() {
 
 }
 
-void ExampleLayer::onUpdate(Engine::Timestep timestep) {
-	ENG_INFO("Delta time: {0}s ({1}ms)", timestep.getSeconds(), timestep.getMilliseconds());
+void ExampleLayer::onUpdate(Engine::Timestep ts) {
+	ENG_INFO("Delta time: {0}s ({1}ms)", ts.getSeconds(), ts.getMilliseconds());
 
 	// -----------------------------------------
 	//
 	//    Update
 	//
 	// -----------------------------------------
-	m_cameraController.onUpdate(timestep);
+	m_cameraController.onUpdate(ts);
 
 	// -----------------------------------------
 	//
@@ -212,6 +212,6 @@ void ExampleLayer::onImGuiRender() {
 	ImGui::End();
 }
 
-void ExampleLayer::onEvent(Engine::Event& event) {
-	m_cameraController.onEvent(event);
+void ExampleLayer::onEvent(Engine::Event& e) {
+	m_cameraController.onEvent(e);
 }

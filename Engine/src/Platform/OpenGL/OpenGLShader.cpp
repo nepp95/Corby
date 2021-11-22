@@ -2,6 +2,7 @@
 #include "OpenGLShader.h"
 
 #include <fstream>
+
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -75,9 +76,6 @@ namespace Engine {
 				// Put the file contents in the string
 				in.seekg(0, std::ios::beg);
 				in.read(&result[0], result.size());
-
-				// Close it up
-				in.close();
 			}
 			else {
 				ENG_CORE_ERROR("Could not read from file '{0}'", filepath);

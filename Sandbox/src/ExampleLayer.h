@@ -10,9 +10,9 @@ public:
 	virtual void onAttach() override;
 	virtual void onDetach() override;
 
-	void onUpdate(Engine::Timestep timestep) override;
+	void onUpdate(Engine::Timestep ts) override;
 	virtual void onImGuiRender() override;
-	void onEvent(Engine::Event& event) override;
+	void onEvent(Engine::Event& e) override;
 
 private:
 	Engine::CameraController m_cameraController;

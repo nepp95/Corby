@@ -1,11 +1,15 @@
 #pragma once
 
+#include "Engine/Core/Log.h"
+
 #include <algorithm>
 #include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <sstream>
 
 namespace Engine {
 	using floatingPointMicroseconds = std::chrono::duration<double, std::micro>;
@@ -23,7 +27,8 @@ namespace Engine {
 
 	class Instrumentor {
 	public:
-		Instrumentor();
+		Instrumentor(const Instrumentor&) = delete;
+		Instrumentor(Instrumentor&&) = delete;
 
 		void beginSession(const std::string& name, const std::string& filepath = "results.json");
 		void endSession();
@@ -36,10 +41,13 @@ namespace Engine {
 		static Instrumentor& get();
 
 	private:
+		Instrumentor() : m_currentSession(nullptr) {}
+		~Instrumentor() { endSession(); }
+
+	private:
 		InstrumentationSession* m_currentSession;
 		std::mutex m_mutex;
 		std::ofstream m_outputStream;
-		int m_profileCount;
 	};
 
 	class InstrumentationTimer {

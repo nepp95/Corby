@@ -15,7 +15,7 @@ void Freeplay::onDetach() {
 	ENG_PROFILE_FUNCTION();
 }
 
-void Freeplay::onUpdate(Engine::Timestep timestep) {
+void Freeplay::onUpdate(Engine::Timestep ts) {
 	ENG_PROFILE_FUNCTION();
 
 	// -----------------------------------------
@@ -23,7 +23,7 @@ void Freeplay::onUpdate(Engine::Timestep timestep) {
 	//    Update
 	//
 	// -----------------------------------------
-	m_cameraController.onUpdate(timestep);
+	m_cameraController.onUpdate(ts);
 
 	// -----------------------------------------
 	//

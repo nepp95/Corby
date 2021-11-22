@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Core/Input.h"
+#include "Engine/Core/KeyCodes.h"
 #include "Engine/Events/Event.h"
 
 namespace Engine {
@@ -11,16 +11,16 @@ namespace Engine {
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
 
 	protected:
-		KeyEvent(KeyCode keycode) : m_keyCode(keycode) {}
+		KeyEvent(const KeyCode keycode) : m_keyCode(keycode) {}
 
 		KeyCode m_keyCode;
 	};
 
 	class KeyPressedEvent : public KeyEvent {
 	public:
-		KeyPressedEvent(KeyCode keycode, int repeatCount) : KeyEvent(keycode), m_repeatCount(repeatCount) {}
+		KeyPressedEvent(const KeyCode keycode, const uint16_t repeatCount) : KeyEvent(keycode), m_repeatCount(repeatCount) {}
 
-		int getRepeatCount() const { return m_repeatCount; }
+		uint16_t getRepeatCount() const { return m_repeatCount; }
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -32,12 +32,12 @@ namespace Engine {
 		EVENT_CLASS_TYPE(KeyPressed);
 
 	private:
-		int m_repeatCount;
+		uint16_t m_repeatCount;
 	};
 
 	class KeyReleasedEvent : public KeyEvent {
 	public:
-		KeyReleasedEvent(KeyCode keycode) : KeyEvent(keycode) {}
+		KeyReleasedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
 
 		std::string ToString() const override {
 			std::stringstream ss;
@@ -51,7 +51,7 @@ namespace Engine {
 
 	class KeyTypedEvent : public KeyEvent {
 	public:
-		KeyTypedEvent(KeyCode keycode) : KeyEvent(keycode) {}
+		KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
 
 		std::string ToString() const override {
 			std::stringstream ss;
