@@ -51,10 +51,10 @@ namespace Engine {
 		m_redSquareEntity = m_activeScene->createEntity("Red Square");
 		m_redSquareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-		m_cameraEntity = m_activeScene->createEntity("Camera Entity");
+		m_cameraEntity = m_activeScene->createEntity("Camera A");
 		m_cameraEntity.addComponent<CameraComponent>();
 
-		m_secondCameraEntity = m_activeScene->createEntity("Clip-Space Entity");
+		m_secondCameraEntity = m_activeScene->createEntity("Camera B");
 		auto& cc = m_secondCameraEntity.addComponent<CameraComponent>();
 		cc.primary = false;
 
@@ -200,7 +200,7 @@ namespace Engine {
 		//    Settings
 		//
 		// -----------------------------------------
-		ImGui::Begin("Settings");
+		ImGui::Begin("Statistics");
 
 		auto stats = Renderer2D::getStats();
 		ImGui::Text("Renderer2D Statistics:");
@@ -208,31 +208,6 @@ namespace Engine {
 		ImGui::Text("Quads: %d", stats.quadCount);
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
-
-		if (m_squareEntity) {
-			ImGui::Separator();
-			std::string tag = m_squareEntity.getComponent<TagComponent>();
-			ImGui::Text("%s", tag.c_str());
-
-			auto& squareColor = m_squareEntity.getComponent<SpriteRendererComponent>().color;
-			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-			ImGui::Separator();
-		}
-
-		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_cameraEntity.getComponent<TransformComponent>().transform[3]));
-
-		if (ImGui::Checkbox("Camera A", &m_primaryCamera)) {
-			m_cameraEntity.getComponent<CameraComponent>().primary = m_primaryCamera;
-			m_secondCameraEntity.getComponent<CameraComponent>().primary = !m_primaryCamera;
-		}
-
-		{
-			auto& camera = m_secondCameraEntity.getComponent<CameraComponent>().camera;
-			float orthoSize = camera.getOrthographicSize();
-
-			if (ImGui::DragFloat("Second camera ortho size", &orthoSize))
-				camera.setOrthographicSize(orthoSize);
-		}
 
 		ImGui::End();
 

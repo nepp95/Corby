@@ -64,7 +64,7 @@ namespace Engine {
 		}
 
 		if (mainCamera) {
-			Renderer2D::beginScene(mainCamera->getProjection(), *cameraTransform);
+			Renderer2D::beginScene(*mainCamera, *cameraTransform);
 
 			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 

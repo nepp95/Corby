@@ -19,15 +19,6 @@
 #endif
 
 #define ENG_PROFILE
-// TODO: Make this macro able to take in no arguments except condition
-#ifdef ENG_ENABLE_ASSERTS
-	#define ENG_ASSERT(x, ...) { if(!(x)) { ENG_ERROR("Assertion Failed: {0}", __VA_ARGS__); ENG_DEBUGBREAK(); } }
-	#define ENG_CORE_ASSERT(x, ...) { if(!(x)) { ENG_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); ENG_DEBUGBREAK(); } }
-#else
-	#define ENG_ASSERT(x, ...)
-	#define ENG_CORE_ASSERT(x, ...)
-#endif
-
 #ifdef ENG_PROFILE
 	#define ENG_PROFILE_BEGIN_SESSION(name, filepath) ::Engine::Instrumentor::get().beginSession(name, filepath)
 	#define ENG_PROFILE_END_SESSION() ::Engine::Instrumentor::get().endSession()
@@ -41,6 +32,8 @@
 #endif
 
 #define BIT(x) (1 << x)
+#define ENG_EXPAND_MACRO(x) x
+#define ENG_STRINGIFY_MACRO(x) #x
 #define ENG_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 namespace Engine {
@@ -59,3 +52,6 @@ namespace Engine {
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 }
+
+#include "Engine/Core/Log.h"
+#include "Engine/Core/Assert.h"

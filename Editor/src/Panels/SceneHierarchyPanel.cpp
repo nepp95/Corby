@@ -92,6 +92,15 @@ namespace Engine {
 			}
 		}
 
+		if (entity.hasComponent<SpriteRendererComponent>()) {
+			if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer")) {
+				auto& src = entity.getComponent<SpriteRendererComponent>();
+
+				ImGui::ColorEdit4("Color", glm::value_ptr(src.color));
+				ImGui::TreePop();
+			}
+		}
+
 		if (entity.hasComponent<CameraComponent>()) {
 			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera")) {
 				auto& cameraComponent = entity.getComponent<CameraComponent>();
@@ -119,31 +128,31 @@ namespace Engine {
 				}
 
 				if (camera.getProjectionType() == SceneCamera::ProjectionType::Perspective) {
-					float verticalFOV = glm::degrees(camera.getPerspectiveVerticalFOV());
-					if (ImGui::DragFloat("Vertical FOV", &verticalFOV))
-						camera.setPerspectiveVerticalFOV(glm::radians(verticalFOV));
+					float perspectiveVerticalFOV = glm::degrees(camera.getPerspectiveVerticalFOV());
+					if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFOV))
+						camera.setPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFOV));
 
-					float orthoNear = camera.getPerspectiveNearClip();
-					if (ImGui::DragFloat("Near", &orthoNear))
-						camera.setPerspectiveNearClip(orthoNear);
+					float perspectiveNear = camera.getPerspectiveNearClip();
+					if (ImGui::DragFloat("Near", &perspectiveNear))
+						camera.setPerspectiveNearClip(perspectiveNear);
 
-					float orthoFar = camera.getPerspectiveFarClip();
-					if (ImGui::DragFloat("Far", &orthoFar))
-						camera.setPerspectiveFarClip(orthoFar);
+					float perspectiveFar = camera.getPerspectiveFarClip();
+					if (ImGui::DragFloat("Far", &perspectiveFar))
+						camera.setPerspectiveFarClip(perspectiveFar);
 				}
 
 				if (camera.getProjectionType() == SceneCamera::ProjectionType::Orthographic) {
-					float orthoSize = camera.getOrthographicSize();
-					if (ImGui::DragFloat("Size", &orthoSize))
-						camera.setOrthographicSize(orthoSize);
+					float orthographicSize = camera.getOrthographicSize();
+					if (ImGui::DragFloat("Size", &orthographicSize))
+						camera.setOrthographicSize(orthographicSize);
 
-					float orthoNear = camera.getOrthographicNearClip();
-					if (ImGui::DragFloat("Near", &orthoNear))
-						camera.setOrthographicNearClip(orthoNear);
+					float orthographicNear = camera.getOrthographicNearClip();
+					if (ImGui::DragFloat("Near", &orthographicNear))
+						camera.setOrthographicNearClip(orthographicNear);
 
-					float orthoFar = camera.getOrthographicFarClip();
-					if (ImGui::DragFloat("Far", &orthoFar))
-						camera.setOrthographicFarClip(orthoFar);
+					float orthographicFar = camera.getOrthographicFarClip();
+					if (ImGui::DragFloat("Far", &orthographicFar))
+						camera.setOrthographicFarClip(orthographicFar);
 
 					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.fixedAspectRatio);
 				}

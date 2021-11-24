@@ -48,7 +48,7 @@ namespace Engine {
 	public:
 		MouseCode getMouseButton() const { return m_button; }
 
-		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput);
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton);
 	protected:
 		MouseButtonEvent(const MouseCode button) : m_button(button) {}
 

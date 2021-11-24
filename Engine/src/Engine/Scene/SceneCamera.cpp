@@ -9,15 +9,6 @@ namespace Engine {
         recalculateProjection();
     }
 
-    void SceneCamera::setOrthographic(float size, float nearClip, float farClip)
-    {
-		m_projectionType = ProjectionType::Orthographic;
-        m_orthographicSize = size;
-        m_orthographicNear = nearClip;
-        m_orthographicFar = farClip;
-        recalculateProjection();
-    }
-
 	void SceneCamera::setPerspective(float verticalFOV, float nearClip, float farClip)
 	{
 		m_projectionType = ProjectionType::Perspective;
@@ -26,6 +17,15 @@ namespace Engine {
 		m_perspectiveFar = farClip;
 		recalculateProjection();
 	}
+
+    void SceneCamera::setOrthographic(float size, float nearClip, float farClip)
+    {
+		m_projectionType = ProjectionType::Orthographic;
+        m_orthographicSize = size;
+        m_orthographicNear = nearClip;
+        m_orthographicFar = farClip;
+        recalculateProjection();
+    }
 
     void SceneCamera::setViewportSize(uint32_t width, uint32_t height)
     {
