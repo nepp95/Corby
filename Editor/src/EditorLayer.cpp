@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include "Engine/Scene/SceneSerializer.h"
+#include "Engine/Utils/PlatformUtils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -193,15 +194,14 @@ namespace Engine {
 			{
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
-				if (ImGui::MenuItem("Save scene")) {
-					SceneSerializer serializer(m_activeScene);
-					serializer.serialize("assets/scenes/Example.scene");
-				}
+				if (ImGui::MenuItem("New scene", "Ctrl+N"))
+					newScene();
 
-				if (ImGui::MenuItem("Load scene")) {
-					SceneSerializer serializer(m_activeScene);
-					serializer.deserialize("assets/scenes/Example.scene");
-				}
+				if (ImGui::MenuItem("Load scene", "Ctrl+O"))
+					openScene();
+
+				if (ImGui::MenuItem("Save scene as", "Ctrl+Shift+S"))
+					saveSceneAs();
 
 				if (ImGui::MenuItem("Exit"))
 					Application::get().close();
@@ -255,5 +255,64 @@ namespace Engine {
 
 	void EditorLayer::onEvent(Event& e) {
 		m_cameraController.onEvent(e);
+	}
+
+	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
+	{
+		// Shortcuts
+		if (e.getRepeatCount() > 0)
+			return false;
+
+		bool control = Input::isKeyPressed(Key::LeftControl) || Input::isKeyPressed(Key::RightControl);
+		bool shift = Input::isKeyPressed(Key::LeftShift) || Input::isKeyPressed(Key::RightShift);
+
+		switch (e.getKeyCode()) {
+			case Key::N: {
+				if (control)
+					newScene();
+				break;
+			}
+
+			case Key::O: {
+				if (control)
+					openScene();
+				break;
+			}
+
+			case Key::S: {
+				if (control && shift)
+					saveSceneAs();
+				break;
+			}
+		}
+	}
+
+	void EditorLayer::newScene()
+	{
+		m_activeScene = createRef<Scene>();
+		m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+		m_sceneHierarchyPanel.setContext(m_activeScene);
+	}
+
+	void EditorLayer::openScene()
+	{
+		std::string filepath = FileDialogs::openFile("Engine scene (*.scene)\0*.scene\0");
+		if (!filepath.empty()) {
+			m_activeScene = createRef<Scene>();
+			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+			m_sceneHierarchyPanel.setContext(m_activeScene);
+
+			SceneSerializer serializer(m_activeScene);
+			serializer.deserialize(filepath);
+		}
+	}
+
+	void EditorLayer::saveSceneAs()
+	{
+		std::string filepath = FileDialogs::saveFile("Engine scene (*.scene)\0*.scene\0");
+		if (!filepath.empty()) {
+			SceneSerializer serializer(m_activeScene);
+			serializer.serialize(filepath);
+		}
 	}
 }

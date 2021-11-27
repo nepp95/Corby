@@ -17,6 +17,13 @@ namespace Engine {
 		void onEvent(Event& e) override;
 
 	private:
+		bool onKeyPressed(KeyPressedEvent& e);
+
+		void newScene();
+		void openScene();
+		void saveSceneAs();
+
+	private:
 		CameraController m_cameraController;
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
