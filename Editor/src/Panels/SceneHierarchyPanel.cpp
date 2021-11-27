@@ -162,9 +162,9 @@ namespace Engine {
 	static void drawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
 	{
 		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
-		if (entity.HasComponent<T>())
+		if (entity.hasComponent<T>())
 		{
-			auto& component = entity.GetComponent<T>();
+			auto& component = entity.getComponent<T>();
 			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
@@ -195,7 +195,7 @@ namespace Engine {
 			}
 
 			if (removeComponent)
-				entity.RemoveComponent<T>();
+				entity.removeComponent<T>();
 		}
 	}
 
@@ -208,116 +208,97 @@ namespace Engine {
 			memset(buffer, 0, sizeof(buffer));
 			strcpy_s(buffer, sizeof(buffer), tag.c_str());
 
-			if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
+			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 				tag = std::string(buffer);
 		}
 
-		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
+		ImGui::SameLine();
+		ImGui::PushItemWidth(-1);
 
-		if (entity.hasComponent<TransformComponent>()) {
-			bool open = ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), treeNodeFlags, "Transform");
+		if (ImGui::Button("Add component"))
+			ImGui::OpenPopup("AddComponent");
 
-			if (open) {
-				auto& tc = entity.getComponent<TransformComponent>();
-
-				drawVec3Control("Translation", tc.translation);
-				glm::vec3 rotation = glm::degrees(tc.rotation);
-				drawVec3Control("Rotation", rotation);
-				tc.rotation = glm::radians(rotation);
-				drawVec3Control("Scale", tc.scale, 1.0f);
-
-				ImGui::TreePop();
+		if (ImGui::BeginPopup("AddComponent")) {
+			if (ImGui::MenuItem("Camera")) {
+				m_selectionContext.addComponent<CameraComponent>();
+				ImGui::CloseCurrentPopup();
 			}
+
+			if (ImGui::MenuItem("Sprite renderer")) {
+				m_selectionContext.addComponent<SpriteRendererComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
 		}
 
-		if (entity.hasComponent<SpriteRendererComponent>()) {
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+		ImGui::PopItemWidth();
 
-			bool open = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), treeNodeFlags, "Sprite Renderer");
-			ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+		drawComponent<TransformComponent>("Transform", entity, [](auto& component) {
+			drawVec3Control("Translation", component.translation);
+			glm::vec3 rotation = glm::degrees(component.rotation);
+			drawVec3Control("Rotation", rotation);
+			component.rotation = glm::radians(rotation);
+			drawVec3Control("Scale", component.scale, 1.0f);
+		});
 
-			if (ImGui::Button("+", ImVec2{ 20, 20 }))
-				ImGui::OpenPopup("ComponentSettings");
+		drawComponent<CameraComponent>("Camera", entity, [](auto& component) {
+			auto& camera = component.camera;
 
-			ImGui::PopStyleVar();
-			bool removeComponent = false;
-			
-			if (ImGui::BeginPopup("ComponentSettings")) {
-				if (ImGui::MenuItem("Remove component"))
-					removeComponent = true;
-				
-				ImGui::EndPopup();
-			}
+			ImGui::Checkbox("Primary", &component.primary);
 
-			if (open) {
-				auto& src = entity.getComponent<SpriteRendererComponent>();
+			const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+			const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.getProjectionType()];
 
-				ImGui::ColorEdit4("Color", glm::value_ptr(src.color));
-				ImGui::TreePop();
-			}
+			if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
+				for (int i = 0; i < 2; i++) {
+					bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
 
-			if (removeComponent)
-				entity.removeComponent<SpriteRendererComponent>();
-		}
-
-		if (entity.hasComponent<CameraComponent>()) {
-			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), treeNodeFlags, "Camera")) {
-				auto& cameraComponent = entity.getComponent<CameraComponent>();
-				auto& camera = cameraComponent.camera;
-
-				ImGui::Checkbox("Primary", &cameraComponent.primary);
-
-				const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-				const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.getProjectionType()];
-
-				if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
-					for (int i = 0; i < 2; i++) {
-						bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
-
-						if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
-							currentProjectionTypeString = projectionTypeStrings[i];
-							camera.setProjectionType((SceneCamera::ProjectionType)i);
-						}
-
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
+					if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
+						currentProjectionTypeString = projectionTypeStrings[i];
+						camera.setProjectionType((SceneCamera::ProjectionType)i);
 					}
 
-					ImGui::EndCombo();
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
 				}
 
-				if (camera.getProjectionType() == SceneCamera::ProjectionType::Perspective) {
-					float perspectiveVerticalFOV = glm::degrees(camera.getPerspectiveVerticalFOV());
-					if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFOV))
-						camera.setPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFOV));
-
-					float perspectiveNear = camera.getPerspectiveNearClip();
-					if (ImGui::DragFloat("Near", &perspectiveNear))
-						camera.setPerspectiveNearClip(perspectiveNear);
-
-					float perspectiveFar = camera.getPerspectiveFarClip();
-					if (ImGui::DragFloat("Far", &perspectiveFar))
-						camera.setPerspectiveFarClip(perspectiveFar);
-				}
-
-				if (camera.getProjectionType() == SceneCamera::ProjectionType::Orthographic) {
-					float orthographicSize = camera.getOrthographicSize();
-					if (ImGui::DragFloat("Size", &orthographicSize))
-						camera.setOrthographicSize(orthographicSize);
-
-					float orthographicNear = camera.getOrthographicNearClip();
-					if (ImGui::DragFloat("Near", &orthographicNear))
-						camera.setOrthographicNearClip(orthographicNear);
-
-					float orthographicFar = camera.getOrthographicFarClip();
-					if (ImGui::DragFloat("Far", &orthographicFar))
-						camera.setOrthographicFarClip(orthographicFar);
-
-					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.fixedAspectRatio);
-				}
-
-				ImGui::TreePop();
+				ImGui::EndCombo();
 			}
-		}
+
+			if (camera.getProjectionType() == SceneCamera::ProjectionType::Perspective) {
+				float perspectiveVerticalFOV = glm::degrees(camera.getPerspectiveVerticalFOV());
+				if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFOV))
+					camera.setPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFOV));
+
+				float perspectiveNear = camera.getPerspectiveNearClip();
+				if (ImGui::DragFloat("Near", &perspectiveNear))
+					camera.setPerspectiveNearClip(perspectiveNear);
+
+				float perspectiveFar = camera.getPerspectiveFarClip();
+				if (ImGui::DragFloat("Far", &perspectiveFar))
+					camera.setPerspectiveFarClip(perspectiveFar);
+			}
+
+			if (camera.getProjectionType() == SceneCamera::ProjectionType::Orthographic) {
+				float orthographicSize = camera.getOrthographicSize();
+				if (ImGui::DragFloat("Size", &orthographicSize))
+					camera.setOrthographicSize(orthographicSize);
+
+				float orthographicNear = camera.getOrthographicNearClip();
+				if (ImGui::DragFloat("Near", &orthographicNear))
+					camera.setOrthographicNearClip(orthographicNear);
+
+				float orthographicFar = camera.getOrthographicFarClip();
+				if (ImGui::DragFloat("Far", &orthographicFar))
+					camera.setOrthographicFarClip(orthographicFar);
+
+				ImGui::Checkbox("Fixed Aspect Ratio", &component.fixedAspectRatio);
+			}
+		});
+
+		drawComponent<SpriteRendererComponent>("Sprite renderer", entity, [](auto& component) {
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.color));
+		});
 	}
 }
