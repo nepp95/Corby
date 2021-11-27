@@ -19,6 +19,8 @@ namespace Engine {
 		void end();
 
 		void blockEvents(bool block) { m_blockEvents = block; }
+
+		void setDarkThemeColors();
 	private:
 		bool m_blockEvents = true;
 		float m_time = 0.0f;

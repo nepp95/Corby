@@ -14,3 +14,7 @@
 	path = Engine/vendor/glm
 	url = https://github.com/g-truc/glm
 	branch = master
+[submodule "Engine/vendor/yaml-cpp"]
+	path = Engine/vendor/yaml-cpp
+	url = https://github.com/nepp95/yaml-cpp.git
+	branch = dev

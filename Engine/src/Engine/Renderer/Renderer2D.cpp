@@ -120,10 +120,7 @@ namespace Engine {
 		s_data.textureShader->bind();
 		s_data.textureShader->setMat4("u_viewProjection", viewProjection);
 
-		s_data.quadIndexCount = 0;
-		s_data.quadVertexBufferPtr = s_data.quadVertexBufferBase;
-
-		s_data.textureSlotIndex = 1;
+		startBatch();
 	}
 
 	void Renderer2D::beginScene(const OrthographicCamera& camera) {
@@ -132,15 +129,11 @@ namespace Engine {
 		s_data.textureShader->bind();
 		s_data.textureShader->setMat4("u_viewProjection", camera.getViewProjectionMatrix());
 
-		s_data.quadIndexCount = 0;
-		s_data.quadVertexBufferPtr = s_data.quadVertexBufferBase;
+		startBatch();
 	}
 
 	void Renderer2D::endScene() {
 		ENG_PROFILE_FUNCTION();
-
-		uint32_t dataSize = (uint32_t)((uint8_t*)s_data.quadVertexBufferPtr - (uint8_t*)s_data.quadVertexBufferBase);
-		s_data.quadVertexBuffer->setData(s_data.quadVertexBufferBase, dataSize);
 
 		flush();
 	}
@@ -149,6 +142,9 @@ namespace Engine {
 		// If there is nothing to draw
 		if (s_data.quadIndexCount == 0)
 			return;
+
+		uint32_t dataSize = (uint32_t)((uint8_t*)s_data.quadVertexBufferPtr - (uint8_t*)s_data.quadVertexBufferBase);
+		s_data.quadVertexBuffer->setData(s_data.quadVertexBufferBase, dataSize);
 
 		// Bind textures
 		for (uint32_t i = 0; i < s_data.textureSlotIndex; i++)
@@ -201,7 +197,7 @@ namespace Engine {
 		const float tilingFactor = 1.0f;
 
 		if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
-			flushAndReset();
+			nextBatch();
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
@@ -226,7 +222,7 @@ namespace Engine {
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
 		if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
-			flushAndReset();
+			nextBatch();
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_data.textureSlotIndex; i++)
@@ -241,7 +237,7 @@ namespace Engine {
 		if (textureIndex == 0.0f)
 		{
 			if (s_data.textureSlotIndex >= Renderer2DData::maxTextureSlots)
-				flushAndReset();
+				nextBatch();
 
 			textureIndex = (float)s_data.textureSlotIndex;
 			s_data.textureSlots[s_data.textureSlotIndex] = texture;
@@ -271,7 +267,7 @@ namespace Engine {
 		const Ref<Texture2D> texture = subtexture->getTexture();
 
 		if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
-			flushAndReset();
+			nextBatch();
 
 		float textureIndex = 0.0f;
 
@@ -284,7 +280,7 @@ namespace Engine {
 
 		if (textureIndex == 0.0f) {
 			if (s_data.textureSlotIndex >= Renderer2DData::maxTextureSlots)
-				flushAndReset();
+				nextBatch();
 
 			textureIndex = (float)s_data.textureSlotIndex;
 			s_data.textureSlots[s_data.textureSlotIndex] = texture;
@@ -354,11 +350,15 @@ namespace Engine {
 		return s_data.stats;
 	}
 
-	void Renderer2D::flushAndReset() {
-		endScene();
-
+	void Renderer2D::startBatch() {
 		s_data.quadIndexCount = 0;
 		s_data.quadVertexBufferPtr = s_data.quadVertexBufferBase;
+
 		s_data.textureSlotIndex = 1;
+	}
+
+	void Renderer2D::nextBatch() {
+		flush();
+		startBatch();
 	}
 }

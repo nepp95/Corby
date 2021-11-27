@@ -69,7 +69,7 @@ namespace Engine {
 	class BufferLayout {
 	public:
 		BufferLayout() {}
-		BufferLayout(const std::initializer_list<BufferElement>& elements);
+		BufferLayout(std::initializer_list<BufferElement> elements);
 
 		unsigned int getStride() const { return m_stride; }
 		const std::vector<BufferElement>& getElements() const { return m_elements; }

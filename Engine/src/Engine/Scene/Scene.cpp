@@ -28,6 +28,10 @@ namespace Engine {
 		return entity;
 	}
 
+	void Scene::destroyEntity(Entity entity) {
+		m_registry.destroy(entity);
+	}
+
 	void Scene::onUpdate(Timestep ts)
 	{
 		// Update scripts
@@ -46,7 +50,7 @@ namespace Engine {
 
 		// Render 2D
 		Camera* mainCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 
 		{
 			auto view = m_registry.view<TransformComponent, CameraComponent>();
@@ -56,7 +60,7 @@ namespace Engine {
 
 				if (camera.primary) {
 					mainCamera = &camera.camera;
-					cameraTransform = &transform.transform;
+					cameraTransform = transform.getTransform();
 
 					break;
 				}
@@ -64,14 +68,14 @@ namespace Engine {
 		}
 
 		if (mainCamera) {
-			Renderer2D::beginScene(mainCamera->getProjection(), *cameraTransform);
+			Renderer2D::beginScene(*mainCamera, cameraTransform);
 
 			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
 			for (auto entity : group) {
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::drawQuad(transform, sprite.color);
+				Renderer2D::drawQuad(transform.getTransform(), sprite.color);
 			}
 
 			Renderer2D::endScene();
@@ -91,5 +95,35 @@ namespace Engine {
 			if (!cameraComponent.fixedAspectRatio)
 				cameraComponent.camera.setViewportSize(width, height);
 		}
+	}
+
+	template<typename T>
+	void Scene::onComponentAdded(Entity entity, T& component) {
+		static_assert(false);
+	}
+
+	template<>
+	void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {
+
+	}
+
+	template<>
+	void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {
+		component.camera.setViewportSize(m_viewportWidth, m_viewportHeight);
+	}
+
+	template<>
+	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component) {
+
+	}
+
+	template<>
+	void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component) {
+
+	}
+
+	template<>
+	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component) {
+
 	}
 }

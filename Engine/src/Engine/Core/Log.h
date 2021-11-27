@@ -2,8 +2,10 @@
 
 #include "Engine/Core/Base.h"
 
+#pragma warning(push, 0)
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
+#pragma warning(pop)
 
 namespace Engine {
 	class Log {

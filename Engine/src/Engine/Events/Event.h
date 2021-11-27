@@ -53,7 +53,7 @@ namespace Engine {
 		template<typename T, typename F>
 		bool dispatch(const F& func) {
 			if (m_event.GetEventType() == T::GetStaticType()) {
-				m_event.handled = func(static_cast<T&>(m_event));
+				m_event.handled |= func(static_cast<T&>(m_event));
 				return true;
 			}
 

@@ -1,5 +1,7 @@
 #include "EditorLayer.h"
 
+#include "Engine/Scene/SceneSerializer.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
@@ -46,44 +48,46 @@ namespace Engine {
 
 		m_activeScene = createRef<Scene>();
 
+#if 0
 		m_squareEntity = m_activeScene->createEntity("Green Square");
 		m_squareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 		m_redSquareEntity = m_activeScene->createEntity("Red Square");
 		m_redSquareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-		m_cameraEntity = m_activeScene->createEntity("Camera Entity");
+		m_cameraEntity = m_activeScene->createEntity("Camera A");
 		m_cameraEntity.addComponent<CameraComponent>();
 
-		m_secondCameraEntity = m_activeScene->createEntity("Clip-Space Entity");
+		m_secondCameraEntity = m_activeScene->createEntity("Camera B");
 		auto& cc = m_secondCameraEntity.addComponent<CameraComponent>();
 		cc.primary = false;
 
 		class CameraController : public ScriptableEntity {
 		public:
 			virtual void onCreate() override {
-				auto& transform = getComponent<TransformComponent>().transform;
-				transform[3][0] = rand() % 10 - 5.0f;
+				auto& translation = getComponent<TransformComponent>().translation;
+				translation.x = rand() % 10 - 5.0f;
 			}
 
 			virtual void onDestroy() override {}
 
 			virtual void onUpdate(Timestep ts) override {
-				auto& transform = getComponent<TransformComponent>().transform;
+				auto& translation = getComponent<TransformComponent>().translation;
 				float speed = 5.0f;
 
 				if (Input::isKeyPressed(Key::A))
-					transform[3][0] -= speed * ts;
+					translation.x -= speed * ts;
 				if (Input::isKeyPressed(Key::D))
-					transform[3][0] += speed * ts;
+					translation.x += speed * ts;
 				if (Input::isKeyPressed(Key::W))
-					transform[3][1] += speed * ts;
+					translation.y += speed * ts;
 				if (Input::isKeyPressed(Key::S))
-					transform[3][1] -= speed * ts;
+					translation.y -= speed * ts;
 			}
 		};
 
 		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+#endif
 
 		m_sceneHierarchyPanel.setContext(m_activeScene);
 	}
@@ -172,11 +176,16 @@ namespace Engine {
 
 		// Submit the DockSpace
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		float minWinSizeX = style.WindowMinSize.x;
+		style.WindowMinSize.x = 370.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+
+		style.WindowMinSize.x = minWinSizeX;
 
 		if (ImGui::BeginMenuBar())
 		{
@@ -184,6 +193,16 @@ namespace Engine {
 			{
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
+				if (ImGui::MenuItem("Save scene")) {
+					SceneSerializer serializer(m_activeScene);
+					serializer.serialize("assets/scenes/Example.scene");
+				}
+
+				if (ImGui::MenuItem("Load scene")) {
+					SceneSerializer serializer(m_activeScene);
+					serializer.deserialize("assets/scenes/Example.scene");
+				}
+
 				if (ImGui::MenuItem("Exit"))
 					Application::get().close();
 
@@ -200,7 +219,7 @@ namespace Engine {
 		//    Settings
 		//
 		// -----------------------------------------
-		ImGui::Begin("Settings");
+		ImGui::Begin("Statistics");
 
 		auto stats = Renderer2D::getStats();
 		ImGui::Text("Renderer2D Statistics:");
@@ -208,31 +227,6 @@ namespace Engine {
 		ImGui::Text("Quads: %d", stats.quadCount);
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
-
-		if (m_squareEntity) {
-			ImGui::Separator();
-			std::string tag = m_squareEntity.getComponent<TagComponent>();
-			ImGui::Text("%s", tag.c_str());
-
-			auto& squareColor = m_squareEntity.getComponent<SpriteRendererComponent>().color;
-			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-			ImGui::Separator();
-		}
-
-		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_cameraEntity.getComponent<TransformComponent>().transform[3]));
-
-		if (ImGui::Checkbox("Camera A", &m_primaryCamera)) {
-			m_cameraEntity.getComponent<CameraComponent>().primary = m_primaryCamera;
-			m_secondCameraEntity.getComponent<CameraComponent>().primary = !m_primaryCamera;
-		}
-
-		{
-			auto& camera = m_secondCameraEntity.getComponent<CameraComponent>().camera;
-			float orthoSize = camera.getOrthographicSize();
-
-			if (ImGui::DragFloat("Second camera ortho size", &orthoSize))
-				camera.setOrthographicSize(orthoSize);
-		}
 
 		ImGui::End();
 
