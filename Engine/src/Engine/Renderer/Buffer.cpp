@@ -5,7 +5,7 @@
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Engine {
-	BufferLayout::BufferLayout(const std::initializer_list<BufferElement>& elements) : m_elements(elements) {
+	BufferLayout::BufferLayout(std::initializer_list<BufferElement> elements) : m_elements(elements) {
 		calculateOffsetsAndStride();
 	}
 
