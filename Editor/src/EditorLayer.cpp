@@ -1,5 +1,7 @@
 #include "EditorLayer.h"
 
+#include "Engine/Scene/SceneSerializer.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
@@ -46,6 +48,7 @@ namespace Engine {
 
 		m_activeScene = createRef<Scene>();
 
+#if 0
 		m_squareEntity = m_activeScene->createEntity("Green Square");
 		m_squareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 		m_redSquareEntity = m_activeScene->createEntity("Red Square");
@@ -84,6 +87,7 @@ namespace Engine {
 
 		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+#endif
 
 		m_sceneHierarchyPanel.setContext(m_activeScene);
 	}
@@ -189,6 +193,16 @@ namespace Engine {
 			{
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
+				if (ImGui::MenuItem("Save scene")) {
+					SceneSerializer serializer(m_activeScene);
+					serializer.serialize("assets/scenes/Example.scene");
+				}
+
+				if (ImGui::MenuItem("Load scene")) {
+					SceneSerializer serializer(m_activeScene);
+					serializer.deserialize("assets/scenes/Example.scene");
+				}
+
 				if (ImGui::MenuItem("Exit"))
 					Application::get().close();
 
