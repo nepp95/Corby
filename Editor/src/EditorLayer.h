@@ -36,17 +36,10 @@ namespace Engine {
 		Ref<Shader> m_flatColorShader;
 		Ref<Framebuffer> m_framebuffer;
 		Ref<Scene> m_activeScene;
-		Entity m_squareEntity, m_redSquareEntity;
-		Entity m_cameraEntity;
-		Entity m_secondCameraEntity;
+		//Entity m_squareEntity, m_redSquareEntity;
+		//Entity m_cameraEntity;
+		//Entity m_secondCameraEntity;
 
 		bool m_primaryCamera = true;
-
-		Ref<Texture2D> m_checkerboardTexture;
-		Ref<Texture2D> m_tileset;
-		Ref<SubTexture2D> m_textureGrass, m_textureDirt;
-
-		uint32_t m_mapWidth, m_mapHeight;
-		std::unordered_map<char, Ref<SubTexture2D>> m_textureMap;
 	};
 }

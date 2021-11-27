@@ -8,39 +8,13 @@
 #include <imgui/imgui.h>
 
 namespace Engine {
-	static const uint32_t s_mapWidth = 24;
-	static const char* s_mapTiles =
-		"WWWWWWWWWWWWWWWWWWWWWWWW"
-		"WWWWWWWDDDDDDDDDWWWWWWWW"
-		"WWWWWDDDDDDDDDDDDDWWWWWW"
-		"WWWWWDDDDDDDDDDDDDWWWWWW"
-		"WWWWWDDDDDDDDDDDDDWWWWWW"
-		"WWWWWWWDDDDDDDDDWWWWWWWW"
-		"WWWWWWWWWWWWWWWWWWWWWWWW"
-		"WWWWWWWWWWWWWWWWWWWWWWWW"
-		"WWWWWWWDDDDDDDDDWWWWWWWW"
-		"WWWWWDDDDDDDDDDDDDWWWWWW"
-		"WWWWWDDDDDDDDDDDDDWWWWWW"
-		"WWWWWDDDDDDDDDDDDDWWWWWW"
-		"WWWWWWWDDDDDDDDDWWWWWWWW"
-		"WWWWWWWWWWWWWWWWWWWWWWWW"
-		"WWWWWWWWWWWWWWWWWWWWWWWW"
-		"WWWWWWWWWWWWWWWWWWWWWWWW"
-		;
-
-	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f), m_mapWidth(s_mapWidth), m_mapHeight(strlen(s_mapTiles) / s_mapWidth) {
+	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f) {
 	}
 
 	void EditorLayer::onAttach() {
 		ENG_PROFILE_FUNCTION();
 
 		m_cameraController.setZoomLevel(5.0f);
-
-		m_checkerboardTexture = Texture2D::create("assets/textures/Checkerboard.png");
-		m_tileset = Texture2D::create("assets/textures/tilesetkenney.png");
-		m_textureMap['D'] = SubTexture2D::createFromCoords(m_tileset, { 6, 11 }, { 128, 128 });
-		m_textureMap['W'] = SubTexture2D::createFromCoords(m_tileset, { 11, 11 }, { 128, 128 });
-		m_textureGrass = SubTexture2D::createFromCoords(m_tileset, { 1, 11 }, { 128, 128 });
 
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1280;
