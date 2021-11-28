@@ -3,13 +3,14 @@
 #include "Engine/Core/Application.h"
 #include "Engine/Utils/PlatformUtils.h"
 
+#include <sstream>
 #include <commdlg.h>
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
 namespace Engine {
-	std::string FileDialogs::openFile(const char* filter) {
+	std::optional<std::string> FileDialogs::openFile(const char* filter) {
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -24,10 +25,10 @@ namespace Engine {
 			return ofn.lpstrFile;
 		}
 
-		return std::string();
+		return std::nullopt;
 	}
 
-	std::string FileDialogs::saveFile(const char* filter) {
+	std::optional<std::string> FileDialogs::saveFile(const char* filter) {
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -38,10 +39,11 @@ namespace Engine {
 		ofn.lpstrFilter = filter;
 		ofn.nFilterIndex = 1;
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+		ofn.lpstrDefExt = std::strchr(filter, '\0') + 1;
 		if (GetSaveFileNameA(&ofn) == TRUE)
 		{
 			return ofn.lpstrFile;
 		}
-		return std::string();
+		return std::nullopt;
 	}
 }

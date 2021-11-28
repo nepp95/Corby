@@ -270,23 +270,23 @@ namespace Engine {
 
 	void EditorLayer::openScene()
 	{
-		std::string filepath = FileDialogs::openFile("Engine scene (*.scene)\0*.scene\0");
-		if (!filepath.empty()) {
+		std::optional<std::string> filepath = FileDialogs::openFile("Engine scene (*.scene)\0*.scene\0");
+		if (filepath) {
 			m_activeScene = createRef<Scene>();
 			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
 			m_sceneHierarchyPanel.setContext(m_activeScene);
 
 			SceneSerializer serializer(m_activeScene);
-			serializer.deserialize(filepath);
+			serializer.deserialize(*filepath);
 		}
 	}
 
 	void EditorLayer::saveSceneAs()
 	{
-		std::string filepath = FileDialogs::saveFile("Engine scene (*.scene)\0*.scene\0");
-		if (!filepath.empty()) {
+		std::optional<std::string> filepath = FileDialogs::saveFile("Engine scene (*.scene)\0*.scene\0");
+		if (filepath) {
 			SceneSerializer serializer(m_activeScene);
-			serializer.serialize(filepath);
+			serializer.serialize(*filepath);
 		}
 	}
 }
