@@ -32,7 +32,7 @@ namespace Engine {
 		m_registry.destroy(entity);
 	}
 
-	void Scene::onUpdate(Timestep ts)
+	void Scene::onUpdateRuntime(Timestep ts)
 	{
 		// Update scripts
 		{
@@ -82,6 +82,19 @@ namespace Engine {
 		}
 	}
 
+	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera) {
+		Renderer2D::beginScene(camera);
+
+		auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+		for (auto entity : group) {
+			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+
+			Renderer2D::drawQuad(transform.getTransform(), sprite.color);
+		}
+
+		Renderer2D::endScene();
+	}
+
 	void Scene::onViewportResize(uint32_t width, uint32_t height)
 	{
 		m_viewportWidth = width;
@@ -95,6 +108,17 @@ namespace Engine {
 			if (!cameraComponent.fixedAspectRatio)
 				cameraComponent.camera.setViewportSize(width, height);
 		}
+	}
+
+	Entity Scene::getPrimaryCameraEntity()
+	{
+		auto view = m_registry.view<CameraComponent>();
+		for (auto entity : view) {
+			const auto& camera = view.get<CameraComponent>(entity);
+			if (camera.primary)
+				return Entity{ entity, this };
+		}
+		return {};
 	}
 
 	template<typename T>

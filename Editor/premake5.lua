@@ -19,7 +19,8 @@ project "Editor"
 		"%{wks.location}/Engine/src",
 		"%{wks.location}/Engine/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links

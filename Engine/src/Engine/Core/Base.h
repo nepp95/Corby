@@ -13,9 +13,9 @@
 	#else
 		#error "Platform does not support debugbreak yet!"
 	#endif
-		#define ENG_ENABLE_ASSERTS
-	#else
-		#define ENG_DEBUGREAK()
+	#define ENG_ENABLE_ASSERTS
+#else
+	#define ENG_DEBUGREAK()
 #endif
 
 #define ENG_PROFILE

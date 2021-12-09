@@ -123,6 +123,17 @@ namespace Engine {
 		startBatch();
 	}
 
+	void Renderer2D::beginScene(const EditorCamera& camera) {
+		ENG_PROFILE_FUNCTION();
+
+		glm::mat4 viewProjection = camera.getViewProjection();
+
+		s_data.textureShader->bind();
+		s_data.textureShader->setMat4("u_viewProjection", viewProjection);
+
+		startBatch();
+	}
+
 	void Renderer2D::beginScene(const OrthographicCamera& camera) {
 		ENG_PROFILE_FUNCTION();
 

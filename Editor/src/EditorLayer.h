@@ -17,29 +17,32 @@ namespace Engine {
 		void onEvent(Event& e) override;
 
 	private:
+		bool onKeyPressed(KeyPressedEvent& e);
+
+		void newScene();
+		void openScene();
+		void saveScene();
+		void saveSceneAs();
+
+	private:
+		std::string m_activeFile = "";
+
 		CameraController m_cameraController;
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 
 		// Panels
 		SceneHierarchyPanel m_sceneHierarchyPanel;
+		int m_gizmoType = -1;
 
 		// Temp
 		Ref<VertexArray> m_squareVA;
 		Ref<Shader> m_flatColorShader;
 		Ref<Framebuffer> m_framebuffer;
 		Ref<Scene> m_activeScene;
-		Entity m_squareEntity, m_redSquareEntity;
-		Entity m_cameraEntity;
-		Entity m_secondCameraEntity;
 
 		bool m_primaryCamera = true;
 
-		Ref<Texture2D> m_checkerboardTexture;
-		Ref<Texture2D> m_tileset;
-		Ref<SubTexture2D> m_textureGrass, m_textureDirt;
-
-		uint32_t m_mapWidth, m_mapHeight;
-		std::unordered_map<char, Ref<SubTexture2D>> m_textureMap;
+		EditorCamera m_editorCamera;
 	};
 }

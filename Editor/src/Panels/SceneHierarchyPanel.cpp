@@ -2,6 +2,14 @@
 
 #include "Engine/Scene/Components.h"
 
+#include <cstring>
+/* The Microsoft C++ compiler is non-compliant with the C++ standard and needs
+ * the following definition to disable a security warning on std::strncpy().
+ */
+#ifdef _MSVC_LANG
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -15,6 +23,7 @@ namespace Engine {
 	void SceneHierarchyPanel::setContext(const Ref<Scene>& context)
 	{
 		m_context = context;
+		m_selectionContext = {};
 	}
 
 	void SceneHierarchyPanel::onImGuiRender()
@@ -206,7 +215,7 @@ namespace Engine {
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
-			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+			std::strncpy(buffer, tag.c_str(), sizeof(buffer));
 
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 				tag = std::string(buffer);
@@ -220,12 +229,18 @@ namespace Engine {
 
 		if (ImGui::BeginPopup("AddComponent")) {
 			if (ImGui::MenuItem("Camera")) {
-				m_selectionContext.addComponent<CameraComponent>();
+				if (!m_selectionContext.hasComponent<CameraComponent>())
+					m_selectionContext.addComponent<CameraComponent>();
+				else
+					ENG_CORE_WARN("This entity already has CameraComponent");
 				ImGui::CloseCurrentPopup();
 			}
 
 			if (ImGui::MenuItem("Sprite renderer")) {
-				m_selectionContext.addComponent<SpriteRendererComponent>();
+				if (!m_selectionContext.hasComponent<SpriteRendererComponent>())
+					m_selectionContext.addComponent<SpriteRendererComponent>();
+				else
+					ENG_CORE_WARN("This entity already has SpriteRendererComponent");
 				ImGui::CloseCurrentPopup();
 			}
 

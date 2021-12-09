@@ -6,6 +6,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <imgui.h>
+#include <ImGuizmo.h>
 
 // Temporary
 #include <GLFW/glfw3.h>
@@ -77,6 +78,7 @@ namespace Engine {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::end() {

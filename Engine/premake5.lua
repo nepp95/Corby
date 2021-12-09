@@ -18,6 +18,8 @@ project "Engine"
 		"vendor/glm/glm/**.inl",
 		"vendor/stb_image/*.h",
 		"vendor/stb_image/*.cpp",
+		"vendor/ImGuizmo/ImGuizmo.h",
+		"vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 
 	defines
@@ -36,7 +38,8 @@ project "Engine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -47,6 +50,9 @@ project "Engine"
 		"yaml-cpp",
 		"opengl32.lib"
 	}
+
+	filter "files:vendor/ImGuizmo/**.cpp"
+		flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"
