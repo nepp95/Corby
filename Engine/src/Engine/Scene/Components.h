@@ -6,6 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+
 namespace Engine {
 	struct TagComponent {
 		std::string tag;
@@ -30,11 +33,11 @@ namespace Engine {
 			: translation(translation) {}
 
 		glm::mat4 getTransform() const {
-			glm::mat4 calculatedRotation = glm::rotate(glm::mat4(1.0f), rotation.x, { 1, 0, 0 })
-				* glm::rotate(glm::mat4(1.0f), rotation.y, { 0, 1, 0 })
-				* glm::rotate(glm::mat4(1.0f), rotation.z, { 0, 0, 1 });
+			glm::mat4 calculatedRotation = glm::toMat4(glm::quat(rotation));
 
-			return glm::translate(glm::mat4(1.0f), translation) * calculatedRotation * glm::scale(glm::mat4(1.0f), scale);
+			return glm::translate(glm::mat4(1.0f), translation)
+				* calculatedRotation
+				* glm::scale(glm::mat4(1.0f), scale);
 		}
 	};
 

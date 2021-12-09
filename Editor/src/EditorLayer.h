@@ -21,24 +21,25 @@ namespace Engine {
 
 		void newScene();
 		void openScene();
+		void saveScene();
 		void saveSceneAs();
 
 	private:
+		std::string m_activeFile = "";
+
 		CameraController m_cameraController;
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 
 		// Panels
 		SceneHierarchyPanel m_sceneHierarchyPanel;
+		int m_gizmoType = -1;
 
 		// Temp
 		Ref<VertexArray> m_squareVA;
 		Ref<Shader> m_flatColorShader;
 		Ref<Framebuffer> m_framebuffer;
 		Ref<Scene> m_activeScene;
-		//Entity m_squareEntity, m_redSquareEntity;
-		//Entity m_cameraEntity;
-		//Entity m_secondCameraEntity;
 
 		bool m_primaryCamera = true;
 	};

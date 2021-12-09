@@ -1,11 +1,13 @@
 #include "EditorLayer.h"
 
+#include "Engine/Math/Math.h"
 #include "Engine/Scene/SceneSerializer.h"
 #include "Engine/Utils/PlatformUtils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
+#include <ImGuizmo.h>
 
 namespace Engine {
 	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f) {
@@ -83,7 +85,8 @@ namespace Engine {
 		// Resize
 		if (FramebufferSpecification spec = m_framebuffer->getSpecification();
 			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
-			(spec.width != m_viewportSize.x || spec.height != m_viewportSize.y)) {
+			(spec.width != m_viewportSize.x || spec.height != m_viewportSize.y))
+		{
 			m_framebuffer->resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
 			m_cameraController.onResize(m_viewportSize.x, m_viewportSize.y);
 			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
@@ -174,6 +177,9 @@ namespace Engine {
 				if (ImGui::MenuItem("Load scene", "Ctrl+O"))
 					openScene();
 
+				if (ImGui::MenuItem("Save scene", "Ctrl+S"))
+					saveScene();
+
 				if (ImGui::MenuItem("Save scene as", "Ctrl+Shift+S"))
 					saveSceneAs();
 
@@ -214,13 +220,65 @@ namespace Engine {
 
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
-		Application::get().getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
+		Application::get().getImGuiLayer()->blockEvents(!m_viewportFocused && !m_viewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint64_t textureID = m_framebuffer->getColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+		// -----------------------------------------
+		//
+		//    ImGuizmo
+		//
+		// -----------------------------------------
+		Entity selectedEntity = m_sceneHierarchyPanel.getSelectedEntity();
+		if (selectedEntity)
+			ENG_CORE_TRACE(m_gizmoType);
+		if (selectedEntity && m_gizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+			// Camera
+			auto cameraEntity = m_activeScene->getPrimaryCameraEntity();
+			const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
+			const glm::mat4& cameraProjection = camera.getProjection();
+			glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
+
+			// Entity transform
+			auto& tc = selectedEntity.getComponent<TransformComponent>();
+			glm::mat4 transform = tc.getTransform();
+
+			// Snapping
+			bool snap = Input::isKeyPressed(Key::LeftControl);
+			float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+			// Snap to 45 degrees for rotation
+			if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
+				snapValue = 45.0f;
+
+			float snapValues[3] = { snapValue, snapValue, snapValue };
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				nullptr, snap ? snapValues : nullptr);
+
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 translation, rotation, scale;
+				Math::decomposeTransform(transform, translation, rotation, scale);
+
+				glm::vec3 deltaRotation = rotation - tc.rotation;
+				tc.translation = translation;
+				tc.rotation += deltaRotation;
+				tc.scale = scale;
+			}
+		}
 
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -256,6 +314,30 @@ namespace Engine {
 			case Key::S: {
 				if (control && shift)
 					saveSceneAs();
+				else if (control)
+					saveScene();
+				break;
+			}
+
+			//Gizmos
+			case Key::Q: {
+				m_gizmoType = -1;
+				break;
+			}
+
+			case Key::W: {
+				ENG_CORE_TRACE("W");
+				m_gizmoType = (int)ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			}
+
+			case Key::E: {
+				m_gizmoType = (int)ImGuizmo::OPERATION::ROTATE;
+				break;
+			}
+
+			case Key::R: {
+				m_gizmoType = (int)ImGuizmo::OPERATION::SCALE;
 				break;
 			}
 		}
@@ -278,6 +360,19 @@ namespace Engine {
 
 			SceneSerializer serializer(m_activeScene);
 			serializer.deserialize(*filepath);
+
+			m_activeFile = *filepath;
+		}
+	}
+
+	void EditorLayer::saveScene()
+	{
+		if (m_activeFile != "") {
+			SceneSerializer serializer(m_activeScene);
+			serializer.serialize(m_activeFile);
+		}
+		else {
+			saveSceneAs();
 		}
 	}
 

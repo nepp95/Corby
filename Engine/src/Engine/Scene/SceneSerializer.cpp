@@ -141,6 +141,8 @@ namespace Engine {
 			out << YAML::EndMap;
 		}
 
+		ENG_CORE_TRACE("Serialized entity with name = {0}", entity.getComponent<TagComponent>().tag);
+
 		out << YAML::EndMap;
 	}
 
@@ -174,7 +176,16 @@ namespace Engine {
 
 	bool SceneSerializer::deserialize(const std::string& filepath)
 	{
-		YAML::Node data = YAML::Load(filepath);
+		YAML::Node data;
+		try
+		{
+			data = YAML::LoadFile(filepath);
+		}
+		catch (YAML::ParserException e)
+		{
+			return false;
+		}
+
 		if (!data["Scene"])
 			return false;
 

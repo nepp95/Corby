@@ -18,3 +18,6 @@
 	path = Engine/vendor/yaml-cpp
 	url = https://github.com/nepp95/yaml-cpp.git
 	branch = dev
+[submodule "Engine/vendor/ImGuizmo"]
+	path = Engine/vendor/ImGuizmo
+	url = https://github.com/TheCherno/Imguizmo
