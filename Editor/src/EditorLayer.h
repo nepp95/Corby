@@ -42,5 +42,7 @@ namespace Engine {
 		Ref<Scene> m_activeScene;
 
 		bool m_primaryCamera = true;
+
+		EditorCamera m_editorCamera;
 	};
 }

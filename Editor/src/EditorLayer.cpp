@@ -24,6 +24,7 @@ namespace Engine {
 		m_framebuffer = Framebuffer::create(fbSpec);
 
 		m_activeScene = createRef<Scene>();
+		m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 #if 0
 		m_squareEntity = m_activeScene->createEntity("Green Square");
@@ -89,12 +90,15 @@ namespace Engine {
 		{
 			m_framebuffer->resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
 			m_cameraController.onResize(m_viewportSize.x, m_viewportSize.y);
+			m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
 			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
 		}
 
 		// Camera
 		if (m_viewportFocused)
 			m_cameraController.onUpdate(ts);
+
+		m_editorCamera.onUpdate(ts);
 
 		// -----------------------------------------
 		//
@@ -107,7 +111,7 @@ namespace Engine {
 		RenderCommand::clear();
 
 		// Update scene
-		m_activeScene->onUpdate(ts);
+		m_activeScene->onUpdateEditor(ts, m_editorCamera);
 
 		m_framebuffer->unbind();
 	}
@@ -246,10 +250,12 @@ namespace Engine {
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
 			// Camera
-			auto cameraEntity = m_activeScene->getPrimaryCameraEntity();
-			const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
-			const glm::mat4& cameraProjection = camera.getProjection();
-			glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
+			//auto cameraEntity = m_activeScene->getPrimaryCameraEntity();
+			//const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
+			//const glm::mat4& cameraProjection = camera.getProjection();
+			//glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
+			const glm::mat4& cameraProjection = m_editorCamera.getProjection();
+			glm::mat4 cameraView = m_editorCamera.getViewMatrix();
 
 			// Entity transform
 			auto& tc = selectedEntity.getComponent<TransformComponent>();
@@ -287,6 +293,7 @@ namespace Engine {
 
 	void EditorLayer::onEvent(Event& e) {
 		m_cameraController.onEvent(e);
+		m_editorCamera.onEvent(e);
 	}
 
 	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)

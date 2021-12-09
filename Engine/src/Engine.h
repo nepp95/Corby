@@ -18,6 +18,7 @@
 // Renderer
 #include "Engine/Renderer/Buffer.h"
 #include "Engine/Renderer/CameraController.h"
+#include "Engine/Renderer/EditorCamera.h"
 #include "Engine/Renderer/Framebuffer.h"
 #include "Engine/Renderer/RenderCommand.h"
 #include "Engine/Renderer/OrthographicCamera.h"
