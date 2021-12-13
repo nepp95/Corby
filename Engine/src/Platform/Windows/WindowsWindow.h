@@ -5,8 +5,10 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Engine {
-	class WindowsWindow : public Window {
+namespace Engine
+{
+	class WindowsWindow : public Window
+	{
 	public:
 		WindowsWindow(const WindowProps& props);
 		virtual ~WindowsWindow();
@@ -30,7 +32,8 @@ namespace Engine {
 		GLFWwindow* m_window;
 		Scope<GraphicsContext> m_context;
 
-		struct WindowData {
+		struct WindowData
+		{
 			std::string title;
 			unsigned int width, height;
 			bool VSync;
