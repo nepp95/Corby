@@ -3,8 +3,10 @@
 #include <Engine.h>
 #include "Panels/SceneHierarchyPanel.h"
 
-namespace Engine {
-	class EditorLayer : public Layer {
+namespace Engine
+{
+	class EditorLayer : public Layer
+	{
 	public:
 		EditorLayer();
 		virtual ~EditorLayer() = default;

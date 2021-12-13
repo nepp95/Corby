@@ -9,11 +9,13 @@
 #include <imgui/imgui.h>
 #include <ImGuizmo.h>
 
-namespace Engine {
-	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f) {
-	}
+namespace Engine
+{
+	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f)
+	{}
 
-	void EditorLayer::onAttach() {
+	void EditorLayer::onAttach()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		m_cameraController.setZoomLevel(5.0f);
@@ -26,7 +28,7 @@ namespace Engine {
 		m_activeScene = createRef<Scene>();
 		m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-#if 0
+		#if 0
 		m_squareEntity = m_activeScene->createEntity("Green Square");
 		m_squareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 		m_redSquareEntity = m_activeScene->createEntity("Red Square");
@@ -39,16 +41,19 @@ namespace Engine {
 		auto& cc = m_secondCameraEntity.addComponent<CameraComponent>();
 		cc.primary = false;
 
-		class CameraController : public ScriptableEntity {
+		class CameraController : public ScriptableEntity
+		{
 		public:
-			virtual void onCreate() override {
+			virtual void onCreate() override
+			{
 				auto& translation = getComponent<TransformComponent>().translation;
 				translation.x = rand() % 10 - 5.0f;
 			}
 
 			virtual void onDestroy() override {}
 
-			virtual void onUpdate(Timestep ts) override {
+			virtual void onUpdate(Timestep ts) override
+			{
 				auto& translation = getComponent<TransformComponent>().translation;
 				float speed = 5.0f;
 
@@ -65,16 +70,18 @@ namespace Engine {
 
 		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
-#endif
+		#endif
 
 		m_sceneHierarchyPanel.setContext(m_activeScene);
 	}
 
-	void EditorLayer::onDetach() {
+	void EditorLayer::onDetach()
+	{
 		ENG_PROFILE_FUNCTION();
 	}
 
-	void EditorLayer::onUpdate(Timestep ts) {
+	void EditorLayer::onUpdate(Timestep ts)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		// -----------------------------------------
@@ -88,10 +95,10 @@ namespace Engine {
 			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
 			(spec.width != m_viewportSize.x || spec.height != m_viewportSize.y))
 		{
-			m_framebuffer->resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+			m_framebuffer->resize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 			m_cameraController.onResize(m_viewportSize.x, m_viewportSize.y);
 			m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
-			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+			m_activeScene->onViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 		}
 
 		// Camera
@@ -117,7 +124,8 @@ namespace Engine {
 		m_framebuffer->unbind();
 	}
 
-	void EditorLayer::onImGuiRender() {
+	void EditorLayer::onImGuiRender()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		static bool dockspaceOpen = true;
@@ -244,8 +252,8 @@ namespace Engine {
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
 
-			float windowWidth = (float)ImGui::GetWindowWidth();
-			float windowHeight = (float)ImGui::GetWindowHeight();
+			float windowWidth = (float) ImGui::GetWindowWidth();
+			float windowHeight = (float) ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
 			// Camera
@@ -270,7 +278,7 @@ namespace Engine {
 			float snapValues[3] = { snapValue, snapValue, snapValue };
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				(ImGuizmo::OPERATION) m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
 				nullptr, snap ? snapValues : nullptr);
 
 			if (ImGuizmo::IsUsing())
@@ -290,7 +298,8 @@ namespace Engine {
 		ImGui::End();
 	}
 
-	void EditorLayer::onEvent(Event& e) {
+	void EditorLayer::onEvent(Event& e)
+	{
 		m_cameraController.onEvent(e);
 		m_editorCamera.onEvent(e);
 
@@ -307,64 +316,73 @@ namespace Engine {
 		bool control = Input::isKeyPressed(Key::LeftControl) || Input::isKeyPressed(Key::RightControl);
 		bool shift = Input::isKeyPressed(Key::LeftShift) || Input::isKeyPressed(Key::RightShift);
 
-		switch (e.getKeyCode()) {
-			case Key::N: {
-				if (control)
-					newScene();
-				break;
-			}
+		switch (e.getKeyCode())
+		{
+		case Key::N:
+		{
+			if (control)
+				newScene();
+			break;
+		}
 
-			case Key::O: {
-				if (control)
-					openScene();
-				break;
-			}
+		case Key::O:
+		{
+			if (control)
+				openScene();
+			break;
+		}
 
-			case Key::S: {
-				if (control && shift)
-					saveSceneAs();
-				else if (control)
-					saveScene();
-				break;
-			}
+		case Key::S:
+		{
+			if (control && shift)
+				saveSceneAs();
+			else if (control)
+				saveScene();
+			break;
+		}
 
-			//Gizmos
-			case Key::Q: {
-				m_gizmoType = -1;
-				break;
-			}
+		//Gizmos
+		case Key::Q:
+		{
+			m_gizmoType = -1;
+			break;
+		}
 
-			case Key::W: {
-				ENG_CORE_TRACE("W");
-				m_gizmoType = (int)ImGuizmo::OPERATION::TRANSLATE;
-				break;
-			}
+		case Key::W:
+		{
+			ENG_CORE_TRACE("W");
+			m_gizmoType = (int) ImGuizmo::OPERATION::TRANSLATE;
+			break;
+		}
 
-			case Key::E: {
-				m_gizmoType = (int)ImGuizmo::OPERATION::ROTATE;
-				break;
-			}
+		case Key::E:
+		{
+			m_gizmoType = (int) ImGuizmo::OPERATION::ROTATE;
+			break;
+		}
 
-			case Key::R: {
-				m_gizmoType = (int)ImGuizmo::OPERATION::SCALE;
-				break;
-			}
+		case Key::R:
+		{
+			m_gizmoType = (int) ImGuizmo::OPERATION::SCALE;
+			break;
+		}
 		}
 	}
 
 	void EditorLayer::newScene()
 	{
 		m_activeScene = createRef<Scene>();
-		m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+		m_activeScene->onViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 		m_sceneHierarchyPanel.setContext(m_activeScene);
 	}
 
 	void EditorLayer::openScene()
 	{
 		std::optional<std::string> filepath = FileDialogs::openFile("Engine scene (*.scene)\0*.scene\0");
-		if (filepath) {
+		if (filepath)
+		{
 			m_activeScene = createRef<Scene>();
-			m_activeScene->onViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+			m_activeScene->onViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 			m_sceneHierarchyPanel.setContext(m_activeScene);
 
 			SceneSerializer serializer(m_activeScene);
@@ -376,11 +394,12 @@ namespace Engine {
 
 	void EditorLayer::saveScene()
 	{
-		if (m_activeFile != "") {
+		if (m_activeFile != "")
+		{
 			SceneSerializer serializer(m_activeScene);
 			serializer.serialize(m_activeFile);
-		}
-		else {
+		} else
+		{
 			saveSceneAs();
 		}
 	}
@@ -388,7 +407,8 @@ namespace Engine {
 	void EditorLayer::saveSceneAs()
 	{
 		std::optional<std::string> filepath = FileDialogs::saveFile("Engine scene (*.scene)\0*.scene\0");
-		if (filepath) {
+		if (filepath)
+		{
 			SceneSerializer serializer(m_activeScene);
 			serializer.serialize(*filepath);
 		}

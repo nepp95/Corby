@@ -92,7 +92,7 @@ namespace Engine {
 
 			if (opened)
 				ImGui::TreePop();
-			
+
 			ImGui::TreePop();
 		}
 
@@ -117,7 +117,7 @@ namespace Engine {
 
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-		
+
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
