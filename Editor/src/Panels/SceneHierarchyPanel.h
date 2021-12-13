@@ -4,7 +4,8 @@
 #include "Engine/Scene/Entity.h"
 #include "Engine/Scene/Scene.h"
 
-namespace Engine {
+namespace Engine
+{
 	class SceneHierarchyPanel
 	{
 	public:

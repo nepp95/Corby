@@ -5,8 +5,10 @@
 
 #include "Engine/Renderer/Buffer.h"
 
-namespace Engine {
-	class VertexArray {
+namespace Engine
+{
+	class VertexArray
+	{
 	public:
 		virtual ~VertexArray() = default;
 

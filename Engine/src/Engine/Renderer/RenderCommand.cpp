@@ -1,6 +1,7 @@
 #include "engpch.h"
 #include "RenderCommand.h"
 
-namespace Engine {
+namespace Engine
+{
 	Scope<RendererAPI> RenderCommand::s_rendererAPI = RendererAPI::create();
 }

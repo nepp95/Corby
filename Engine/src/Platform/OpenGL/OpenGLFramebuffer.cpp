@@ -3,21 +3,26 @@
 
 #include <glad/glad.h>
 
-namespace Engine {
+namespace Engine
+{
 	static const uint32_t s_maxFramebufferSize = 8192;
 
-	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec) : m_specification(spec) {
+	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec) : m_specification(spec)
+	{
 		invalidate();
 	}
 
-	OpenGLFramebuffer::~OpenGLFramebuffer() {
+	OpenGLFramebuffer::~OpenGLFramebuffer()
+	{
 		glDeleteFramebuffers(1, &m_rendererID);
 		glDeleteTextures(1, &m_colorAttachment);
 		glDeleteTextures(1, &m_depthAttachment);
 	}
 
-	void OpenGLFramebuffer::invalidate() {
-		if (m_rendererID) {
+	void OpenGLFramebuffer::invalidate()
+	{
+		if (m_rendererID)
+		{
 			glDeleteFramebuffers(1, &m_rendererID);
 			glDeleteTextures(1, &m_colorAttachment);
 			glDeleteTextures(1, &m_depthAttachment);
@@ -44,18 +49,21 @@ namespace Engine {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLFramebuffer::bind() {
+	void OpenGLFramebuffer::bind()
+	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 		glViewport(0, 0, m_specification.width, m_specification.height);
 	}
 
-	void OpenGLFramebuffer::unbind() {
+	void OpenGLFramebuffer::unbind()
+	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void OpenGLFramebuffer::resize(uint32_t width, uint32_t height)
 	{
-		if (width == 0 || height == 0 || width > s_maxFramebufferSize || height > s_maxFramebufferSize) {
+		if (width == 0 || height == 0 || width > s_maxFramebufferSize || height > s_maxFramebufferSize)
+		{
 			ENG_CORE_WARN("Attempted to resize framebuffer to {0}, {1}", width, height);
 			return;
 		}

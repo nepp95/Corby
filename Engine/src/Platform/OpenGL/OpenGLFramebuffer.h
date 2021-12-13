@@ -2,8 +2,10 @@
 
 #include "Engine/Renderer/Framebuffer.h"
 
-namespace Engine {
-	class OpenGLFramebuffer : public Framebuffer {
+namespace Engine
+{
+	class OpenGLFramebuffer : public Framebuffer
+	{
 	public:
 		OpenGLFramebuffer(const FramebufferSpecification& spec);
 		virtual ~OpenGLFramebuffer();

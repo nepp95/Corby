@@ -2,8 +2,10 @@
 
 #include "Engine/Renderer/Camera.h"
 
-namespace Engine {
-	class SceneCamera : public Camera {
+namespace Engine
+{
+	class SceneCamera : public Camera
+	{
 	public:
 		enum class ProjectionType { Perspective = 0, Orthographic = 1 };
 

@@ -4,8 +4,10 @@
 
 #include "Engine/Core/Base.h"
 
-namespace Engine {
-	class Texture {
+namespace Engine
+{
+	class Texture
+	{
 	public:
 		virtual ~Texture() = default;
 
@@ -20,7 +22,8 @@ namespace Engine {
 		virtual bool operator==(const Texture& other) const = 0;
 	};
 
-	class Texture2D : public Texture {
+	class Texture2D : public Texture
+	{
 	public:
 		static Ref<Texture2D> create(uint32_t width, uint32_t height);
 		static Ref<Texture2D> create(const std::string& path);

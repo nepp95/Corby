@@ -2,8 +2,10 @@
 
 #include "Engine/Renderer/Buffer.h"
 
-namespace Engine {
-	class OpenGLVertexBuffer : public VertexBuffer {
+namespace Engine
+{
+	class OpenGLVertexBuffer : public VertexBuffer
+	{
 	public:
 		OpenGLVertexBuffer(uint32_t size);
 		OpenGLVertexBuffer(float* vertices, unsigned int size);
@@ -22,7 +24,8 @@ namespace Engine {
 		BufferLayout m_layout;
 	};
 
-	class OpenGLIndexBuffer : public IndexBuffer {
+	class OpenGLIndexBuffer : public IndexBuffer
+	{
 	public:
 		OpenGLIndexBuffer(unsigned int* indices, unsigned int count);
 		virtual ~OpenGLIndexBuffer();

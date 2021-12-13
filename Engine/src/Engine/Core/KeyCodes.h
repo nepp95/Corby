@@ -138,5 +138,5 @@ namespace Engine
 			RightSuper = 347,
 			Menu = 348
 		};
-	}		
+	}
 }

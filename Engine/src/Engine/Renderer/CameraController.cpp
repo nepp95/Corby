@@ -4,29 +4,33 @@
 #include "Engine/Core/Input.h"
 #include "Engine/Core/KeyCodes.h"
 
-namespace Engine {
-	CameraController::CameraController(float aspectRatio, bool rotation) : m_aspectRatio(aspectRatio), m_camera(-m_aspectRatio * m_zoomLevel, m_aspectRatio* m_zoomLevel, -m_zoomLevel, m_zoomLevel), m_rotation(rotation) {
-	}
+namespace Engine
+{
+	CameraController::CameraController(float aspectRatio, bool rotation) : m_aspectRatio(aspectRatio), m_camera(-m_aspectRatio * m_zoomLevel, m_aspectRatio* m_zoomLevel, -m_zoomLevel, m_zoomLevel), m_rotation(rotation)
+	{}
 
-	void CameraController::onUpdate(Timestep ts) {
+	void CameraController::onUpdate(Timestep ts)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		// Up / Down
-		if (Input::isKeyPressed(Key::W)) {
+		if (Input::isKeyPressed(Key::W))
+		{
 			m_cameraPosition.x += -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-		}
-		else if (Input::isKeyPressed(Key::S)) {
+		} else if (Input::isKeyPressed(Key::S))
+		{
 			m_cameraPosition.x -= -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 		}
 
 		// Left / Right
-		if (Input::isKeyPressed(Key::A)) {
+		if (Input::isKeyPressed(Key::A))
+		{
 			m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-		}
-		else if (Input::isKeyPressed(Key::D)) {
+		} else if (Input::isKeyPressed(Key::D))
+		{
 			m_cameraPosition.x += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 		}
@@ -53,7 +57,8 @@ namespace Engine {
 		m_cameraTranslationSpeed = m_zoomLevel;
 	}
 
-	void CameraController::onEvent(Event& e) {
+	void CameraController::onEvent(Event& e)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
@@ -67,13 +72,15 @@ namespace Engine {
 		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
 	}
 
-	void CameraController::calculateView() {
+	void CameraController::calculateView()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
 	}
 
-	bool CameraController::onMouseScrolled(MouseScrolledEvent& e) {
+	bool CameraController::onMouseScrolled(MouseScrolledEvent& e)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		m_zoomLevel -= e.getYOffset() * 0.25f;
@@ -83,10 +90,11 @@ namespace Engine {
 		return false;
 	}
 
-	bool CameraController::onWindowResized(WindowResizeEvent& e) {
+	bool CameraController::onWindowResized(WindowResizeEvent& e)
+	{
 		ENG_PROFILE_FUNCTION();
 
-		onResize((float)e.getWidth(), (float)e.getHeight());
+		onResize((float) e.getWidth(), (float) e.getHeight());
 
 		return false;
 	}

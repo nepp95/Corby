@@ -5,8 +5,10 @@
 
 #include <functional>
 
-namespace Engine {
-	enum class EventType {
+namespace Engine
+{
+	enum class EventType
+	{
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
@@ -14,7 +16,8 @@ namespace Engine {
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
-	enum EventCategory {
+	enum EventCategory
+	{
 		None = 0,
 		EventCategoryApplication = BIT(0),
 		EventCategoryInput = BIT(1),
@@ -29,7 +32,8 @@ namespace Engine {
 
 	#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class Event {
+	class Event
+	{
 		friend class EventDispatcher;
 
 	public:
@@ -41,18 +45,22 @@ namespace Engine {
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
-		bool isInCategory(EventCategory category) {
+		bool isInCategory(EventCategory category)
+		{
 			return GetCategoryFlags() & category;
 		}
 	};
 
-	class EventDispatcher {
+	class EventDispatcher
+	{
 	public:
 		EventDispatcher(Event& e) : m_event(e) {}
 
 		template<typename T, typename F>
-		bool dispatch(const F& func) {
-			if (m_event.GetEventType() == T::GetStaticType()) {
+		bool dispatch(const F& func)
+		{
+			if (m_event.GetEventType() == T::GetStaticType())
+			{
 				m_event.handled |= func(static_cast<T&>(m_event));
 				return true;
 			}
@@ -64,7 +72,8 @@ namespace Engine {
 		Event& m_event;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e) {
+	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	{
 		return os << e.ToString();
 	}
 }

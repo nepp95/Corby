@@ -4,10 +4,13 @@
 
 #include <glm/glm.hpp>
 
-namespace Engine {
-	class RendererAPI {
+namespace Engine
+{
+	class RendererAPI
+	{
 	public:
-		enum class API {
+		enum class API
+		{
 			None = 0, OpenGL = 1
 		};
 

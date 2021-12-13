@@ -2,8 +2,10 @@
 
 #include "Engine/Renderer/VertexArray.h"
 
-namespace Engine {
-	class OpenGLVertexArray : public VertexArray {
+namespace Engine
+{
+	class OpenGLVertexArray : public VertexArray
+	{
 	public:
 		OpenGLVertexArray();
 		virtual	~OpenGLVertexArray();

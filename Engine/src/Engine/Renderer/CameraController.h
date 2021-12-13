@@ -5,8 +5,10 @@
 #include "Engine/Events/MouseEvent.h"
 #include "Engine/Renderer/OrthographicCamera.h"
 
-namespace Engine {
-	class CameraController {
+namespace Engine
+{
+	class CameraController
+	{
 	public:
 		CameraController(float aspectRatio, bool rotation = false);
 

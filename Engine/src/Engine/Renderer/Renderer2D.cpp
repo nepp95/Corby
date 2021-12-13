@@ -7,8 +7,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace Engine {
-	struct QuadVertex {
+namespace Engine
+{
+	struct QuadVertex
+	{
 		glm::vec3 position;
 		glm::vec4 color;
 		glm::vec2 texCoord;
@@ -16,7 +18,8 @@ namespace Engine {
 		float tilingFactor;
 	};
 
-	struct Renderer2DData {
+	struct Renderer2DData
+	{
 		static const uint32_t maxQuads = 20000;
 		static const uint32_t maxVertices = maxQuads * 4;
 		static const uint32_t maxIndices = maxQuads * 6;
@@ -41,7 +44,8 @@ namespace Engine {
 
 	static Renderer2DData s_data;
 
-	void Renderer2D::init() {
+	void Renderer2D::init()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		// Create vertex array + buffer
@@ -64,7 +68,8 @@ namespace Engine {
 		uint32_t* quadIndices = new uint32_t[s_data.maxIndices];
 		uint32_t offset = 0;
 
-		for (uint32_t i = 0; i < s_data.maxIndices; i += 6) {
+		for (uint32_t i = 0; i < s_data.maxIndices; i += 6)
+		{
 			quadIndices[i + 0] = offset + 0;
 			quadIndices[i + 1] = offset + 1;
 			quadIndices[i + 2] = offset + 2;
@@ -102,7 +107,8 @@ namespace Engine {
 		s_data.quadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 	}
 
-	void Renderer2D::shutdown() {
+	void Renderer2D::shutdown()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		s_data.quadIndexCount = 0;
@@ -112,7 +118,8 @@ namespace Engine {
 		delete[] s_data.quadVertexBufferBase;
 	}
 
-	void Renderer2D::beginScene(const Camera& camera, const glm::mat4& transform) {
+	void Renderer2D::beginScene(const Camera& camera, const glm::mat4& transform)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 viewProjection = camera.getProjection() * glm::inverse(transform);
@@ -123,7 +130,8 @@ namespace Engine {
 		startBatch();
 	}
 
-	void Renderer2D::beginScene(const EditorCamera& camera) {
+	void Renderer2D::beginScene(const EditorCamera& camera)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 viewProjection = camera.getViewProjection();
@@ -134,7 +142,8 @@ namespace Engine {
 		startBatch();
 	}
 
-	void Renderer2D::beginScene(const OrthographicCamera& camera) {
+	void Renderer2D::beginScene(const OrthographicCamera& camera)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		s_data.textureShader->bind();
@@ -143,18 +152,20 @@ namespace Engine {
 		startBatch();
 	}
 
-	void Renderer2D::endScene() {
+	void Renderer2D::endScene()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		flush();
 	}
 
-	void Renderer2D::flush() {
+	void Renderer2D::flush()
+	{
 		// If there is nothing to draw
 		if (s_data.quadIndexCount == 0)
 			return;
 
-		uint32_t dataSize = (uint32_t)((uint8_t*)s_data.quadVertexBufferPtr - (uint8_t*)s_data.quadVertexBufferBase);
+		uint32_t dataSize = (uint32_t) ((uint8_t*) s_data.quadVertexBufferPtr - (uint8_t*) s_data.quadVertexBufferBase);
 		s_data.quadVertexBuffer->setData(s_data.quadVertexBufferBase, dataSize);
 
 		// Bind textures
@@ -165,33 +176,39 @@ namespace Engine {
 		s_data.stats.drawCalls++;
 	}
 
-	void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color) {
+	void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+	{
 		drawQuad({ position.x, position.y, 0.0f }, size, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		drawQuad(transform, color);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		drawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		drawQuad(transform, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		drawQuad({ position.x, position.y, 0.0f }, size, subtexture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
@@ -240,7 +257,7 @@ namespace Engine {
 		{
 			if (*s_data.textureSlots[i] == *texture)
 			{
-				textureIndex = (float)i;
+				textureIndex = (float) i;
 				break;
 			}
 		}
@@ -250,7 +267,7 @@ namespace Engine {
 			if (s_data.textureSlotIndex >= Renderer2DData::maxTextureSlots)
 				nextBatch();
 
-			textureIndex = (float)s_data.textureSlotIndex;
+			textureIndex = (float) s_data.textureSlotIndex;
 			s_data.textureSlots[s_data.textureSlotIndex] = texture;
 			s_data.textureSlotIndex++;
 		}
@@ -270,7 +287,8 @@ namespace Engine {
 		s_data.stats.quadCount++;
 	}
 
-	void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		constexpr size_t quadVertexCount = 4;
@@ -282,23 +300,27 @@ namespace Engine {
 
 		float textureIndex = 0.0f;
 
-		for (uint32_t i = 1; i < s_data.textureSlotIndex; i++) {
-			if (*s_data.textureSlots[i].get() == *texture.get()) {
-				textureIndex = (float)i;
+		for (uint32_t i = 1; i < s_data.textureSlotIndex; i++)
+		{
+			if (*s_data.textureSlots[i].get() == *texture.get())
+			{
+				textureIndex = (float) i;
 				break;
 			}
 		}
 
-		if (textureIndex == 0.0f) {
+		if (textureIndex == 0.0f)
+		{
 			if (s_data.textureSlotIndex >= Renderer2DData::maxTextureSlots)
 				nextBatch();
 
-			textureIndex = (float)s_data.textureSlotIndex;
+			textureIndex = (float) s_data.textureSlotIndex;
 			s_data.textureSlots[s_data.textureSlotIndex] = texture;
 			s_data.textureSlotIndex++;
 		}
 
-		for (size_t i = 0; i < quadVertexCount; i++) {
+		for (size_t i = 0; i < quadVertexCount; i++)
+		{
 			s_data.quadVertexBufferPtr->position = transform * s_data.quadVertexPositions[i];
 			s_data.quadVertexBufferPtr->color = tintColor;
 			s_data.quadVertexBufferPtr->texCoord = textureCoords[i];
@@ -311,11 +333,13 @@ namespace Engine {
 		s_data.stats.quadCount++;
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color) {
+	void Renderer2D::drawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
+	{
 		drawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color) {
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -325,11 +349,13 @@ namespace Engine {
 		drawQuad(transform, color);
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		drawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -339,11 +365,13 @@ namespace Engine {
 		drawQuad(transform, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		drawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, subtexture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
+	void Renderer2D::drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -353,22 +381,26 @@ namespace Engine {
 		drawQuad(transform, subtexture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::resetStats() {
+	void Renderer2D::resetStats()
+	{
 		memset(&s_data.stats, 0, sizeof(Statistics));
 	}
 
-	Renderer2D::Statistics Renderer2D::getStats() {
+	Renderer2D::Statistics Renderer2D::getStats()
+	{
 		return s_data.stats;
 	}
 
-	void Renderer2D::startBatch() {
+	void Renderer2D::startBatch()
+	{
 		s_data.quadIndexCount = 0;
 		s_data.quadVertexBufferPtr = s_data.quadVertexBufferBase;
 
 		s_data.textureSlotIndex = 1;
 	}
 
-	void Renderer2D::nextBatch() {
+	void Renderer2D::nextBatch()
+	{
 		flush();
 		startBatch();
 	}

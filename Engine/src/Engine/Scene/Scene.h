@@ -5,10 +5,12 @@
 
 #include <entt.hpp>
 
-namespace Engine {
+namespace Engine
+{
 	class Entity;
 
-	class Scene {
+	class Scene
+	{
 	public:
 		Scene();
 		~Scene();

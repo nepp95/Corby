@@ -1,7 +1,9 @@
 #pragma once
 
-namespace Engine {
-	class GraphicsContext {
+namespace Engine
+{
+	class GraphicsContext
+	{
 	public:
 		virtual ~GraphicsContext() = default;
 
