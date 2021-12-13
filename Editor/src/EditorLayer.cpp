@@ -113,6 +113,7 @@ namespace Engine {
 		// Update scene
 		m_activeScene->onUpdateEditor(ts, m_editorCamera);
 
+		// Cleanup
 		m_framebuffer->unbind();
 	}
 
@@ -238,8 +239,6 @@ namespace Engine {
 		//
 		// -----------------------------------------
 		Entity selectedEntity = m_sceneHierarchyPanel.getSelectedEntity();
-		if (selectedEntity)
-			ENG_CORE_TRACE(m_gizmoType);
 		if (selectedEntity && m_gizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
