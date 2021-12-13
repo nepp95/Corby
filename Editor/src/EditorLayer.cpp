@@ -294,6 +294,9 @@ namespace Engine {
 	void EditorLayer::onEvent(Event& e) {
 		m_cameraController.onEvent(e);
 		m_editorCamera.onEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.dispatch<KeyPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::onKeyPressed));
 	}
 
 	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
