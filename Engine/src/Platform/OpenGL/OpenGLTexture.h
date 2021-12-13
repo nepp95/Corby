@@ -4,8 +4,10 @@
 
 #include <glad/glad.h>
 
-namespace Engine {
-	class OpenGLTexture2D : public Texture2D {
+namespace Engine
+{
+	class OpenGLTexture2D : public Texture2D
+	{
 	public:
 		OpenGLTexture2D(uint32_t width, uint32_t height);
 		OpenGLTexture2D(const std::string& filepath);
@@ -19,8 +21,9 @@ namespace Engine {
 
 		virtual void bind(uint32_t slot = 0) const override;
 
-		virtual bool operator==(const Texture& other) const override {
-			return m_rendererID == ((OpenGLTexture2D&)other).m_rendererID;
+		virtual bool operator==(const Texture& other) const override
+		{
+			return m_rendererID == ((OpenGLTexture2D&) other).m_rendererID;
 		}
 
 	private:
