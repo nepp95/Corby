@@ -12,20 +12,22 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-namespace Engine {
-	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {
-	}
+namespace Engine
+{
+	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
+	{}
 
-	ImGuiLayer::~ImGuiLayer() {
-	}
+	ImGuiLayer::~ImGuiLayer()
+	{}
 
-	void ImGuiLayer::onAttach() {
+	void ImGuiLayer::onAttach()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		// Setup ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		ImGuiIO& io = ImGui::GetIO(); (void) io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable keyboard controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable gamepad controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable docking
@@ -42,7 +44,8 @@ namespace Engine {
 		// When viewports are enabled we tweak WindowRounding so platform windows can look identical
 		ImGuiStyle& style = ImGui::GetStyle();
 
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
@@ -56,7 +59,8 @@ namespace Engine {
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
-	void ImGuiLayer::onDetach() {
+	void ImGuiLayer::onDetach()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		ImGui_ImplOpenGL3_Shutdown();
@@ -64,15 +68,18 @@ namespace Engine {
 		ImGui::DestroyContext();
 	}
 
-	void ImGuiLayer::onEvent(Event& e) {
-		if (m_blockEvents) {
+	void ImGuiLayer::onEvent(Event& e)
+	{
+		if (m_blockEvents)
+		{
 			ImGuiIO& io = ImGui::GetIO();
 			e.handled |= e.isInCategory(EventCategoryMouse) & io.WantCaptureMouse;
 			e.handled |= e.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
 		}
 	}
 
-	void ImGuiLayer::begin() {
+	void ImGuiLayer::begin()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -81,18 +88,20 @@ namespace Engine {
 		ImGuizmo::BeginFrame();
 	}
 
-	void ImGuiLayer::end() {
+	void ImGuiLayer::end()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::get();
-		io.DisplaySize = ImVec2((float)app.getWindow().getWidth(), (float)app.getWindow().getHeight());
+		io.DisplaySize = ImVec2((float) app.getWindow().getWidth(), (float) app.getWindow().getHeight());
 
 		// Rendering
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
 			GLFWwindow* backupCurrentContext = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
@@ -100,7 +109,8 @@ namespace Engine {
 		}
 	}
 
-	void ImGuiLayer::setDarkThemeColors() {
+	void ImGuiLayer::setDarkThemeColors()
+	{
 		auto& colors = ImGui::GetStyle().Colors;
 		colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
