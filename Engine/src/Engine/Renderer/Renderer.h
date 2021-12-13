@@ -4,8 +4,10 @@
 #include "Engine/Renderer/RenderCommand.h"
 #include "Engine/Renderer/Shader.h"
 
-namespace Engine {
-	class Renderer {
+namespace Engine
+{
+	class Renderer
+	{
 	public:
 		static void init();
 		static void shutdown();
@@ -20,7 +22,8 @@ namespace Engine {
 		static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
 
 	private:
-		struct SceneData {
+		struct SceneData
+		{
 			glm::mat4 viewProjectionMatrix;
 		};
 

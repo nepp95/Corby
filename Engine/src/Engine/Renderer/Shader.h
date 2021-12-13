@@ -5,8 +5,10 @@
 
 #include <glm/glm.hpp>
 
-namespace Engine {
-	class Shader {
+namespace Engine
+{
+	class Shader
+	{
 	public:
 		virtual ~Shader() = default;
 
@@ -29,7 +31,8 @@ namespace Engine {
 		uint32_t m_rendererID;
 	};
 
-	class ShaderLibrary {
+	class ShaderLibrary
+	{
 	public:
 		void add(const std::string& name, const Ref<Shader>& shader);
 		void add(const Ref<Shader>& shader);

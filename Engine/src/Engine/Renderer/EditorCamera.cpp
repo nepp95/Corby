@@ -10,7 +10,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-namespace Engine {
+namespace Engine
+{
 	EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
 		: m_FOV(fov), m_aspectRatio(aspectRatio), m_nearClip(nearClip), m_farClip(farClip), Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
 	{
@@ -19,7 +20,8 @@ namespace Engine {
 
 	void EditorCamera::onUpdate(Timestep ts)
 	{
-		if (Input::isKeyPressed(Key::LeftAlt)) {
+		if (Input::isKeyPressed(Key::LeftAlt))
+		{
 			const glm::vec2& mouse{ Input::getMouseX(), Input::getMouseY() };
 			glm::vec2 delta = (mouse - m_initialMousePosition) * 0.003f;
 			m_initialMousePosition = mouse;
@@ -145,7 +147,8 @@ namespace Engine {
 	{
 		m_distance -= delta * zoomSpeed();
 
-		if (m_distance < 1.0f) {
+		if (m_distance < 1.0f)
+		{
 			m_focalPoint += getForwardDirection();
 			m_distance = 1.0f;
 		}

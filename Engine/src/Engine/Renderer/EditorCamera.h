@@ -7,8 +7,10 @@
 
 #include <glm/glm.hpp>
 
-namespace Engine {
-	class EditorCamera : public Camera {
+namespace Engine
+{
+	class EditorCamera : public Camera
+	{
 	public:
 		EditorCamera() = default;
 		EditorCamera(float fov, float aspectRatio, float nearClip, float farClip);

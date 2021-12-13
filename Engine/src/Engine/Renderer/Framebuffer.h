@@ -1,14 +1,17 @@
 #pragma once
 
-namespace Engine {
-	struct FramebufferSpecification {
+namespace Engine
+{
+	struct FramebufferSpecification
+	{
 		uint32_t width = 0, height = 0;
 		uint32_t samples = 1;
 
 		bool swapChainTarget = false;
 	};
 
-	class Framebuffer {
+	class Framebuffer
+	{
 	public:
 		virtual ~Framebuffer() = default;
 

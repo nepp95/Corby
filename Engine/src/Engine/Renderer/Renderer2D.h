@@ -6,8 +6,10 @@
 #include "Engine/Renderer/SubTexture2D.h"
 #include "Engine/Renderer/Texture.h"
 
-namespace Engine {
-	class Renderer2D {
+namespace Engine
+{
+	class Renderer2D
+	{
 	public:
 		static void init();
 		static void shutdown();
@@ -36,7 +38,8 @@ namespace Engine {
 		static void drawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		// Statistics
-		struct Statistics {
+		struct Statistics
+		{
 			uint32_t drawCalls = 0;
 			uint32_t quadCount = 0;
 
