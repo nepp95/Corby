@@ -23,6 +23,7 @@ namespace Engine
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1280;
 		fbSpec.height = 720;
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
 		m_framebuffer = Framebuffer::create(fbSpec);
 
 		m_activeScene = createRef<Scene>();
@@ -318,54 +319,54 @@ namespace Engine
 
 		switch (e.getKeyCode())
 		{
-		case Key::N:
-		{
-			if (control)
-				newScene();
-			break;
-		}
+			case Key::N:
+			{
+				if (control)
+					newScene();
+				break;
+			}
 
-		case Key::O:
-		{
-			if (control)
-				openScene();
-			break;
-		}
+			case Key::O:
+			{
+				if (control)
+					openScene();
+				break;
+			}
 
-		case Key::S:
-		{
-			if (control && shift)
-				saveSceneAs();
-			else if (control)
-				saveScene();
-			break;
-		}
+			case Key::S:
+			{
+				if (control && shift)
+					saveSceneAs();
+				else if (control)
+					saveScene();
+				break;
+			}
 
-		//Gizmos
-		case Key::Q:
-		{
-			m_gizmoType = -1;
-			break;
-		}
+			//Gizmos
+			case Key::Q:
+			{
+				m_gizmoType = -1;
+				break;
+			}
 
-		case Key::W:
-		{
-			ENG_CORE_TRACE("W");
-			m_gizmoType = (int) ImGuizmo::OPERATION::TRANSLATE;
-			break;
-		}
+			case Key::W:
+			{
+				ENG_CORE_TRACE("W");
+				m_gizmoType = (int) ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			}
 
-		case Key::E:
-		{
-			m_gizmoType = (int) ImGuizmo::OPERATION::ROTATE;
-			break;
-		}
+			case Key::E:
+			{
+				m_gizmoType = (int) ImGuizmo::OPERATION::ROTATE;
+				break;
+			}
 
-		case Key::R:
-		{
-			m_gizmoType = (int) ImGuizmo::OPERATION::SCALE;
-			break;
-		}
+			case Key::R:
+			{
+				m_gizmoType = (int) ImGuizmo::OPERATION::SCALE;
+				break;
+			}
 		}
 	}
 
