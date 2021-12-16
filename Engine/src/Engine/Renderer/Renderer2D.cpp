@@ -16,8 +16,6 @@ namespace Engine
 		glm::vec2 texCoord;
 		float texIndex;
 		float tilingFactor;
-
-		int entityID;
 	};
 
 	struct Renderer2DData
@@ -55,11 +53,11 @@ namespace Engine
 		s_data.quadVertexBuffer = VertexBuffer::create(s_data.maxVertices * sizeof(QuadVertex));
 
 		s_data.quadVertexBuffer->setLayout({
-			{ ShaderDataType::Float3, "a_position"		},
-			{ ShaderDataType::Float4, "a_color"			},
-			{ ShaderDataType::Float2, "a_texCoord"		},
-			{ ShaderDataType::Float,  "a_texIndex"		},
-			{ ShaderDataType::Float,  "a_tilingFactor"	}
+			{ ShaderDataType::Float3, "a_position" },
+			{ ShaderDataType::Float4, "a_color" },
+			{ ShaderDataType::Float2, "a_texCoord" },
+			{ ShaderDataType::Float,  "a_texIndex" },
+			{ ShaderDataType::Float,  "a_tilingFactor" }
 			});
 		s_data.quadVertexArray->addVertexBuffer(s_data.quadVertexBuffer);
 		//
@@ -217,7 +215,7 @@ namespace Engine
 		drawQuad(transform, subtexture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::drawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	void Renderer2D::drawQuad(const glm::mat4& transform, const glm::vec4& color)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -236,7 +234,6 @@ namespace Engine
 			s_data.quadVertexBufferPtr->texCoord = textureCoords[i];
 			s_data.quadVertexBufferPtr->texIndex = textureIndex;
 			s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
-			s_data.quadVertexBufferPtr->entityID = entityID;
 			s_data.quadVertexBufferPtr++;
 		}
 
@@ -245,7 +242,7 @@ namespace Engine
 		s_data.stats.quadCount++;
 	}
 
-	void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
+	void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -282,7 +279,6 @@ namespace Engine
 			s_data.quadVertexBufferPtr->texCoord = textureCoords[i];
 			s_data.quadVertexBufferPtr->texIndex = textureIndex;
 			s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
-			s_data.quadVertexBufferPtr->entityID = entityID;
 			s_data.quadVertexBufferPtr++;
 		}
 
@@ -291,7 +287,7 @@ namespace Engine
 		s_data.stats.quadCount++;
 	}
 
-	void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor, int entityID)
+	void Renderer2D::drawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -330,7 +326,6 @@ namespace Engine
 			s_data.quadVertexBufferPtr->texCoord = textureCoords[i];
 			s_data.quadVertexBufferPtr->texIndex = textureIndex;
 			s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
-			s_data.quadVertexBufferPtr->entityID = entityID;
 			s_data.quadVertexBufferPtr++;
 		}
 
@@ -384,11 +379,6 @@ namespace Engine
 			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
 		drawQuad(transform, subtexture, tilingFactor, tintColor);
-	}
-
-	void Renderer2D::drawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
-	{
-		drawQuad(transform, src.color, entityID);
 	}
 
 	void Renderer2D::resetStats()
