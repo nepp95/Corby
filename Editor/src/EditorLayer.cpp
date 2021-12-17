@@ -252,7 +252,11 @@ namespace Engine
 		// -----------------------------------------
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
-		auto viewportOffset = ImGui::GetCursorPos();
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		m_viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		m_viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
@@ -263,15 +267,6 @@ namespace Engine
 
 		uint64_t textureID = m_framebuffer->getColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-		auto windowSize = ImGui::GetWindowSize();
-		ImVec2 minBound = ImGui::GetWindowPos();
-		minBound.x += viewportOffset.x;
-		minBound.y += viewportOffset.y;
-
-		ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
-		m_viewportBounds[0] = { minBound.x, minBound.y };
-		m_viewportBounds[1] = { maxBound.x, maxBound.y };
 
 		// -----------------------------------------
 		//
@@ -284,9 +279,7 @@ namespace Engine
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
 
-			float windowWidth = (float) ImGui::GetWindowWidth();
-			float windowHeight = (float) ImGui::GetWindowHeight();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+			ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
 
 			// Camera
 			//auto cameraEntity = m_activeScene->getPrimaryCameraEntity();
@@ -377,26 +370,29 @@ namespace Engine
 			//Gizmos
 			case Key::Q:
 			{
-				m_gizmoType = -1;
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = -1;
 				break;
 			}
 
 			case Key::W:
 			{
-				ENG_CORE_TRACE("W");
-				m_gizmoType = (int) ImGuizmo::OPERATION::TRANSLATE;
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
 				break;
 			}
 
 			case Key::E:
 			{
-				m_gizmoType = (int) ImGuizmo::OPERATION::ROTATE;
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::ROTATE;
 				break;
 			}
 
 			case Key::R:
 			{
-				m_gizmoType = (int) ImGuizmo::OPERATION::SCALE;
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::SCALE;
 				break;
 			}
 		}
