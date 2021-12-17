@@ -337,6 +337,7 @@ namespace Engine
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::onKeyPressed));
+		dispatcher.dispatch<MouseButtonPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::onMouseButtonPressed));
 	}
 
 	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
@@ -399,6 +400,17 @@ namespace Engine
 				break;
 			}
 		}
+	}
+
+	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		if (e.getMouseButton() == Mouse::ButtonLeft)
+		{
+			if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::isKeyPressed(Key::LeftAlt))
+				m_sceneHierarchyPanel.setSelectedEntity(m_hoveredEntity);
+		}
+
+		return false;
 	}
 
 	void EditorLayer::newScene()
