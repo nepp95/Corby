@@ -23,7 +23,7 @@ namespace Engine
 		FramebufferSpecification fbSpec;
 		fbSpec.width = 1280;
 		fbSpec.height = 720;
-		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		m_framebuffer = Framebuffer::create(fbSpec);
 
 		m_activeScene = createRef<Scene>();
@@ -120,6 +120,20 @@ namespace Engine
 
 		// Update scene
 		m_activeScene->onUpdateEditor(ts, m_editorCamera);
+
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_viewportBounds[0].x;
+		my -= m_viewportBounds[0].y;
+		glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+		my = viewportSize.y - my;
+		int mouseX = (int) mx;
+		int mouseY = (int) my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int) viewportSize.x && mouseY < (int) viewportSize.y)
+		{
+			int pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
+			ENG_CORE_WARN("Pixel data = {0}", pixelData);
+		}
 
 		// Cleanup
 		m_framebuffer->unbind();
@@ -231,6 +245,7 @@ namespace Engine
 		// -----------------------------------------
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
+		auto viewportOffset = ImGui::GetCursorPos();
 
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
@@ -241,6 +256,15 @@ namespace Engine
 
 		uint64_t textureID = m_framebuffer->getColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+		auto windowSize = ImGui::GetWindowSize();
+		ImVec2 minBound = ImGui::GetWindowPos();
+		minBound.x += viewportOffset.x;
+		minBound.y += viewportOffset.y;
+
+		ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+		m_viewportBounds[0] = { minBound.x, minBound.y };
+		m_viewportBounds[1] = { maxBound.x, maxBound.y };
 
 		// -----------------------------------------
 		//

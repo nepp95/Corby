@@ -27,6 +27,7 @@ void main()
 #version 450
 
 layout(location = 0) out vec4 color;
+layout(location = 1) out int color2;
  
 in vec4 v_color;
 in vec2 v_texCoord;
@@ -41,16 +42,16 @@ void main()
 
 	switch(int(v_texIndex))
 	{
-		case 0: texColor *= texture(u_textures[0], v_texCoord * v_tilingFactor); break;
-		case 1: texColor *= texture(u_textures[1], v_texCoord * v_tilingFactor); break;
-		case 2: texColor *= texture(u_textures[2], v_texCoord * v_tilingFactor); break;
-		case 3: texColor *= texture(u_textures[3], v_texCoord * v_tilingFactor); break;
-		case 4: texColor *= texture(u_textures[4], v_texCoord * v_tilingFactor); break;
-		case 5: texColor *= texture(u_textures[5], v_texCoord * v_tilingFactor); break;
-		case 6: texColor *= texture(u_textures[6], v_texCoord * v_tilingFactor); break;
-		case 7: texColor *= texture(u_textures[7], v_texCoord * v_tilingFactor); break;
-		case 8: texColor *= texture(u_textures[8], v_texCoord * v_tilingFactor); break;
-		case 9: texColor *= texture(u_textures[9], v_texCoord * v_tilingFactor); break;
+		case  0: texColor *= texture(u_textures[ 0], v_texCoord * v_tilingFactor); break;
+		case  1: texColor *= texture(u_textures[ 1], v_texCoord * v_tilingFactor); break;
+		case  2: texColor *= texture(u_textures[ 2], v_texCoord * v_tilingFactor); break;
+		case  3: texColor *= texture(u_textures[ 3], v_texCoord * v_tilingFactor); break;
+		case  4: texColor *= texture(u_textures[ 4], v_texCoord * v_tilingFactor); break;
+		case  5: texColor *= texture(u_textures[ 5], v_texCoord * v_tilingFactor); break;
+		case  6: texColor *= texture(u_textures[ 6], v_texCoord * v_tilingFactor); break;
+		case  7: texColor *= texture(u_textures[ 7], v_texCoord * v_tilingFactor); break;
+		case  8: texColor *= texture(u_textures[ 8], v_texCoord * v_tilingFactor); break;
+		case  9: texColor *= texture(u_textures[ 9], v_texCoord * v_tilingFactor); break;
 		case 10: texColor *= texture(u_textures[10], v_texCoord * v_tilingFactor); break;
 		case 11: texColor *= texture(u_textures[11], v_texCoord * v_tilingFactor); break;
 		case 12: texColor *= texture(u_textures[12], v_texCoord * v_tilingFactor); break;
@@ -76,4 +77,5 @@ void main()
 	}
 
 	color = texColor;
+	color2 = 50;
 }
