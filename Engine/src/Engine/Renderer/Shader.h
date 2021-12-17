@@ -5,8 +5,10 @@
 
 #include <glm/glm.hpp>
 
-namespace Engine {
-	class Shader {
+namespace Engine
+{
+	class Shader
+	{
 	public:
 		virtual ~Shader() = default;
 
@@ -16,6 +18,7 @@ namespace Engine {
 		virtual void setInt(const std::string& name, int value) = 0;
 		virtual void setIntArray(const std::string& name, int* values, uint32_t count) = 0;
 		virtual void setFloat(const std::string& name, float value) = 0;
+		virtual void setFloat2(const std::string& name, const glm::vec2& value) = 0;
 		virtual void setFloat3(const std::string& name, const glm::vec3& value) = 0;
 		virtual void setFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void setMat4(const std::string& name, const glm::mat4& value) = 0;
@@ -29,7 +32,8 @@ namespace Engine {
 		uint32_t m_rendererID;
 	};
 
-	class ShaderLibrary {
+	class ShaderLibrary
+	{
 	public:
 		void add(const std::string& name, const Ref<Shader>& shader);
 		void add(const Ref<Shader>& shader);

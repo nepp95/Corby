@@ -11,21 +11,25 @@
 #include <mutex>
 #include <sstream>
 
-namespace Engine {
+namespace Engine
+{
 	using floatingPointMicroseconds = std::chrono::duration<double, std::micro>;
 
-	struct ProfileResult {
+	struct ProfileResult
+	{
 		std::string name;
 		floatingPointMicroseconds start;
 		std::chrono::microseconds elapsedTime;
 		std::thread::id threadID;
 	};
 
-	struct InstrumentationSession {
+	struct InstrumentationSession
+	{
 		std::string name;
 	};
 
-	class Instrumentor {
+	class Instrumentor
+	{
 	public:
 		Instrumentor(const Instrumentor&) = delete;
 		Instrumentor(Instrumentor&&) = delete;
@@ -50,7 +54,8 @@ namespace Engine {
 		std::ofstream m_outputStream;
 	};
 
-	class InstrumentationTimer {
+	class InstrumentationTimer
+	{
 	public:
 		InstrumentationTimer(const char* name);
 		~InstrumentationTimer();
@@ -63,20 +68,24 @@ namespace Engine {
 		bool m_stopped;
 	};
 
-	namespace InstrumentorUtils {
+	namespace InstrumentorUtils
+	{
 		template <size_t N>
-		struct changeResult {
+		struct changeResult
+		{
 			char data[N];
 		};
 
 		template <size_t N, size_t K>
-		constexpr auto cleanupOutputString(const char(&expr)[N], const char(&remove)[K]) {
+		constexpr auto cleanupOutputString(const char(&expr)[N], const char(&remove)[K])
+		{
 			changeResult<N> result = {};
 
 			size_t srcIndex = 0;
 			size_t dstIndex = 0;
 
-			while (srcIndex < N) {
+			while (srcIndex < N)
+			{
 				size_t matchIndex = 0;
 
 				while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])

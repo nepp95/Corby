@@ -7,8 +7,10 @@
 // TODO: REMOVE!
 typedef unsigned int GLenum;
 
-namespace Engine {
-	class OpenGLShader : public Shader {
+namespace Engine
+{
+	class OpenGLShader : public Shader
+	{
 	public:
 		OpenGLShader(const std::string& filepath);
 		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
@@ -20,6 +22,7 @@ namespace Engine {
 		virtual void setInt(const std::string& name, int value) override;
 		virtual void setIntArray(const std::string& name, int* values, uint32_t count) override;
 		virtual void setFloat(const std::string& name, float value) override;
+		virtual void setFloat2(const std::string& name, const glm::vec2& value) override;
 		virtual void setFloat3(const std::string& name, const glm::vec3& value) override;
 		virtual void setFloat4(const std::string& name, const glm::vec4& value) override;
 		virtual void setMat4(const std::string& name, const glm::mat4& value) override;

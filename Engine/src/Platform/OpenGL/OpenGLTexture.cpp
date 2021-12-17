@@ -3,8 +3,10 @@
 
 #include <stb_image.h>
 
-namespace Engine {
-	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(width), m_height(height) {
+namespace Engine
+{
+	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(width), m_height(height)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		m_internalFormat = GL_RGBA8;
@@ -20,7 +22,8 @@ namespace Engine {
 		glTextureParameteri(m_rendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath) : m_path(filepath) {
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath) : m_path(filepath)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		int width, height, channels;
@@ -35,11 +38,12 @@ namespace Engine {
 		GLenum internalFormat = 0, dataFormat = 0;
 
 		// Check if our texture has a transparency layer
-		if (channels == 4) {
+		if (channels == 4)
+		{
 			internalFormat = GL_RGBA8;
 			dataFormat = GL_RGBA;
-		}
-		else if (channels == 3) {
+		} else if (channels == 3)
+		{
 			internalFormat = GL_RGB8;
 			dataFormat = GL_RGB;
 		}
@@ -63,13 +67,15 @@ namespace Engine {
 		stbi_image_free(data);
 	}
 
-	OpenGLTexture2D::~OpenGLTexture2D() {
+	OpenGLTexture2D::~OpenGLTexture2D()
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glDeleteTextures(1, &m_rendererID);
 	}
 
-	void OpenGLTexture2D::setData(void* data, uint32_t size) {
+	void OpenGLTexture2D::setData(void* data, uint32_t size)
+	{
 		ENG_PROFILE_FUNCTION();
 
 		uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
@@ -77,7 +83,8 @@ namespace Engine {
 		glTextureSubImage2D(m_rendererID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 
-	void OpenGLTexture2D::bind(uint32_t slot) const {
+	void OpenGLTexture2D::bind(uint32_t slot) const
+	{
 		ENG_PROFILE_FUNCTION();
 
 		glBindTextureUnit(slot, m_rendererID);

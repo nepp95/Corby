@@ -2,8 +2,10 @@
 
 #include <glm/glm.hpp>
 
-namespace Engine {
-	class OrthographicCamera {
+namespace Engine
+{
+	class OrthographicCamera
+	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
 

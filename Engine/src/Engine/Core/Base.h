@@ -5,30 +5,30 @@
 #include "Engine/Core/PlatformDetection.h"
 
 #ifdef ENG_DEBUG
-	#if defined(ENG_PLATFORM_WINDOWS)
-		#define ENG_DEBUGBREAK() __debugbreak()
-	#elif defined(ENG_PLATFORM_LINUX)
-		#include <signal.h>
-		#define ENG_DEBUGBREAK() raise(SIGTRAP)
-	#else
-		#error "Platform does not support debugbreak yet!"
-	#endif
-	#define ENG_ENABLE_ASSERTS
+#if defined(ENG_PLATFORM_WINDOWS)
+#define ENG_DEBUGBREAK() __debugbreak()
+#elif defined(ENG_PLATFORM_LINUX)
+#include <signal.h>
+#define ENG_DEBUGBREAK() raise(SIGTRAP)
 #else
-	#define ENG_DEBUGREAK()
+#error "Platform does not support debugbreak yet!"
+#endif
+#define ENG_ENABLE_ASSERTS
+#else
+#define ENG_DEBUGREAK()
 #endif
 
 #define ENG_PROFILE
 #ifdef ENG_PROFILE
-	#define ENG_PROFILE_BEGIN_SESSION(name, filepath) ::Engine::Instrumentor::get().beginSession(name, filepath)
-	#define ENG_PROFILE_END_SESSION() ::Engine::Instrumentor::get().endSession()
-	#define ENG_PROFILE_SCOPE(name) ::Engine::InstrumentationTimer timer##__LINE__(name);
-	#define ENG_PROFILE_FUNCTION() ENG_PROFILE_SCOPE(__FUNCSIG__)
+#define ENG_PROFILE_BEGIN_SESSION(name, filepath) ::Engine::Instrumentor::get().beginSession(name, filepath)
+#define ENG_PROFILE_END_SESSION() ::Engine::Instrumentor::get().endSession()
+#define ENG_PROFILE_SCOPE(name) ::Engine::InstrumentationTimer timer##__LINE__(name);
+#define ENG_PROFILE_FUNCTION() ENG_PROFILE_SCOPE(__FUNCSIG__)
 #else
-	#define ENG_PROFILE_BEGIN_SESSION(name, filepath)
-	#define ENG_PROFILE_END_SESSION()
-	#define ENG_PROFILE_SCOPE(name)
-	#define ENG_PROFILE_FUNCTION()
+#define ENG_PROFILE_BEGIN_SESSION(name, filepath)
+#define ENG_PROFILE_END_SESSION()
+#define ENG_PROFILE_SCOPE(name)
+#define ENG_PROFILE_FUNCTION()
 #endif
 
 #define BIT(x) (1 << x)

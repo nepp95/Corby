@@ -14,7 +14,8 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
-namespace Engine {
+namespace Engine
+{
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
 	{
 		setContext(context);
@@ -35,16 +36,17 @@ namespace Engine {
 		// -----------------------------------------
 		ImGui::Begin("Scene Hierarchy");
 
-		m_context->m_registry.each([&](auto entityID) {
+		m_context->m_registry.each([&] (auto entityID) {
 			Entity entity{ entityID, m_context.get() };
 			drawEntityNode(entity);
-		});
+			});
 
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			m_selectionContext = {};
 
 		// Right click on blank space
-		if (ImGui::BeginPopupContextWindow(0, 1, false)) {
+		if (ImGui::BeginPopupContextWindow(0, 1, false))
+		{
 			if (ImGui::MenuItem("Create empty entity"))
 				m_context->createEntity("Empty entity");
 
@@ -66,37 +68,51 @@ namespace Engine {
 		ImGui::End();
 	}
 
+	Entity SceneHierarchyPanel::getSelectedEntity() const
+	{
+		return m_selectionContext;
+	}
+
+	void SceneHierarchyPanel::setSelectedEntity(Entity entity)
+	{
+		m_selectionContext = entity;
+	}
+
 	void SceneHierarchyPanel::drawEntityNode(Entity entity)
 	{
 		std::string& tag = entity.getComponent<TagComponent>();
 
 		ImGuiTreeNodeFlags flags = ((m_selectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+		bool opened = ImGui::TreeNodeEx((void*) (uint64_t) (uint32_t) entity, flags, tag.c_str());
 
-		if (ImGui::IsItemClicked()) {
+		if (ImGui::IsItemClicked())
+		{
 			m_selectionContext = entity;
 		}
 
 		bool entityDeleted = false;
-		if (ImGui::BeginPopupContextItem()) {
+		if (ImGui::BeginPopupContextItem())
+		{
 			if (ImGui::MenuItem("Delete entity"))
 				entityDeleted = true;
 
 			ImGui::EndPopup();
 		}
 
-		if (opened) {
+		if (opened)
+		{
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
+			bool opened = ImGui::TreeNodeEx((void*) 9817239, flags, tag.c_str());
 
 			if (opened)
 				ImGui::TreePop();
-			
+
 			ImGui::TreePop();
 		}
 
-		if (entityDeleted) {
+		if (entityDeleted)
+		{
 			m_context->destroyEntity(entity);
 
 			if (m_selectionContext == entity)
@@ -104,7 +120,8 @@ namespace Engine {
 		}
 	}
 
-	static void drawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f) {
+	static void drawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		auto boldFont = io.Fonts->Fonts[0];
 
@@ -117,7 +134,7 @@ namespace Engine {
 
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-		
+
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
@@ -210,7 +227,8 @@ namespace Engine {
 
 	void SceneHierarchyPanel::drawComponents(Entity entity)
 	{
-		if (entity.hasComponent<TagComponent>()) {
+		if (entity.hasComponent<TagComponent>())
+		{
 			std::string& tag = entity.getComponent<TagComponent>();
 
 			char buffer[256];
@@ -227,8 +245,10 @@ namespace Engine {
 		if (ImGui::Button("Add component"))
 			ImGui::OpenPopup("AddComponent");
 
-		if (ImGui::BeginPopup("AddComponent")) {
-			if (ImGui::MenuItem("Camera")) {
+		if (ImGui::BeginPopup("AddComponent"))
+		{
+			if (ImGui::MenuItem("Camera"))
+			{
 				if (!m_selectionContext.hasComponent<CameraComponent>())
 					m_selectionContext.addComponent<CameraComponent>();
 				else
@@ -236,7 +256,8 @@ namespace Engine {
 				ImGui::CloseCurrentPopup();
 			}
 
-			if (ImGui::MenuItem("Sprite renderer")) {
+			if (ImGui::MenuItem("Sprite renderer"))
+			{
 				if (!m_selectionContext.hasComponent<SpriteRendererComponent>())
 					m_selectionContext.addComponent<SpriteRendererComponent>();
 				else
@@ -249,29 +270,32 @@ namespace Engine {
 
 		ImGui::PopItemWidth();
 
-		drawComponent<TransformComponent>("Transform", entity, [](auto& component) {
+		drawComponent<TransformComponent>("Transform", entity, [] (auto& component) {
 			drawVec3Control("Translation", component.translation);
 			glm::vec3 rotation = glm::degrees(component.rotation);
 			drawVec3Control("Rotation", rotation);
 			component.rotation = glm::radians(rotation);
 			drawVec3Control("Scale", component.scale, 1.0f);
-		});
+			});
 
-		drawComponent<CameraComponent>("Camera", entity, [](auto& component) {
+		drawComponent<CameraComponent>("Camera", entity, [] (auto& component) {
 			auto& camera = component.camera;
 
 			ImGui::Checkbox("Primary", &component.primary);
 
 			const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-			const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.getProjectionType()];
+			const char* currentProjectionTypeString = projectionTypeStrings[(int) camera.getProjectionType()];
 
-			if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
-				for (int i = 0; i < 2; i++) {
+			if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
+			{
+				for (int i = 0; i < 2; i++)
+				{
 					bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
 
-					if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
+					if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
+					{
 						currentProjectionTypeString = projectionTypeStrings[i];
-						camera.setProjectionType((SceneCamera::ProjectionType)i);
+						camera.setProjectionType((SceneCamera::ProjectionType) i);
 					}
 
 					if (isSelected)
@@ -281,7 +305,8 @@ namespace Engine {
 				ImGui::EndCombo();
 			}
 
-			if (camera.getProjectionType() == SceneCamera::ProjectionType::Perspective) {
+			if (camera.getProjectionType() == SceneCamera::ProjectionType::Perspective)
+			{
 				float perspectiveVerticalFOV = glm::degrees(camera.getPerspectiveVerticalFOV());
 				if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFOV))
 					camera.setPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFOV));
@@ -295,7 +320,8 @@ namespace Engine {
 					camera.setPerspectiveFarClip(perspectiveFar);
 			}
 
-			if (camera.getProjectionType() == SceneCamera::ProjectionType::Orthographic) {
+			if (camera.getProjectionType() == SceneCamera::ProjectionType::Orthographic)
+			{
 				float orthographicSize = camera.getOrthographicSize();
 				if (ImGui::DragFloat("Size", &orthographicSize))
 					camera.setOrthographicSize(orthographicSize);
@@ -310,10 +336,10 @@ namespace Engine {
 
 				ImGui::Checkbox("Fixed Aspect Ratio", &component.fixedAspectRatio);
 			}
-		});
+			});
 
-		drawComponent<SpriteRendererComponent>("Sprite renderer", entity, [](auto& component) {
+		drawComponent<SpriteRendererComponent>("Sprite renderer", entity, [] (auto& component) {
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.color));
-		});
+			});
 	}
 }

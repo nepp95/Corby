@@ -2,15 +2,18 @@
 
 #include "Engine/Events/Event.h"
 
-namespace Engine {
-	class WindowResizeEvent : public Event {
+namespace Engine
+{
+	class WindowResizeEvent : public Event
+	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height) : m_width(width), m_height(height) {}
 
 		unsigned int getWidth() const { return m_width; }
 		unsigned int getHeight() const { return m_height; }
 
-		std::string ToString() const override {
+		std::string ToString() const override
+		{
 			std::stringstream ss;
 			ss << "WindowResizeEvent: " << m_width << ", " << m_height;
 
@@ -24,7 +27,8 @@ namespace Engine {
 		unsigned int m_width, m_height;
 	};
 
-	class WindowCloseEvent : public Event {
+	class WindowCloseEvent : public Event
+	{
 	public:
 		WindowCloseEvent() = default;
 
@@ -32,7 +36,8 @@ namespace Engine {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
 
-	class AppTickEvent : public Event {
+	class AppTickEvent : public Event
+	{
 	public:
 		AppTickEvent() = default;
 
@@ -40,7 +45,8 @@ namespace Engine {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
 
-	class AppUpdateEvent : public Event {
+	class AppUpdateEvent : public Event
+	{
 	public:
 		AppUpdateEvent() = default;
 
@@ -48,7 +54,8 @@ namespace Engine {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
 
-	class AppRenderEvent : public Event {
+	class AppRenderEvent : public Event
+	{
 	public:
 		AppRenderEvent() = default;
 

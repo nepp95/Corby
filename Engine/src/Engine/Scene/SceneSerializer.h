@@ -2,7 +2,8 @@
 
 #include "Engine/Scene/Scene.h"
 
-namespace Engine {
+namespace Engine
+{
 	class SceneSerializer
 	{
 	public:

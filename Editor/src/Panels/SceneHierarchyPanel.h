@@ -4,7 +4,8 @@
 #include "Engine/Scene/Entity.h"
 #include "Engine/Scene/Scene.h"
 
-namespace Engine {
+namespace Engine
+{
 	class SceneHierarchyPanel
 	{
 	public:
@@ -15,7 +16,8 @@ namespace Engine {
 
 		void onImGuiRender();
 
-		Entity getSelectedEntity() const { return m_selectionContext; }
+		Entity getSelectedEntity() const;
+		void setSelectedEntity(Entity entity);
 
 	private:
 		void drawEntityNode(Entity entity);

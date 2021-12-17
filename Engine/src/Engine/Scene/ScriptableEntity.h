@@ -2,13 +2,16 @@
 
 #include "Engine/Scene/Entity.h"
 
-namespace Engine {
-	class ScriptableEntity {
+namespace Engine
+{
+	class ScriptableEntity
+	{
 	public:
 		virtual ~ScriptableEntity() {}
 
 		template<typename T>
-		T& getComponent() {
+		T& getComponent()
+		{
 			return m_entity.getComponent<T>();
 		}
 
