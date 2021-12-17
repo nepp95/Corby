@@ -118,6 +118,8 @@ namespace Engine
 		RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
 		RenderCommand::clear();
 
+		m_framebuffer->clearAttachment(1, -1);
+
 		// Update scene
 		m_activeScene->onUpdateEditor(ts, m_editorCamera);
 

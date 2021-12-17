@@ -76,6 +76,20 @@ namespace Engine
 
 			return false;
 		}
+
+		static GLenum EngineFBTextureFormatToGL(FramebufferTextureFormat format)
+		{
+			switch (format)
+			{
+				case FramebufferTextureFormat::RGBA8:
+					return GL_RGBA8;
+				case FramebufferTextureFormat::RED_INTEGER:
+					return GL_RED_INTEGER;
+			}
+
+			ENG_CORE_ASSERT(false);
+			return 0;
+		}
 	}
 
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
@@ -203,6 +217,14 @@ namespace Engine
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 
 		return pixelData;
+	}
+
+	void OpenGLFramebuffer::clearAttachment(uint32_t attachmentIndex, int value)
+	{
+		ENG_CORE_ASSERT(attachmentIndex < m_colorAttachments.size());
+
+		auto& spec = m_colorAttachmentSpecifications[attachmentIndex];
+		glClearTexImage(m_colorAttachments[attachmentIndex], 0, Utils::EngineFBTextureFormatToGL(spec.textureFormat), GL_INT, &value);
 	}
 
 	uint32_t OpenGLFramebuffer::getColorAttachmentRendererID(uint32_t index) const
