@@ -30,6 +30,8 @@ namespace Engine
 		std::string m_activeFile = "";
 
 		CameraController m_cameraController;
+		EditorCamera m_editorCamera;
+		bool m_primaryCamera = true;
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_viewportBounds[2];
@@ -44,8 +46,6 @@ namespace Engine
 		Ref<Framebuffer> m_framebuffer;
 		Ref<Scene> m_activeScene;
 
-		bool m_primaryCamera = true;
-
-		EditorCamera m_editorCamera;
+		Entity m_hoveredEntity;
 	};
 }

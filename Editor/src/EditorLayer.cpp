@@ -134,11 +134,11 @@ namespace Engine
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int) viewportSize.x && mouseY < (int) viewportSize.y)
 		{
 			int pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
-			ENG_CORE_WARN("Pixel data = {0}", pixelData);
-		}
+			m_hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity) pixelData, m_activeScene.get());
 
-		// Cleanup
-		m_framebuffer->unbind();
+			// Cleanup
+			m_framebuffer->unbind();
+		}
 	}
 
 	void EditorLayer::onImGuiRender()
@@ -230,6 +230,11 @@ namespace Engine
 		//
 		// -----------------------------------------
 		ImGui::Begin("Statistics");
+
+		std::string name = "None";
+		if (m_hoveredEntity)
+			name = m_hoveredEntity.getComponent<TagComponent>();
+		ImGui::Text("Hovered Entity: %s", name.c_str());
 
 		auto stats = Renderer2D::getStats();
 		ImGui::Text("Renderer2D Statistics:");
