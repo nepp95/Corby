@@ -10,7 +10,7 @@
 
 namespace Engine
 {
-	std::optional<std::string> FileDialogs::openFile(const char* filter)
+	std::string FileDialogs::openFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
@@ -29,10 +29,10 @@ namespace Engine
 			return ofn.lpstrFile;
 		}
 
-		return std::nullopt;
+		return std::string();
 	}
 
-	std::optional<std::string> FileDialogs::saveFile(const char* filter)
+	std::string FileDialogs::saveFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
@@ -52,6 +52,6 @@ namespace Engine
 		{
 			return ofn.lpstrFile;
 		}
-		return std::nullopt;
+		return std::string();
 	}
 }

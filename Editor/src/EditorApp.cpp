@@ -3,17 +3,22 @@
 
 #include "EditorLayer.h"
 
-namespace Engine {
-	class Editor : public Application {
+namespace Engine
+{
+	class Editor : public Application
+	{
 	public:
-		Editor() : Application("Engine Editor") {
+		Editor(ApplicationCommandLineArgs args)
+			: Application("Engine Editor", args)
+		{
 			pushLayer(new EditorLayer());
 		}
 
 		~Editor() {}
 	};
 
-	Application* createApplication() {
-		return new Editor();
+	Application* createApplication(ApplicationCommandLineArgs args)
+	{
+		return new Editor(args);
 	}
 }
