@@ -30,6 +30,7 @@ namespace Engine
 
 	void SceneCamera::setViewportSize(uint32_t width, uint32_t height)
 	{
+		ENG_CORE_ASSERT(width > 0 && height > 0);
 		m_aspectRatio = (float) width / (float) height;
 		recalculateProjection();
 	}

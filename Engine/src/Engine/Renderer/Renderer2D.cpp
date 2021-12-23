@@ -3,9 +3,11 @@
 
 #include "Engine/Renderer/RenderCommand.h"
 #include "Engine/Renderer/Shader.h"
+#include "Engine/Renderer/UniformBuffer.h"
 #include "Engine/Renderer/VertexArray.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Engine
 {
@@ -42,6 +44,13 @@ namespace Engine
 		glm::vec4 quadVertexPositions[4];
 
 		Renderer2D::Statistics stats;
+
+		struct CameraData
+		{
+			glm::mat4 viewProjection;
+		};
+		CameraData cameraBuffer;
+		Ref<UniformBuffer> cameraUniformBuffer;
 	};
 
 	static Renderer2DData s_data;
@@ -98,8 +107,6 @@ namespace Engine
 			samplers[i] = i;
 
 		s_data.textureShader = Shader::create("assets/shaders/Texture.glsl");
-		s_data.textureShader->bind();
-		s_data.textureShader->setIntArray("u_textures", samplers, s_data.maxTextureSlots);
 
 		// Set first texture slot to 0
 		s_data.textureSlots[0] = s_data.whiteTexture;
@@ -108,6 +115,8 @@ namespace Engine
 		s_data.quadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
 		s_data.quadVertexPositions[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
 		s_data.quadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+
+		s_data.cameraUniformBuffer = UniformBuffer::create(sizeof(Renderer2DData::CameraData), 0);
 	}
 
 	void Renderer2D::shutdown()
@@ -125,10 +134,8 @@ namespace Engine
 	{
 		ENG_PROFILE_FUNCTION();
 
-		glm::mat4 viewProjection = camera.getProjection() * glm::inverse(transform);
-
-		s_data.textureShader->bind();
-		s_data.textureShader->setMat4("u_viewProjection", viewProjection);
+		s_data.cameraBuffer.viewProjection = camera.getProjection() * glm::inverse(transform);
+		s_data.cameraUniformBuffer->setData(&s_data.cameraBuffer, sizeof(Renderer2DData::CameraData));
 
 		startBatch();
 	}
@@ -137,10 +144,8 @@ namespace Engine
 	{
 		ENG_PROFILE_FUNCTION();
 
-		glm::mat4 viewProjection = camera.getViewProjection();
-
-		s_data.textureShader->bind();
-		s_data.textureShader->setMat4("u_viewProjection", viewProjection);
+		s_data.cameraBuffer.viewProjection = camera.getViewProjection();
+		s_data.cameraUniformBuffer->setData(&s_data.cameraBuffer, sizeof(Renderer2DData::CameraData));
 
 		startBatch();
 	}
@@ -175,6 +180,7 @@ namespace Engine
 		for (uint32_t i = 0; i < s_data.textureSlotIndex; i++)
 			s_data.textureSlots[i]->bind(i);
 
+		s_data.textureShader->bind();
 		RenderCommand::drawIndexed(s_data.quadVertexArray, s_data.quadIndexCount);
 		s_data.stats.drawCalls++;
 	}
