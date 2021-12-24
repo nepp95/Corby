@@ -11,29 +11,30 @@
 
 namespace Engine
 {
-	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f)
+	EditorLayer::EditorLayer()
+		: Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f)
 	{}
 
-	void EditorLayer::onAttach()
+	void EditorLayer::OnAttach()
 	{
 		ENG_PROFILE_FUNCTION();
 
-		m_cameraController.setZoomLevel(5.0f);
+		m_cameraController.SetZoomLevel(5.0f);
 
 		FramebufferSpecification fbSpec;
-		fbSpec.width = 1280;
-		fbSpec.height = 720;
-		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
-		m_framebuffer = Framebuffer::create(fbSpec);
+		fbSpec.Width = 1280;
+		fbSpec.Height = 720;
+		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+		m_framebuffer = Framebuffer::Create(fbSpec);
 
-		m_activeScene = createRef<Scene>();
+		m_activeScene = CreateRef<Scene>();
 
-		auto commandLineArgs = Application::get().getCommandLineArgs();
-		if (commandLineArgs.count > 1)
+		auto commandLineArgs = Application::Get().GetCommandLineArgs();
+		if (commandLineArgs.Count > 1)
 		{
 			auto sceneFilePath = commandLineArgs[1];
 			SceneSerializer serializer(m_activeScene);
-			serializer.deserialize(sceneFilePath);
+			serializer.Deserialize(sceneFilePath);
 		}
 
 		m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
@@ -82,15 +83,15 @@ namespace Engine
 		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
 		#endif
 
-		m_sceneHierarchyPanel.setContext(m_activeScene);
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
 	}
 
-	void EditorLayer::onDetach()
+	void EditorLayer::OnDetach()
 	{
 		ENG_PROFILE_FUNCTION();
 	}
 
-	void EditorLayer::onUpdate(Timestep ts)
+	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -101,36 +102,36 @@ namespace Engine
 		// -----------------------------------------
 
 		// Resize
-		if (FramebufferSpecification spec = m_framebuffer->getSpecification();
+		if (FramebufferSpecification spec = m_framebuffer->GetSpecification();
 			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
-			(spec.width != m_viewportSize.x || spec.height != m_viewportSize.y))
+			(spec.Width != m_viewportSize.x || spec.Height != m_viewportSize.y))
 		{
-			m_framebuffer->resize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
-			m_cameraController.onResize(m_viewportSize.x, m_viewportSize.y);
-			m_editorCamera.setViewportSize(m_viewportSize.x, m_viewportSize.y);
-			m_activeScene->onViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
+			m_framebuffer->Resize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
+			m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+			m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
+			m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 		}
 
 		// Camera
 		if (m_viewportFocused)
-			m_cameraController.onUpdate(ts);
+			m_cameraController.OnUpdate(ts);
 
-		m_editorCamera.onUpdate(ts);
+		m_editorCamera.OnUpdate(ts);
 
 		// -----------------------------------------
 		//
 		//    Render
 		//
 		// -----------------------------------------
-		Renderer2D::resetStats();
-		m_framebuffer->bind();
-		RenderCommand::setClearColor({ 0.0f, 0.0f, 0.0f, 1 });
-		RenderCommand::clear();
+		Renderer2D::ResetStats();
+		m_framebuffer->Bind();
+		RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1 });
+		RenderCommand::Clear();
 
-		m_framebuffer->clearAttachment(1, -1);
+		m_framebuffer->ClearAttachment(1, -1);
 
 		// Update scene
-		m_activeScene->onUpdateEditor(ts, m_editorCamera);
+		m_activeScene->OnUpdateEditor(ts, m_editorCamera);
 
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_viewportBounds[0].x;
@@ -142,15 +143,15 @@ namespace Engine
 
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int) viewportSize.x && mouseY < (int) viewportSize.y)
 		{
-			int pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
+			int pixelData = m_framebuffer->ReadPixel(1, mouseX, mouseY);
 			m_hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity) pixelData, m_activeScene.get());
 
 			// Cleanup
-			m_framebuffer->unbind();
+			m_framebuffer->Unbind();
 		}
 	}
 
-	void EditorLayer::onImGuiRender()
+	void EditorLayer::OnImGuiRender()
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -211,19 +212,19 @@ namespace Engine
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
 				if (ImGui::MenuItem("New scene", "Ctrl+N"))
-					newScene();
+					NewScene();
 
 				if (ImGui::MenuItem("Load scene", "Ctrl+O"))
-					openScene();
+					OpenScene();
 
 				if (ImGui::MenuItem("Save scene", "Ctrl+S"))
-					saveScene();
+					SaveScene();
 
 				if (ImGui::MenuItem("Save scene as", "Ctrl+Shift+S"))
-					saveSceneAs();
+					SaveSceneAs();
 
 				if (ImGui::MenuItem("Exit"))
-					Application::get().close();
+					Application::Get().Close();
 
 				ImGui::EndMenu();
 			}
@@ -231,7 +232,7 @@ namespace Engine
 			ImGui::EndMenuBar();
 		}
 
-		m_sceneHierarchyPanel.onImGuiRender();
+		m_sceneHierarchyPanel.OnImGuiRender();
 
 		// -----------------------------------------
 		//
@@ -242,15 +243,15 @@ namespace Engine
 
 		std::string name = "None";
 		if (m_hoveredEntity)
-			name = m_hoveredEntity.getComponent<TagComponent>();
+			name = m_hoveredEntity.GetComponent<TagComponent>();
 		ImGui::Text("Hovered Entity: %s", name.c_str());
 
-		auto stats = Renderer2D::getStats();
+		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Statistics:");
-		ImGui::Text("Draw calls: %d", stats.drawCalls);
-		ImGui::Text("Quads: %d", stats.quadCount);
-		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
-		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
+		ImGui::Text("Draw calls: %d", stats.DrawCalls);
+		ImGui::Text("Quads: %d", stats.QuadCount);
+		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
 		ImGui::End();
 
@@ -269,12 +270,12 @@ namespace Engine
 
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
-		Application::get().getImGuiLayer()->blockEvents(!m_viewportFocused && !m_viewportHovered);
+		Application::Get().GetImGuiLayer()->BlockEvents(!m_viewportFocused && !m_viewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		uint64_t textureID = m_framebuffer->getColorAttachmentRendererID();
+		uint64_t textureID = m_framebuffer->GetColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		// -----------------------------------------
@@ -282,7 +283,7 @@ namespace Engine
 		//    ImGuizmo
 		//
 		// -----------------------------------------
-		Entity selectedEntity = m_sceneHierarchyPanel.getSelectedEntity();
+		Entity selectedEntity = m_sceneHierarchyPanel.GetSelectedEntity();
 		if (selectedEntity && m_gizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
@@ -295,15 +296,15 @@ namespace Engine
 			//const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
 			//const glm::mat4& cameraProjection = camera.getProjection();
 			//glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
-			const glm::mat4& cameraProjection = m_editorCamera.getProjection();
-			glm::mat4 cameraView = m_editorCamera.getViewMatrix();
+			const glm::mat4& cameraProjection = m_editorCamera.GetProjection();
+			glm::mat4 cameraView = m_editorCamera.GetViewMatrix();
 
 			// Entity transform
-			auto& tc = selectedEntity.getComponent<TransformComponent>();
-			glm::mat4 transform = tc.getTransform();
+			auto& tc = selectedEntity.GetComponent<TransformComponent>();
+			glm::mat4 transform = tc.GetTransform();
 
 			// Snapping
-			bool snap = Input::isKeyPressed(Key::LeftControl);
+			bool snap = Input::IsKeyPressed(Key::LeftControl);
 			float snapValue = 0.5f; // Snap to 0.5m for translation/scale
 			// Snap to 45 degrees for rotation
 			if (m_gizmoType == ImGuizmo::OPERATION::ROTATE)
@@ -320,10 +321,10 @@ namespace Engine
 				glm::vec3 translation, rotation, scale;
 				Math::decomposeTransform(transform, translation, rotation, scale);
 
-				glm::vec3 deltaRotation = rotation - tc.rotation;
-				tc.translation = translation;
-				tc.rotation += deltaRotation;
-				tc.scale = scale;
+				glm::vec3 deltaRotation = rotation - tc.Rotation;
+				tc.Translation = translation;
+				tc.Rotation += deltaRotation;
+				tc.Scale = scale;
 			}
 		}
 
@@ -332,47 +333,47 @@ namespace Engine
 		ImGui::End();
 	}
 
-	void EditorLayer::onEvent(Event& e)
+	void EditorLayer::OnEvent(Event& e)
 	{
-		m_cameraController.onEvent(e);
-		m_editorCamera.onEvent(e);
+		m_cameraController.OnEvent(e);
+		m_editorCamera.OnEvent(e);
 
 		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<KeyPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::onKeyPressed));
-		dispatcher.dispatch<MouseButtonPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::onMouseButtonPressed));
+		dispatcher.Dispatch<KeyPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 	}
 
-	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 	{
 		// Shortcuts
-		if (e.getRepeatCount() > 0)
+		if (e.GetRepeatCount() > 0)
 			return false;
 
-		bool control = Input::isKeyPressed(Key::LeftControl) || Input::isKeyPressed(Key::RightControl);
-		bool shift = Input::isKeyPressed(Key::LeftShift) || Input::isKeyPressed(Key::RightShift);
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
 
-		switch (e.getKeyCode())
+		switch (e.GetKeyCode())
 		{
 			case Key::N:
 			{
 				if (control)
-					newScene();
+					NewScene();
 				break;
 			}
 
 			case Key::O:
 			{
 				if (control)
-					openScene();
+					OpenScene();
 				break;
 			}
 
 			case Key::S:
 			{
 				if (control && shift)
-					saveSceneAs();
+					SaveSceneAs();
 				else if (control)
-					saveScene();
+					SaveScene();
 				break;
 			}
 
@@ -407,59 +408,54 @@ namespace Engine
 		}
 	}
 
-	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		if (e.getMouseButton() == Mouse::ButtonLeft)
+		if (e.GetMouseButton() == Mouse::ButtonLeft)
 		{
-			if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::isKeyPressed(Key::LeftAlt))
-				m_sceneHierarchyPanel.setSelectedEntity(m_hoveredEntity);
+			if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+				m_sceneHierarchyPanel.SetSelectedEntity(m_hoveredEntity);
 		}
 
 		return false;
 	}
 
-	void EditorLayer::newScene()
+	void EditorLayer::NewScene()
 	{
-		m_activeScene = createRef<Scene>();
-		m_activeScene->onViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
-		m_sceneHierarchyPanel.setContext(m_activeScene);
+		m_activeScene = CreateRef<Scene>();
+		m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
 	}
 
-	void EditorLayer::openScene()
+	void EditorLayer::OpenScene()
 	{
-		std::string filepath = FileDialogs::openFile("Engine scene (*.scene)\0*.scene\0");
+		std::string filepath = FileDialogs::OpenFile("Engine scene (*.scene)\0*.scene\0");
 		if (!filepath.empty())
 		{
 			m_activeFile = filepath;
 
-			m_activeScene = createRef<Scene>();
-			m_activeScene->onViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
-			m_sceneHierarchyPanel.setContext(m_activeScene);
+			m_activeScene = CreateRef<Scene>();
+			m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
+			m_sceneHierarchyPanel.SetContext(m_activeScene);
 
 			SceneSerializer serializer(m_activeScene);
-			serializer.deserialize(filepath);
+			serializer.Deserialize(filepath);
 		}
 	}
 
-	void EditorLayer::saveScene()
+	void EditorLayer::SaveScene()
 	{
-		if (m_activeFile != "")
+		if (m_activeFile.empty())
+			SaveSceneAs();
+		else
 		{
 			SceneSerializer serializer(m_activeScene);
-			serializer.serialize(m_activeFile);
-		} else
-		{
-			saveSceneAs();
+			serializer.Serialize(m_activeFile);
 		}
 	}
 
-	void EditorLayer::saveSceneAs()
+	void EditorLayer::SaveSceneAs()
 	{
-		std::string filepath = FileDialogs::saveFile("Engine scene (*.scene)\0*.scene\0");
-		if (!filepath.empty())
-		{
-			SceneSerializer serializer(m_activeScene);
-			serializer.serialize(filepath);
-		}
+		m_activeFile = FileDialogs::SaveFile("Engine scene (*.scene)\0*.scene\0");
+		SaveScene();
 	}
 }

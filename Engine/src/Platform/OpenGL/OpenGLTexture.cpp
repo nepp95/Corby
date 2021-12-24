@@ -5,7 +5,8 @@
 
 namespace Engine
 {
-	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(width), m_height(height)
+	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
+		: m_width(width), m_height(height)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -22,7 +23,8 @@ namespace Engine
 		glTextureParameteri(m_rendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath) : m_path(filepath)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath)
+		: m_path(filepath)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -74,7 +76,7 @@ namespace Engine
 		glDeleteTextures(1, &m_rendererID);
 	}
 
-	void OpenGLTexture2D::setData(void* data, uint32_t size)
+	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -83,7 +85,7 @@ namespace Engine
 		glTextureSubImage2D(m_rendererID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 
-	void OpenGLTexture2D::bind(uint32_t slot) const
+	void OpenGLTexture2D::Bind(uint32_t slot) const
 	{
 		ENG_PROFILE_FUNCTION();
 

@@ -8,10 +8,12 @@ namespace Engine
 	class MouseMovedEvent : public Event
 	{
 	public:
-		MouseMovedEvent(const float x, const float y) : m_mouseX(x), m_mouseY(y) {}
+		MouseMovedEvent(const float x, const float y)
+			: m_mouseX(x), m_mouseY(y)
+		{}
 
-		float getX() const { return m_mouseX; }
-		float getY() const { return m_mouseY; }
+		float GetX() const { return m_mouseX; }
+		float GetY() const { return m_mouseY; }
 
 		std::string ToString() const override
 		{
@@ -30,15 +32,17 @@ namespace Engine
 	class MouseScrolledEvent : public Event
 	{
 	public:
-		MouseScrolledEvent(const float xOffset, const float yOffset) : m_xOffset(xOffset), m_yOffset(yOffset) {}
+		MouseScrolledEvent(const float xOffset, const float yOffset)
+			: m_xOffset(xOffset), m_yOffset(yOffset)
+		{}
 
-		float getXOffset() const { return m_xOffset; }
-		float getYOffset() const { return m_yOffset; }
+		float GetXOffset() const { return m_xOffset; }
+		float GetYOffset() const { return m_yOffset; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: " << getXOffset() << ", " << getYOffset();
+			ss << "MouseScrolledEvent: " << GetXOffset() << ", " << GetYOffset();
 
 			return ss.str();
 		}
@@ -52,11 +56,13 @@ namespace Engine
 	class MouseButtonEvent : public Event
 	{
 	public:
-		MouseCode getMouseButton() const { return m_button; }
+		MouseCode GetMouseButton() const { return m_button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton);
 	protected:
-		MouseButtonEvent(const MouseCode button) : m_button(button) {}
+		MouseButtonEvent(const MouseCode button)
+			: m_button(button)
+		{}
 
 		MouseCode m_button;
 	};
@@ -64,7 +70,9 @@ namespace Engine
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(const MouseCode button) : MouseButtonEvent(button) {}
+		MouseButtonPressedEvent(const MouseCode button)
+			: MouseButtonEvent(button)
+		{}
 
 		std::string ToString() const override
 		{
@@ -80,7 +88,9 @@ namespace Engine
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(const MouseCode button) : MouseButtonEvent(button) {}
+		MouseButtonReleasedEvent(const MouseCode button)
+			: MouseButtonEvent(button)
+		{}
 
 		std::string ToString() const override
 		{

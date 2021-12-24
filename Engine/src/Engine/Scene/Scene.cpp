@@ -15,37 +15,37 @@ namespace Engine
 	Scene::~Scene()
 	{}
 
-	Entity Scene::createEntity(const std::string& name)
+	Entity Scene::CreateEntity(const std::string& name)
 	{
 		Entity entity = { m_registry.create(), this };
 
-		entity.addComponent<TransformComponent>();
+		entity.AddComponent<TransformComponent>();
 
-		auto& tag = entity.addComponent<TagComponent>();
-		tag.tag = name.empty() ? "Entity" : name;
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? "Entity" : name;
 
 		return entity;
 	}
 
-	void Scene::destroyEntity(Entity entity)
+	void Scene::DestroyEntity(Entity entity)
 	{
 		m_registry.destroy(entity);
 	}
 
-	void Scene::onUpdateRuntime(Timestep ts)
+	void Scene::OnUpdateRuntime(Timestep ts)
 	{
 		// Update scripts
 		{
 			m_registry.view<NativeScriptComponent>().each([=] (auto entity, auto& nsc) {
-				if (!nsc.instance)
+				if (!nsc.Instance)
 				{
-					nsc.instance = nsc.instantiateScript();
-					nsc.instance->m_entity = Entity{ entity, this };
+					nsc.Instance = nsc.InstantiateScript();
+					nsc.Instance->m_entity = Entity{ entity, this };
 
-					nsc.instance->onCreate();
+					nsc.Instance->OnCreate();
 				}
 
-				nsc.instance->onUpdate(ts);
+				nsc.Instance->OnUpdate(ts);
 				});
 		}
 
@@ -60,10 +60,10 @@ namespace Engine
 			{
 				auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
-				if (camera.primary)
+				if (camera.Primary)
 				{
-					mainCamera = &camera.camera;
-					cameraTransform = transform.getTransform();
+					mainCamera = &camera.Camera;
+					cameraTransform = transform.GetTransform();
 
 					break;
 				}
@@ -72,7 +72,7 @@ namespace Engine
 
 		if (mainCamera)
 		{
-			Renderer2D::beginScene(*mainCamera, cameraTransform);
+			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
 			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
@@ -80,29 +80,29 @@ namespace Engine
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::drawSprite(transform.getTransform(), sprite, (int) entity);
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int) entity);
 			}
 
-			Renderer2D::endScene();
+			Renderer2D::EndScene();
 		}
 	}
 
-	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
+	void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		Renderer2D::beginScene(camera);
+		Renderer2D::BeginScene(camera);
 
 		auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 		for (auto entity : group)
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Renderer2D::drawSprite(transform.getTransform(), sprite, (int) entity);
+			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int) entity);
 		}
 
-		Renderer2D::endScene();
+		Renderer2D::EndScene();
 	}
 
-	void Scene::onViewportResize(uint32_t width, uint32_t height)
+	void Scene::OnViewportResize(uint32_t width, uint32_t height)
 	{
 		m_viewportWidth = width;
 		m_viewportHeight = height;
@@ -113,56 +113,56 @@ namespace Engine
 		{
 			auto& cameraComponent = view.get<CameraComponent>(entity);
 
-			if (!cameraComponent.fixedAspectRatio)
-				cameraComponent.camera.setViewportSize(width, height);
+			if (!cameraComponent.FixedAspectRatio)
+				cameraComponent.Camera.SetViewportSize(width, height);
 		}
 	}
 
-	Entity Scene::getPrimaryCameraEntity()
+	Entity Scene::GetPrimaryCameraEntity()
 	{
 		auto view = m_registry.view<CameraComponent>();
 		for (auto entity : view)
 		{
 			const auto& camera = view.get<CameraComponent>(entity);
-			if (camera.primary)
+			if (camera.Primary)
 				return Entity{ entity, this };
 		}
 		return {};
 	}
 
 	template<typename T>
-	void Scene::onComponentAdded(Entity entity, T& component)
+	void Scene::OnComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
 	}
 
 	template<>
-	void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
 	{
 
 	}
 
 	template<>
-	void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 	{
 		if (m_viewportWidth > 0 && m_viewportHeight > 0)
-			component.camera.setViewportSize(m_viewportWidth, m_viewportHeight);
+			component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
 	}
 
 	template<>
-	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 	{
 
 	}
 
 	template<>
-	void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
 	{
 
 	}
 
 	template<>
-	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
 	{
 
 	}

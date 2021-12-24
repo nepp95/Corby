@@ -13,33 +13,33 @@ namespace Engine
 		SceneCamera();
 		virtual ~SceneCamera() = default;
 
-		void setPerspective(float verticalFOV, float nearClip, float farClip);
-		void setOrthographic(float size, float nearClip, float farClip);
-		void setViewportSize(uint32_t width, uint32_t height);
+		void SetPerspective(float verticalFOV, float nearClip, float farClip);
+		void SetOrthographic(float size, float nearClip, float farClip);
+		void SetViewportSize(uint32_t width, uint32_t height);
 
-		float getPerspectiveVerticalFOV() const;
-		void setPerspectiveVerticalFOV(float verticalFOV);
+		float GetPerspectiveVerticalFOV() const;
+		void SetPerspectiveVerticalFOV(float verticalFOV);
 
-		float getPerspectiveNearClip() const;
-		void setPerspectiveNearClip(float nearClip);
+		float GetPerspectiveNearClip() const;
+		void SetPerspectiveNearClip(float nearClip);
 
-		float getPerspectiveFarClip() const;
-		void setPerspectiveFarClip(float farClip);
+		float GetPerspectiveFarClip() const;
+		void SetPerspectiveFarClip(float farClip);
 
-		float getOrthographicSize() const;
-		void setOrthographicSize(float size);
+		float GetOrthographicSize() const;
+		void SetOrthographicSize(float size);
 
-		float getOrthographicNearClip() const;
-		void setOrthographicNearClip(float nearClip);
+		float GetOrthographicNearClip() const;
+		void SetOrthographicNearClip(float nearClip);
 
-		float getOrthographicFarClip() const;
-		void setOrthographicFarClip(float farClip);
+		float GetOrthographicFarClip() const;
+		void SetOrthographicFarClip(float farClip);
 
-		ProjectionType getProjectionType() const;
-		void setProjectionType(ProjectionType type);
+		ProjectionType GetProjectionType() const;
+		void SetProjectionType(ProjectionType type);
 
 	private:
-		void recalculateProjection();
+		void RecalculateProjection();
 
 	private:
 		ProjectionType m_projectionType = ProjectionType::Orthographic;

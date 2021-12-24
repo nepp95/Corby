@@ -6,9 +6,9 @@
 
 namespace Engine
 {
-	Ref<UniformBuffer> UniformBuffer::create(uint32_t size, uint32_t binding)
+	Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
 	{
-		switch (Renderer::getAPI())
+		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:
 			{
@@ -18,7 +18,7 @@ namespace Engine
 
 			case RendererAPI::API::OpenGL:
 			{
-				return createRef<OpenGLUniformBuffer>(size, binding);
+				return CreateRef<OpenGLUniformBuffer>(size, binding);
 			}
 		}
 

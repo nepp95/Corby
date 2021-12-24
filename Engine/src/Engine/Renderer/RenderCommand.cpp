@@ -3,5 +3,5 @@
 
 namespace Engine
 {
-	Scope<RendererAPI> RenderCommand::s_rendererAPI = RendererAPI::create();
+	Scope<RendererAPI> RenderCommand::s_rendererAPI = RendererAPI::Create();
 }

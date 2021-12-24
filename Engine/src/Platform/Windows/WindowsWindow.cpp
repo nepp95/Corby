@@ -16,34 +16,34 @@ namespace Engine
 		ENG_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Scope<Window> Window::create(const WindowProps& props)
+	Scope<Window> Window::Create(const WindowProps& props)
 	{
-		return createScope<WindowsWindow>(props);
+		return CreateScope<WindowsWindow>(props);
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
 		ENG_PROFILE_FUNCTION();
 
-		init(props);
+		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
 		ENG_PROFILE_FUNCTION();
 
-		shutdown();
+		Shutdown();
 	}
 
-	void WindowsWindow::init(const WindowProps& props)
+	void WindowsWindow::Init(const WindowProps& props)
 	{
 		ENG_PROFILE_FUNCTION();
 
-		m_data.title = props.title;
-		m_data.width = props.width;
-		m_data.height = props.height;
+		m_data.Title = props.Title;
+		m_data.Width = props.Width;
+		m_data.Height = props.Height;
 
-		ENG_CORE_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);
+		ENG_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
@@ -58,36 +58,36 @@ namespace Engine
 			ENG_PROFILE_SCOPE("glfwCreateWindow");
 
 			#ifdef ENG_DEBUG
-			if (Renderer::getAPI() == RendererAPI::API::OpenGL)
+			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 			#endif
 
-			m_window = glfwCreateWindow((int) props.width, (int) props.height, m_data.title.c_str(), nullptr, nullptr);
+			m_window = glfwCreateWindow((int) props.Width, (int) props.Height, m_data.Title.c_str(), nullptr, nullptr);
 			++s_GLFWWindowCount;
 		}
 
-		m_context = GraphicsContext::create(m_window);
-		m_context->init();
+		m_context = GraphicsContext::Create(m_window);
+		m_context->Init();
 
 		glfwSetWindowUserPointer(m_window, &m_data);
-		setVSync(true);
+		SetVSync(true);
 
 		// Setup callbacks
 		// Window size change callback
 		glfwSetWindowSizeCallback(m_window, [] (GLFWwindow* window, int width, int height) {
 			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
-			data.width = width;
-			data.height = height;
+			data.Width = width;
+			data.Height = height;
 
 			WindowResizeEvent event(width, height);
-			data.eventCallback(event);
+			data.EventCallback(event);
 			});
 
 		// Window close callback
 		glfwSetWindowCloseCallback(m_window, [] (GLFWwindow* window) {
 			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 			WindowCloseEvent event;
-			data.eventCallback(event);
+			data.EventCallback(event);
 			});
 
 		// Key press callback
@@ -96,24 +96,24 @@ namespace Engine
 
 			switch (action)
 			{
-			case GLFW_PRESS:
-			{
-				KeyPressedEvent event(key, 0);
-				data.eventCallback(event);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				KeyReleasedEvent event(key);
-				data.eventCallback(event);
-				break;
-			}
-			case GLFW_REPEAT:
-			{
-				KeyPressedEvent event(key, 1);
-				data.eventCallback(event);
-				break;
-			}
+				case GLFW_PRESS:
+				{
+					KeyPressedEvent event(key, 0);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					KeyReleasedEvent event(key);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_REPEAT:
+				{
+					KeyPressedEvent event(key, 1);
+					data.EventCallback(event);
+					break;
+				}
 			}
 			});
 
@@ -121,7 +121,7 @@ namespace Engine
 			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
 			KeyTypedEvent event(keycode);
-			data.eventCallback(event);
+			data.EventCallback(event);
 			});
 
 		// Mouse button press callback
@@ -130,18 +130,18 @@ namespace Engine
 
 			switch (action)
 			{
-			case GLFW_PRESS:
-			{
-				MouseButtonPressedEvent event(button);
-				data.eventCallback(event);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				MouseButtonReleasedEvent event(button);
-				data.eventCallback(event);
-				break;
-			}
+				case GLFW_PRESS:
+				{
+					MouseButtonPressedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					MouseButtonReleasedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
 			}
 			});
 
@@ -150,18 +150,18 @@ namespace Engine
 			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
 			MouseScrolledEvent event((float) xOffset, (float) yOffset);
-			data.eventCallback(event);
+			data.EventCallback(event);
 			});
 
 		glfwSetCursorPosCallback(m_window, [] (GLFWwindow* window, double xPos, double yPos) {
 			WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
 			MouseMovedEvent event((float) xPos, (float) yPos);
-			data.eventCallback(event);
+			data.EventCallback(event);
 			});
 	}
 
-	void WindowsWindow::shutdown()
+	void WindowsWindow::Shutdown()
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -174,16 +174,16 @@ namespace Engine
 		}
 	}
 
-	void WindowsWindow::onUpdate()
+	void WindowsWindow::OnUpdate()
 	{
 		ENG_PROFILE_FUNCTION();
 
 		glfwPollEvents();
 
-		m_context->swapBuffers();
+		m_context->SwapBuffers();
 	}
 
-	void WindowsWindow::setVSync(bool enabled)
+	void WindowsWindow::SetVSync(bool enabled)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -198,7 +198,7 @@ namespace Engine
 		m_data.VSync = enabled;
 	}
 
-	bool WindowsWindow::isVSync() const
+	bool WindowsWindow::IsVSync() const
 	{
 		return m_data.VSync;
 	}

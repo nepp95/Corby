@@ -45,7 +45,7 @@ namespace Engine
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
-		bool isInCategory(EventCategory category)
+		bool IsInCategory(EventCategory category)
 		{
 			return GetCategoryFlags() & category;
 		}
@@ -54,10 +54,12 @@ namespace Engine
 	class EventDispatcher
 	{
 	public:
-		EventDispatcher(Event& e) : m_event(e) {}
+		EventDispatcher(Event& e)
+			: m_event(e)
+		{}
 
 		template<typename T, typename F>
-		bool dispatch(const F& func)
+		bool Dispatch(const F& func)
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{

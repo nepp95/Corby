@@ -14,31 +14,31 @@ namespace Engine
 		Entity(const Entity& other) = default;
 
 		template<typename T, typename... Args>
-		T& addComponent(Args&&... args)
+		T& AddComponent(Args&&... args)
 		{
-			ENG_CORE_ASSERT(!hasComponent<T>(), "Entity already has component!");
+			ENG_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
 			T& component = m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
-			m_scene->onComponentAdded<T>(*this, component);
+			m_scene->OnComponentAdded<T>(*this, component);
 			return component;
 		}
 
 		template<typename T>
-		T& getComponent()
+		T& GetComponent()
 		{
-			ENG_CORE_ASSERT(hasComponent<T>(), "Entity does not have component!");
+			ENG_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
 			return m_scene->m_registry.get<T>(m_entityHandle);
 		}
 
 		template<typename T>
-		bool hasComponent()
+		bool HasComponent()
 		{
 			return m_scene->m_registry.all_of<T>(m_entityHandle);
 		}
 
 		template<typename T>
-		void removeComponent()
+		void RemoveComponent()
 		{
-			ENG_CORE_ASSERT(hasComponent<T>(), "Entity does not have component!");
+			ENG_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
 			m_scene->m_registry.remove<T>(m_entityHandle);
 		}
 

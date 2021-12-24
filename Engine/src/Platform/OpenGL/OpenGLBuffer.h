@@ -11,13 +11,13 @@ namespace Engine
 		OpenGLVertexBuffer(float* vertices, unsigned int size);
 		virtual ~OpenGLVertexBuffer();
 
-		virtual void bind() const override;
-		virtual void unbind() const override;
+		virtual void Bind() const override;
+		virtual void Unbind() const override;
 
-		virtual void setData(const void* data, uint32_t size) override;
+		virtual void SetData(const void* data, uint32_t size) override;
 
-		virtual const BufferLayout& getLayout() const override { return m_layout; }
-		virtual void setLayout(const BufferLayout& layout) override { m_layout = layout; }
+		virtual const BufferLayout& GetLayout() const override { return m_layout; }
+		virtual void SetLayout(const BufferLayout& layout) override { m_layout = layout; }
 
 	private:
 		uint32_t m_rendererID;
@@ -30,10 +30,10 @@ namespace Engine
 		OpenGLIndexBuffer(unsigned int* indices, unsigned int count);
 		virtual ~OpenGLIndexBuffer();
 
-		virtual void bind() const override;
-		virtual void unbind() const override;
+		virtual void Bind() const override;
+		virtual void Unbind() const override;
 
-		virtual unsigned int getCount() const override { return m_count; }
+		virtual unsigned int GetCount() const override { return m_count; }
 
 	private:
 		uint32_t m_rendererID;

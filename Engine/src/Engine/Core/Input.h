@@ -5,15 +5,17 @@
 
 #include <glm/glm.hpp>
 
-namespace Engine {
-	class Input {
+namespace Engine
+{
+	class Input
+	{
 	public:
 		virtual ~Input() = default;
 
-		static bool isKeyPressed(KeyCode key);
-		static bool isMouseButtonPressed(MouseCode button);
-		static glm::vec2 getMousePosition();
-		static float getMouseX();
-		static float getMouseY();
+		static bool IsKeyPressed(KeyCode key);
+		static bool IsMouseButtonPressed(MouseCode button);
+		static glm::vec2 GetMousePosition();
+		static float GetMouseX();
+		static float GetMouseY();
 	};
 }

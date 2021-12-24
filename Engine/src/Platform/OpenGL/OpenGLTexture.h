@@ -13,13 +13,13 @@ namespace Engine
 		OpenGLTexture2D(const std::string& filepath);
 		virtual ~OpenGLTexture2D();
 
-		virtual uint32_t getWidth() const override { return m_width; }
-		virtual uint32_t getHeight() const override { return m_height; }
-		virtual uint32_t getRendererID() const override { return m_rendererID; }
+		virtual uint32_t GetWidth() const override { return m_width; }
+		virtual uint32_t GetHeight() const override { return m_height; }
+		virtual uint32_t GetRendererID() const override { return m_rendererID; }
 
-		virtual void setData(void* data, uint32_t size) override;
+		virtual void SetData(void* data, uint32_t size) override;
 
-		virtual void bind(uint32_t slot = 0) const override;
+		virtual void Bind(uint32_t slot = 0) const override;
 
 		virtual bool operator==(const Texture& other) const override
 		{

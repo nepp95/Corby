@@ -14,12 +14,12 @@ namespace Engine
 {
 	struct ApplicationCommandLineArgs
 	{
-		int count = 0;
+		int Count = 0;
 		char** Args = nullptr;
 
 		const char* operator[](int index) const
 		{
-			ENG_CORE_ASSERT(index < count);
+			ENG_CORE_ASSERT(index < Count);
 			return Args[index];
 		}
 	};
@@ -30,21 +30,21 @@ namespace Engine
 		Application(const std::string& name = "Engine App", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
 		virtual ~Application();
 
-		void close();
-		void onEvent(Event& e);
-		void pushLayer(Layer* layer);
-		void pushOverlay(Layer* layer);
+		void Close();
+		void OnEvent(Event& e);
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
 
-		ImGuiLayer* getImGuiLayer() { return m_imGuiLayer; }
-		Window& getWindow() { return *m_window; }
-		static Application& get() { return *s_instance; }
+		ImGuiLayer* GetImGuiLayer() { return m_imGuiLayer; }
+		Window& GetWindow() { return *m_window; }
+		static Application& Get() { return *s_instance; }
 
-		ApplicationCommandLineArgs getCommandLineArgs() const { return m_commandLineArgs; }
+		ApplicationCommandLineArgs GetCommandLineArgs() const { return m_commandLineArgs; }
 
 	private:
-		void run();
-		bool onWindowClose(WindowCloseEvent& e);
-		bool onWindowResize(WindowResizeEvent& e);
+		void Run();
+		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
 		ApplicationCommandLineArgs m_commandLineArgs;
@@ -60,5 +60,5 @@ namespace Engine
 	};
 
 	// To be defined in a client!
-	Application* createApplication(ApplicationCommandLineArgs args);
+	Application* CreateApplication(ApplicationCommandLineArgs args);
 }

@@ -9,20 +9,20 @@ namespace Engine
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
 
-		void setProjection(float left, float right, float bottom, float top);
+		void SetProjection(float left, float right, float bottom, float top);
 
-		const glm::vec3& getPosition() const;
-		void setPosition(const glm::vec3& position);
+		const glm::vec3& GetPosition() const;
+		void SetPosition(const glm::vec3& position);
 
-		float getRotation() const;
-		void setRotation(float rotation);
+		float GetRotation() const;
+		void SetRotation(float rotation);
 
-		const glm::mat4 getProjectionMatrix() const;
-		const glm::mat4 getViewMatrix() const;
-		const glm::mat4 getViewProjectionMatrix() const;
+		const glm::mat4 GetProjectionMatrix() const;
+		const glm::mat4 GetViewMatrix() const;
+		const glm::mat4 GetViewProjectionMatrix() const;
 
 	private:
-		void recalculateViewMatrix();
+		void RecalculateViewMatrix();
 
 	private:
 		glm::mat4 m_projectionMatrix;

@@ -11,13 +11,13 @@ namespace Engine
 		Editor(ApplicationCommandLineArgs args)
 			: Application("Engine Editor", args)
 		{
-			pushLayer(new EditorLayer());
+			PushLayer(new EditorLayer());
 		}
 
 		~Editor() {}
 	};
 
-	Application* createApplication(ApplicationCommandLineArgs args)
+	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
 		return new Editor(args);
 	}

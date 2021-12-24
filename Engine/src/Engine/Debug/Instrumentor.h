@@ -17,15 +17,15 @@ namespace Engine
 
 	struct ProfileResult
 	{
-		std::string name;
-		floatingPointMicroseconds start;
-		std::chrono::microseconds elapsedTime;
-		std::thread::id threadID;
+		std::string Name;
+		floatingPointMicroseconds Start;
+		std::chrono::microseconds ElapsedTime;
+		std::thread::id ThreadID;
 	};
 
 	struct InstrumentationSession
 	{
-		std::string name;
+		std::string Name;
 	};
 
 	class Instrumentor
@@ -34,19 +34,21 @@ namespace Engine
 		Instrumentor(const Instrumentor&) = delete;
 		Instrumentor(Instrumentor&&) = delete;
 
-		void beginSession(const std::string& name, const std::string& filepath = "results.json");
-		void endSession();
-		void internalEndSession();
+		void BeginSession(const std::string& name, const std::string& filepath = "results.json");
+		void EndSession();
+		void InternalEndSession();
 
-		void writeProfile(const ProfileResult& result);
-		void writeHeader();
-		void writeFooter();
+		void WriteProfile(const ProfileResult& result);
+		void WriteHeader();
+		void WriteFooter();
 
-		static Instrumentor& get();
+		static Instrumentor& Get();
 
 	private:
-		Instrumentor() : m_currentSession(nullptr) {}
-		~Instrumentor() { endSession(); }
+		Instrumentor()
+			: m_currentSession(nullptr)
+		{}
+		~Instrumentor() { EndSession(); }
 
 	private:
 		InstrumentationSession* m_currentSession;
@@ -60,7 +62,7 @@ namespace Engine
 		InstrumentationTimer(const char* name);
 		~InstrumentationTimer();
 
-		void stop();
+		void Stop();
 
 	private:
 		const char* m_name;
@@ -77,7 +79,7 @@ namespace Engine
 		};
 
 		template <size_t N, size_t K>
-		constexpr auto cleanupOutputString(const char(&expr)[N], const char(&remove)[K])
+		constexpr auto CleanupOutputString(const char(&expr)[N], const char(&remove)[K])
 		{
 			changeResult<N> result = {};
 

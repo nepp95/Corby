@@ -13,56 +13,56 @@ namespace Engine
 {
 	struct TagComponent
 	{
-		std::string tag;
+		std::string Tag;
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string& tag)
-			: tag(tag)
+			: Tag(tag)
 		{}
 
-		operator std::string& () { return tag; }
-		operator const std::string& () const { return tag; }
+		operator std::string& () { return Tag; }
+		operator const std::string& () const { return Tag; }
 	};
 
 	struct TransformComponent
 	{
-		glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
+		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& translation)
-			: translation(translation)
+			: Translation(translation)
 		{}
 
-		glm::mat4 getTransform() const
+		glm::mat4 GetTransform() const
 		{
-			glm::mat4 calculatedRotation = glm::toMat4(glm::quat(rotation));
+			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
-			return glm::translate(glm::mat4(1.0f), translation)
-				* calculatedRotation
-				* glm::scale(glm::mat4(1.0f), scale);
+			return glm::translate(glm::mat4(1.0f), Translation)
+				* rotation
+				* glm::scale(glm::mat4(1.0f), Scale);
 		}
 	};
 
 	struct SpriteRendererComponent
 	{
-		glm::vec4 color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
-			: color(color)
+			: Color(color)
 		{}
 	};
 
 	struct CameraComponent
 	{
-		SceneCamera camera;
-		bool primary = true;
-		bool fixedAspectRatio = false;
+		SceneCamera Camera;
+		bool Primary = true;
+		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
@@ -70,21 +70,21 @@ namespace Engine
 
 	struct NativeScriptComponent
 	{
-		ScriptableEntity* instance = nullptr;
+		ScriptableEntity* Instance = nullptr;
 
-		ScriptableEntity* (*instantiateScript)();
-		void (*destroyScript)(NativeScriptComponent*);
+		ScriptableEntity* (*InstantiateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
 
 		template<typename T>
 		void bind()
 		{
-			instantiateScript = [] () {
+			InstantiateScript = [] () {
 				return static_cast<ScriptableEntity*>(new T());
 			};
 
-			destroyScript = [] (NativeScriptComponent* nsc) {
-				delete nsc->instance;
-				nsc->instance = nullptr;
+			DestroyScript = [] (NativeScriptComponent* nsc) {
+				delete nsc->Instance;
+				nsc->Instance = nullptr;
 			};
 		}
 	};

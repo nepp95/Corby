@@ -9,22 +9,22 @@ namespace Engine
 	public:
 		Timer()
 		{
-			reset();
+			Reset();
 		}
 
-		void Timer::reset()
+		void Timer::Reset()
 		{
 			m_start = std::chrono::high_resolution_clock::now();
 		}
 
-		float Timer::elapsed()
+		float Timer::Elapsed()
 		{
 			return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - m_start).count() * 0.001f * 0.001f * 0.001f;
 		}
 
-		float Timer::elapsedMillis()
+		float Timer::ElapsedMillis()
 		{
-			return elapsed() * 1000.0f;
+			return Elapsed() * 1000.0f;
 		}
 
 	private:

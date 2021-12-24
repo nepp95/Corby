@@ -15,41 +15,41 @@ namespace Engine
 		EditorCamera() = default;
 		EditorCamera(float fov, float aspectRatio, float nearClip, float farClip);
 
-		void onUpdate(Timestep ts);
-		void onEvent(Event& e);
+		void OnUpdate(Timestep ts);
+		void OnEvent(Event& e);
 
-		float getDistance() const;
-		void setDistance(float distance);
+		float GetDistance() const;
+		void SetDistance(float distance);
 
-		void setViewportSize(float width, float height);
+		void SetViewportSize(float width, float height);
 
-		const glm::mat4& getViewMatrix() const;
-		glm::mat4 getViewProjection() const;
+		const glm::mat4& GetViewMatrix() const;
+		glm::mat4 GetViewProjection() const;
 
-		glm::vec3 getUpDirection() const;
-		glm::vec3 getRightDirection() const;
-		glm::vec3 getForwardDirection() const;
-		const glm::vec3& getPosition() const;
-		glm::quat getOrientation() const;
+		glm::vec3 GetUpDirection() const;
+		glm::vec3 GetRightDirection() const;
+		glm::vec3 GetForwardDirection() const;
+		const glm::vec3& GetPosition() const;
+		glm::quat GetOrientation() const;
 
-		float getPitch() const;
-		float getYaw() const;
+		float GetPitch() const;
+		float GetYaw() const;
 
 	private:
-		void updateProjection();
-		void updateView();
+		void UpdateProjection();
+		void UpdateView();
 
-		bool onMouseScroll(MouseScrolledEvent& e);
+		bool OnMouseScroll(MouseScrolledEvent& e);
 
-		void mousePan(const glm::vec2& delta);
-		void mouseRotate(const glm::vec2& delta);
-		void mouseZoom(float delta);
+		void MousePan(const glm::vec2& delta);
+		void MouseRotate(const glm::vec2& delta);
+		void MouseZoom(float delta);
 
-		glm::vec3 calculatePosition() const;
+		glm::vec3 CalculatePosition() const;
 
-		std::pair<float, float> panSpeed() const;
-		float rotationSpeed() const;
-		float zoomSpeed() const;
+		std::pair<float, float> PanSpeed() const;
+		float RotationSpeed() const;
+		float ZoomSpeed() const;
 
 	private:
 		float m_FOV = 45.0f, m_aspectRatio = 1.778f, m_nearClip = 0.1f, m_farClip = 1000.0f;

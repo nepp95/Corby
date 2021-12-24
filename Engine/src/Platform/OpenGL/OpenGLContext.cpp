@@ -6,12 +6,13 @@
 
 namespace Engine
 {
-	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_windowHandle(windowHandle)
+	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
+		: m_windowHandle(windowHandle)
 	{
 		ENG_CORE_ASSERT(windowHandle, "Window handle is null!");
 	}
 
-	void OpenGLContext::init()
+	void OpenGLContext::Init()
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -27,7 +28,7 @@ namespace Engine
 		ENG_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Engine requires at least OpenGL version 4.5!");
 	}
 
-	void OpenGLContext::swapBuffers()
+	void OpenGLContext::SwapBuffers()
 	{
 		ENG_PROFILE_FUNCTION();
 

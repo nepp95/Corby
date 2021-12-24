@@ -40,34 +40,34 @@ namespace Engine
 		glDeleteVertexArrays(1, &m_rendererID);
 	}
 
-	void OpenGLVertexArray::bind() const
+	void OpenGLVertexArray::Bind() const
 	{
 		ENG_PROFILE_FUNCTION();
 
 		glBindVertexArray(m_rendererID);
 	}
 
-	void OpenGLVertexArray::unbind() const
+	void OpenGLVertexArray::Unbind() const
 	{
 		ENG_PROFILE_FUNCTION();
 
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
 		ENG_PROFILE_FUNCTION();
 
-		ENG_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "VertexBuffer has no layout!");
+		ENG_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "VertexBuffer has no layout!");
 
 		glBindVertexArray(m_rendererID);
-		vertexBuffer->bind();
+		vertexBuffer->Bind();
 
-		const auto& layout = vertexBuffer->getLayout();
+		const auto& layout = vertexBuffer->GetLayout();
 
 		for (const auto& element : layout)
 		{
-			switch (element.type)
+			switch (element.Type)
 			{
 				case ShaderDataType::Float:
 				case ShaderDataType::Float2:
@@ -76,11 +76,11 @@ namespace Engine
 				{
 					glEnableVertexAttribArray(m_vertexBufferIndex);
 					glVertexAttribPointer(m_vertexBufferIndex,
-						element.getComponentCount(),
-						ShaderDataTypeToOpenGLBaseType(element.type),
-						element.normalized ? GL_TRUE : GL_FALSE,
-						layout.getStride(),
-						(const void*) element.offset
+						element.GetComponentCount(),
+						ShaderDataTypeToOpenGLBaseType(element.Type),
+						element.Normalized ? GL_TRUE : GL_FALSE,
+						layout.GetStride(),
+						(const void*) element.Offset
 					);
 					m_vertexBufferIndex++;
 					break;
@@ -93,10 +93,10 @@ namespace Engine
 				{
 					glEnableVertexAttribArray(m_vertexBufferIndex);
 					glVertexAttribIPointer(m_vertexBufferIndex,
-						element.getComponentCount(),
-						ShaderDataTypeToOpenGLBaseType(element.type),
-						layout.getStride(),
-						(const void*) element.offset
+						element.GetComponentCount(),
+						ShaderDataTypeToOpenGLBaseType(element.Type),
+						layout.GetStride(),
+						(const void*) element.Offset
 					);
 					m_vertexBufferIndex++;
 					break;
@@ -105,17 +105,17 @@ namespace Engine
 				case ShaderDataType::Mat3:
 				case ShaderDataType::Mat4:
 				{
-					uint8_t count = element.getComponentCount();
+					uint8_t count = element.GetComponentCount();
 
 					for (uint8_t i = 0; i < count; i++)
 					{
 						glEnableVertexAttribArray(m_vertexBufferIndex);
 						glVertexAttribPointer(m_vertexBufferIndex,
 							count,
-							ShaderDataTypeToOpenGLBaseType(element.type),
-							element.normalized ? GL_TRUE : GL_FALSE,
-							layout.getStride(),
-							(const void*) (element.offset + (sizeof(float) * count * i))
+							ShaderDataTypeToOpenGLBaseType(element.Type),
+							element.Normalized ? GL_TRUE : GL_FALSE,
+							layout.GetStride(),
+							(const void*) (element.Offset + (sizeof(float) * count * i))
 						);
 						m_vertexBufferIndex++;
 					}
@@ -125,20 +125,17 @@ namespace Engine
 				default:
 					ENG_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			}
-
-
-
 		}
 
 		m_vertexBuffers.push_back(vertexBuffer);
 	}
 
-	void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
 		ENG_PROFILE_FUNCTION();
 
 		glBindVertexArray(m_rendererID);
-		indexBuffer->bind();
+		indexBuffer->Bind();
 
 		m_indexBuffer = indexBuffer;
 	}

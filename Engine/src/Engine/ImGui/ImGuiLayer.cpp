@@ -14,13 +14,14 @@
 
 namespace Engine
 {
-	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
+	ImGuiLayer::ImGuiLayer()
+		: Layer("ImGuiLayer")
 	{}
 
 	ImGuiLayer::~ImGuiLayer()
 	{}
 
-	void ImGuiLayer::onAttach()
+	void ImGuiLayer::OnAttach()
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -50,16 +51,16 @@ namespace Engine
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		setDarkThemeColors();
+		SetDarkThemeColors();
 
-		Application& app = Application::get();
-		GLFWwindow* window = static_cast<GLFWwindow*>(app.getWindow().getNativeWindow());
+		Application& app = Application::Get();
+		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
-	void ImGuiLayer::onDetach()
+	void ImGuiLayer::OnDetach()
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -68,17 +69,17 @@ namespace Engine
 		ImGui::DestroyContext();
 	}
 
-	void ImGuiLayer::onEvent(Event& e)
+	void ImGuiLayer::OnEvent(Event& e)
 	{
 		if (m_blockEvents)
 		{
 			ImGuiIO& io = ImGui::GetIO();
-			e.handled |= e.isInCategory(EventCategoryMouse) & io.WantCaptureMouse;
-			e.handled |= e.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+			e.handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			e.handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
 		}
 	}
 
-	void ImGuiLayer::begin()
+	void ImGuiLayer::Begin()
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -88,13 +89,13 @@ namespace Engine
 		ImGuizmo::BeginFrame();
 	}
 
-	void ImGuiLayer::end()
+	void ImGuiLayer::End()
 	{
 		ENG_PROFILE_FUNCTION();
 
 		ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::get();
-		io.DisplaySize = ImVec2((float) app.getWindow().getWidth(), (float) app.getWindow().getHeight());
+		Application& app = Application::Get();
+		io.DisplaySize = ImVec2((float) app.GetWindow().GetWidth(), (float) app.GetWindow().GetHeight());
 
 		// Rendering
 		ImGui::Render();
@@ -109,7 +110,7 @@ namespace Engine
 		}
 	}
 
-	void ImGuiLayer::setDarkThemeColors()
+	void ImGuiLayer::SetDarkThemeColors()
 	{
 		auto& colors = ImGui::GetStyle().Colors;
 		colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };

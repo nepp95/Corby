@@ -17,7 +17,7 @@ namespace Engine
 		glDeleteBuffers(1, &m_rendererID);
 	}
 
-	void OpenGLUniformBuffer::setData(const void* data, uint32_t size, uint32_t offset)
+	void OpenGLUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
 	{
 		glNamedBufferSubData(m_rendererID, offset, size, data);
 	}
