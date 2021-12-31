@@ -27,15 +27,6 @@ namespace Engine
 		m_framebuffer = Framebuffer::create(fbSpec);
 
 		m_activeScene = createRef<Scene>();
-
-		auto commandLineArgs = Application::get().getCommandLineArgs();
-		if (commandLineArgs.count > 1)
-		{
-			auto sceneFilePath = commandLineArgs[1];
-			SceneSerializer serializer(m_activeScene);
-			serializer.deserialize(sceneFilePath);
-		}
-
 		m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		#if 0
@@ -427,17 +418,17 @@ namespace Engine
 
 	void EditorLayer::openScene()
 	{
-		std::string filepath = FileDialogs::openFile("Engine scene (*.scene)\0*.scene\0");
-		if (!filepath.empty())
+		std::optional<std::string> filepath = FileDialogs::openFile("Engine scene (*.scene)\0*.scene\0");
+		if (filepath)
 		{
-			m_activeFile = filepath;
-
 			m_activeScene = createRef<Scene>();
 			m_activeScene->onViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 			m_sceneHierarchyPanel.setContext(m_activeScene);
 
 			SceneSerializer serializer(m_activeScene);
-			serializer.deserialize(filepath);
+			serializer.deserialize(*filepath);
+
+			m_activeFile = *filepath;
 		}
 	}
 
@@ -455,11 +446,11 @@ namespace Engine
 
 	void EditorLayer::saveSceneAs()
 	{
-		std::string filepath = FileDialogs::saveFile("Engine scene (*.scene)\0*.scene\0");
-		if (!filepath.empty())
+		std::optional<std::string> filepath = FileDialogs::saveFile("Engine scene (*.scene)\0*.scene\0");
+		if (filepath)
 		{
 			SceneSerializer serializer(m_activeScene);
-			serializer.serialize(filepath);
+			serializer.serialize(*filepath);
 		}
 	}
 }

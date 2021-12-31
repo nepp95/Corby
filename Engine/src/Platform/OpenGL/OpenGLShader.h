@@ -41,18 +41,9 @@ namespace Engine
 	private:
 		std::string readFile(const std::string& filepath);
 		std::unordered_map<GLenum, std::string> preprocess(const std::string& source);
-
-		void compileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
-		void compileOrGetOpenGLBinaries();
-		void createProgram();
-		void reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
+		void compile(std::unordered_map<GLenum, std::string> shaderSources);
 	private:
 		uint32_t m_rendererID;
-		std::string m_filePath;
 		std::string m_name;
-
-		std::unordered_map<GLenum, std::vector<uint32_t>> m_vulkanSPIRV;
-		std::unordered_map<GLenum, std::vector<uint32_t>> m_openGLSPIRV;
-		std::unordered_map<GLenum, std::string> m_openGLSourceCode;
 	};
 }

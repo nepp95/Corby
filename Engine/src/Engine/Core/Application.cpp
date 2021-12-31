@@ -7,13 +7,10 @@
 
 #include <glfw/glfw3.h>
 
-namespace Engine
-{
+namespace Engine {
 	Application* Application::s_instance = nullptr;
 
-	Application::Application(const std::string& name, ApplicationCommandLineArgs args)
-		: m_commandLineArgs(args)
-	{
+	Application::Application(const std::string& name) {
 		ENG_PROFILE_FUNCTION();
 
 		// Create application instance
@@ -31,8 +28,7 @@ namespace Engine
 		pushOverlay(m_imGuiLayer);
 	}
 
-	Application::~Application()
-	{
+	Application::~Application() {
 		ENG_PROFILE_FUNCTION();
 
 		Renderer::shutdown();
@@ -40,43 +36,37 @@ namespace Engine
 
 
 
-	void Application::close()
-	{
+	void Application::close() {
 		m_running = false;
 	}
 
-	void Application::onEvent(Event& e)
-	{
+	void Application::onEvent(Event& e) {
 		ENG_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(ENG_BIND_EVENT_FN(Application::onWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(Application::onWindowResize));
 
-		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
-		{
+		for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
 			if (e.handled)
 				break;
 			(*it)->onEvent(e);
 		}
 	}
 
-	void Application::pushLayer(Layer* layer)
-	{
+	void Application::pushLayer(Layer* layer) {
 		ENG_PROFILE_FUNCTION();
 
 		m_layerStack.pushLayer(layer);
 	}
 
-	void Application::pushOverlay(Layer* layer)
-	{
+	void Application::pushOverlay(Layer* layer) {
 		ENG_PROFILE_FUNCTION();
 
 		m_layerStack.pushOverlay(layer);
 	}
 
-	void Application::run()
-	{
+	void Application::run() {
 		ENG_PROFILE_FUNCTION();
 
 		// Frame counter
@@ -84,11 +74,10 @@ namespace Engine
 		int frames = 0;
 		//
 
-		while (m_running)
-		{
+		while (m_running) {
 			ENG_PROFILE_SCOPE("RunLoop");
 
-			float time = (float) glfwGetTime();
+			float time = (float)glfwGetTime();
 			Timestep ts = time - m_lastFrameTime;
 			m_lastFrameTime = time;
 
@@ -96,10 +85,9 @@ namespace Engine
 			timePassed += ts;
 			frames++;
 
-			if (timePassed >= 1.0f)
-			{
+			if (timePassed >= 1.0f) {
 				std::string title = std::to_string(frames) + "FPS";
-				glfwSetWindowTitle((GLFWwindow*) m_window->getNativeWindow(), title.c_str());
+				glfwSetWindowTitle((GLFWwindow*)m_window->getNativeWindow(), title.c_str());
 
 				timePassed = 0.0f;
 				frames = 0;
@@ -107,8 +95,7 @@ namespace Engine
 			//
 
 			// Layers onUpdate
-			if (!m_minimized)
-			{
+			if (!m_minimized) {
 				{
 					ENG_PROFILE_SCOPE("LayerStack::onUpdate");
 
@@ -131,18 +118,15 @@ namespace Engine
 		}
 	}
 
-	bool Application::onWindowClose(WindowCloseEvent& e)
-	{
+	bool Application::onWindowClose(WindowCloseEvent& e) {
 		m_running = false;
 		return true;
 	}
 
-	bool Application::onWindowResize(WindowResizeEvent& e)
-	{
+	bool Application::onWindowResize(WindowResizeEvent& e) {
 		ENG_PROFILE_FUNCTION();
 
-		if (e.getWidth() == 0 || e.getHeight() == 0)
-		{
+		if (e.getWidth() == 0 || e.getHeight() == 0) {
 			m_minimized = true;
 			return false;
 		}
