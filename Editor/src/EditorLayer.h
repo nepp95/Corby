@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine.h>
+#include "Panels/ContentBrowserPanel.h"
 #include "Panels/SceneHierarchyPanel.h"
 
 namespace Engine
@@ -39,6 +40,7 @@ namespace Engine
 
 		// Panels
 		SceneHierarchyPanel m_sceneHierarchyPanel;
+		ContentBrowserPanel m_contentBrowserPanel;
 		int m_gizmoType = -1;
 
 		// Temp

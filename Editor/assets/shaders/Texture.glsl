@@ -1,7 +1,7 @@
 // Basic Texture Shader
 
 #type vertex
-#version 450 core
+#version 450
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
@@ -38,7 +38,7 @@ void main()
 }
 
 #type fragment
-#version 450 core
+#version 450
 
 layout(location = 0) out vec4 color;
 layout(location = 1) out int color2;

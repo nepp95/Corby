@@ -39,51 +39,7 @@ namespace Engine
 
 		m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-		#if 0
-		m_squareEntity = m_activeScene->createEntity("Green Square");
-		m_squareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-		m_redSquareEntity = m_activeScene->createEntity("Red Square");
-		m_redSquareEntity.addComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-
-		m_cameraEntity = m_activeScene->createEntity("Camera A");
-		m_cameraEntity.addComponent<CameraComponent>();
-
-		m_secondCameraEntity = m_activeScene->createEntity("Camera B");
-		auto& cc = m_secondCameraEntity.addComponent<CameraComponent>();
-		cc.primary = false;
-
-		class CameraController : public ScriptableEntity
-		{
-		public:
-			virtual void onCreate() override
-			{
-				auto& translation = getComponent<TransformComponent>().translation;
-				translation.x = rand() % 10 - 5.0f;
-			}
-
-			virtual void onDestroy() override {}
-
-			virtual void onUpdate(Timestep ts) override
-			{
-				auto& translation = getComponent<TransformComponent>().translation;
-				float speed = 5.0f;
-
-				if (Input::isKeyPressed(Key::A))
-					translation.x -= speed * ts;
-				if (Input::isKeyPressed(Key::D))
-					translation.x += speed * ts;
-				if (Input::isKeyPressed(Key::W))
-					translation.y += speed * ts;
-				if (Input::isKeyPressed(Key::S))
-					translation.y -= speed * ts;
-			}
-		};
-
-		m_cameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
-		m_secondCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
-		#endif
-
-		m_sceneHierarchyPanel.SetContext(m_activeScene);
+		m_sceneHierarchyPanel.setContext(m_activeScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -232,7 +188,8 @@ namespace Engine
 			ImGui::EndMenuBar();
 		}
 
-		m_sceneHierarchyPanel.OnImGuiRender();
+		m_sceneHierarchyPanel.onImGuiRender();
+		m_contentBrowserPanel.onImGuiRender();
 
 		// -----------------------------------------
 		//
