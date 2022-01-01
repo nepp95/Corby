@@ -10,6 +10,11 @@ bin-int/
 **.vcxproj.filters
 **.vcxproj.user
 
+# Directories
+Engine/vendor/VulkanSDK
+Editor/assets/cache
+scripts/__pycache__
+
 # User files
 Sandbox/imgui.ini
 *.json

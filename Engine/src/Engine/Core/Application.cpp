@@ -11,7 +11,8 @@ namespace Engine
 {
 	Application* Application::s_instance = nullptr;
 
-	Application::Application(const std::string& name)
+	Application::Application(const std::string& name, ApplicationCommandLineArgs args)
+		: m_commandLineArgs(args)
 	{
 		ENG_PROFILE_FUNCTION();
 

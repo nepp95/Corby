@@ -27,7 +27,7 @@ namespace Engine
 	class Application
 	{
 	public:
-		Application(const std::string& name = "Engine App");
+		Application(const std::string& name = "Engine App", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
 		virtual ~Application();
 
 		void Close();
@@ -47,6 +47,7 @@ namespace Engine
 		bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
+		ApplicationCommandLineArgs m_commandLineArgs;
 		Scope<Window> m_window;
 		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;
