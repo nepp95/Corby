@@ -45,6 +45,11 @@ namespace Engine
 		void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
 		void CompileOrGetOpenGLBinaries();
 		void CreateProgram();
+
+		// AMD Shader fix
+		void CreateProgramForAmdGpu();
+		void CompileOpenGLBinariesForAmdGpu(GLenum& program, std::array<uint32_t, 2>& glShaderIDs);
+
 		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 	private:
 		uint32_t m_rendererID;

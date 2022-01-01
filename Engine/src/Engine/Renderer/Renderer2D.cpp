@@ -64,12 +64,12 @@ namespace Engine
 		s_data.QuadVertexBuffer = VertexBuffer::Create(s_data.MaxVertices * sizeof(QuadVertex));
 
 		s_data.QuadVertexBuffer->SetLayout({
-			{ ShaderDataType::Float3, "a_position"		},
-			{ ShaderDataType::Float4, "a_color"			},
-			{ ShaderDataType::Float2, "a_texCoord"		},
-			{ ShaderDataType::Float,  "a_texIndex"		},
-			{ ShaderDataType::Float,  "a_tilingFactor"	},
-			{ ShaderDataType::Int,    "a_entityID"		}
+			{ ShaderDataType::Float3, "a_Position"		},
+			{ ShaderDataType::Float4, "a_Color"			},
+			{ ShaderDataType::Float2, "a_TexCoord"		},
+			{ ShaderDataType::Float,  "a_TexIndex"		},
+			{ ShaderDataType::Float,  "a_TilingFactor"	},
+			{ ShaderDataType::Int,    "a_EntityID"		}
 			});
 		s_data.QuadVertexArray->AddVertexBuffer(s_data.QuadVertexBuffer);
 		//
@@ -154,8 +154,8 @@ namespace Engine
 	{
 		ENG_PROFILE_FUNCTION();
 
-		s_data.TextureShader->Bind();
-		s_data.TextureShader->SetMat4("u_viewProjection", camera.GetViewProjectionMatrix());
+		s_data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
+		s_data.CameraUniformBuffer->SetData(&s_data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
 		StartBatch();
 	}
