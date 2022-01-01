@@ -29,44 +29,51 @@ namespace Engine
 		ENG_PROFILE_FUNCTION();
 
 		int width, height, channels;
-
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc* data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
-		ENG_CORE_ASSERT(data, "Failed to load texture!");
+		stbi_uc* data = nullptr;
 
-		m_width = width;
-		m_height = height;
-
-		GLenum internalFormat = 0, dataFormat = 0;
-
-		// Check if our texture has a transparency layer
-		if (channels == 4)
 		{
-			internalFormat = GL_RGBA8;
-			dataFormat = GL_RGBA;
-		} else if (channels == 3)
-		{
-			internalFormat = GL_RGB8;
-			dataFormat = GL_RGB;
+			ENG_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
+			data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
 		}
 
-		m_internalFormat = internalFormat;
-		m_dataFormat = dataFormat;
+		if (data)
+		{
+			m_isLoaded = true;
+			m_width = width;
+			m_height = height;
 
-		ENG_CORE_ASSERT(internalFormat & dataFormat, "Texture format not supported!");
+			GLenum internalFormat = 0, dataFormat = 0;
 
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_rendererID);
-		glTextureStorage2D(m_rendererID, 1, internalFormat, m_width, m_height);
+			// Check if our texture has a transparency layer
+			if (channels == 4)
+			{
+				internalFormat = GL_RGBA8;
+				dataFormat = GL_RGBA;
+			} else if (channels == 3)
+			{
+				internalFormat = GL_RGB8;
+				dataFormat = GL_RGB;
+			}
 
-		glTextureParameteri(m_rendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_rendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			m_internalFormat = internalFormat;
+			m_dataFormat = dataFormat;
 
-		glTextureParameteri(m_rendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(m_rendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			ENG_CORE_ASSERT(internalFormat & dataFormat, "Texture format not supported!");
 
-		glTextureSubImage2D(m_rendererID, 0, 0, 0, m_width, m_height, dataFormat, GL_UNSIGNED_BYTE, data);
+			glCreateTextures(GL_TEXTURE_2D, 1, &m_rendererID);
+			glTextureStorage2D(m_rendererID, 1, internalFormat, m_width, m_height);
 
-		stbi_image_free(data);
+			glTextureParameteri(m_rendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTextureParameteri(m_rendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			glTextureParameteri(m_rendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTextureParameteri(m_rendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+			glTextureSubImage2D(m_rendererID, 0, 0, 0, m_width, m_height, dataFormat, GL_UNSIGNED_BYTE, data);
+
+			stbi_image_free(data);
+		}
 	}
 
 	OpenGLTexture2D::~OpenGLTexture2D()

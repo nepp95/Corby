@@ -21,6 +21,8 @@ namespace Engine
 
 		virtual void Bind(uint32_t slot = 0) const override;
 
+		virtual bool IsLoaded() const override { return m_isLoaded; }
+
 		virtual bool operator==(const Texture& other) const override
 		{
 			return m_rendererID == ((OpenGLTexture2D&) other).m_rendererID;
@@ -28,6 +30,7 @@ namespace Engine
 
 	private:
 		std::string m_path;
+		bool m_isLoaded = false;
 		uint32_t m_width, m_height;
 		uint32_t m_rendererID;
 		GLenum m_internalFormat, m_dataFormat;
