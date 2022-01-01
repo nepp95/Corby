@@ -3,11 +3,13 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace Engine {
+namespace Engine
+{
 	Ref<spdlog::logger> Log::s_coreLogger;
 	Ref<spdlog::logger> Log::s_clientLogger;
 
-	void Log::init() {
+	void Log::Init()
+	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 
 		s_coreLogger = spdlog::stdout_color_mt("Engine");

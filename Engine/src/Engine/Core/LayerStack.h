@@ -5,16 +5,18 @@
 
 #include <vector>
 
-namespace Engine {
-	class LayerStack {
+namespace Engine
+{
+	class LayerStack
+	{
 	public:
 		LayerStack() = default;
 		~LayerStack();
 
-		void pushLayer(Layer* layer);
-		void pushOverlay(Layer* layer);
-		void popLayer(Layer* layer);
-		void popOverlay(Layer* layer);
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
+		void PopLayer(Layer* layer);
+		void PopOverlay(Layer* layer);
 
 		std::vector<Layer*>::iterator begin() { return m_layers.begin(); }
 		std::vector<Layer*>::iterator end() { return m_layers.end(); }

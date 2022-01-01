@@ -12,21 +12,21 @@ namespace Engine
 	public:
 		CameraController(float aspectRatio, bool rotation = false);
 
-		void onUpdate(Timestep ts);
-		void onEvent(Event& e);
-		void onResize(float width, float height);
+		void OnUpdate(Timestep ts);
+		void OnEvent(Event& e);
+		void OnResize(float width, float height);
 
-		OrthographicCamera& getCamera() { return m_camera; }
-		const OrthographicCamera& getCamera() const { return m_camera; }
+		OrthographicCamera& GetCamera() { return m_camera; }
+		const OrthographicCamera& GetCamera() const { return m_camera; }
 
-		float getZoomLevel() const { return m_zoomLevel; }
-		void setZoomLevel(float level) { m_zoomLevel = level; calculateView(); }
+		float GetZoomLevel() const { return m_zoomLevel; }
+		void SetZoomLevel(float level) { m_zoomLevel = level; CalculateView(); }
 
 	private:
-		void calculateView();
+		void CalculateView();
 
-		bool onMouseScrolled(MouseScrolledEvent& e);
-		bool onWindowResized(WindowResizeEvent& e);
+		bool OnMouseScrolled(MouseScrolledEvent& e);
+		bool OnWindowResized(WindowResizeEvent& e);
 
 	private:
 		float m_aspectRatio;

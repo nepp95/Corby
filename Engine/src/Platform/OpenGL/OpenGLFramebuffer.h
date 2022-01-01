@@ -12,16 +12,16 @@ namespace Engine
 
 		void invalidate();
 
-		virtual void bind() override;
-		virtual void unbind() override;
-		virtual void resize(uint32_t width, uint32_t height) override;
-		virtual int readPixel(uint32_t attachmentIndex, int x, int y) override;
+		virtual void Bind() override;
+		virtual void Unbind() override;
+		virtual void Resize(uint32_t width, uint32_t height) override;
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 
-		virtual void clearAttachment(uint32_t attachmentIndex, int value) override;
+		virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
-		virtual uint32_t getColorAttachmentRendererID(uint32_t index = 0) const override;
+		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override;
 
-		virtual const FramebufferSpecification& getSpecification() const override { return m_specification; }
+		virtual const FramebufferSpecification& GetSpecification() const override { return m_specification; }
 
 	private:
 		uint32_t m_rendererID = 0;

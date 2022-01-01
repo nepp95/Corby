@@ -6,30 +6,31 @@
 
 namespace Engine
 {
-	CameraController::CameraController(float aspectRatio, bool rotation) : m_aspectRatio(aspectRatio), m_camera(-m_aspectRatio * m_zoomLevel, m_aspectRatio* m_zoomLevel, -m_zoomLevel, m_zoomLevel), m_rotation(rotation)
+	CameraController::CameraController(float aspectRatio, bool rotation)
+		: m_aspectRatio(aspectRatio), m_camera(-m_aspectRatio * m_zoomLevel, m_aspectRatio* m_zoomLevel, -m_zoomLevel, m_zoomLevel), m_rotation(rotation)
 	{}
 
-	void CameraController::onUpdate(Timestep ts)
+	void CameraController::OnUpdate(Timestep ts)
 	{
 		ENG_PROFILE_FUNCTION();
 
 		// Up / Down
-		if (Input::isKeyPressed(Key::W))
+		if (Input::IsKeyPressed(Key::W))
 		{
 			m_cameraPosition.x += -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-		} else if (Input::isKeyPressed(Key::S))
+		} else if (Input::IsKeyPressed(Key::S))
 		{
 			m_cameraPosition.x -= -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 		}
 
 		// Left / Right
-		if (Input::isKeyPressed(Key::A))
+		if (Input::IsKeyPressed(Key::A))
 		{
 			m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-		} else if (Input::isKeyPressed(Key::D))
+		} else if (Input::IsKeyPressed(Key::D))
 		{
 			m_cameraPosition.x += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
 			m_cameraPosition.y += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
@@ -39,10 +40,10 @@ namespace Engine
 		if (m_rotation)
 		{
 			// Rotate left/right
-			if (Input::isKeyPressed(Key::Q))
+			if (Input::IsKeyPressed(Key::Q))
 				m_cameraRotation += m_cameraRotationSpeed * ts;
 
-			if (Input::isKeyPressed(Key::E))
+			if (Input::IsKeyPressed(Key::E))
 				m_cameraRotation -= m_cameraRotationSpeed * ts;
 
 			if (m_cameraRotation > 180.0f)
@@ -50,51 +51,51 @@ namespace Engine
 			else if (m_cameraRotation <= -180.0f)
 				m_cameraRotation += 360.0f;
 
-			m_camera.setRotation(m_cameraRotation);
+			m_camera.SetRotation(m_cameraRotation);
 		}
 
-		m_camera.setPosition(m_cameraPosition);
+		m_camera.SetPosition(m_cameraPosition);
 		m_cameraTranslationSpeed = m_zoomLevel;
 	}
 
-	void CameraController::onEvent(Event& e)
+	void CameraController::OnEvent(Event& e)
 	{
 		ENG_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<MouseScrolledEvent>(ENG_BIND_EVENT_FN(CameraController::onMouseScrolled));
-		dispatcher.dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(CameraController::onWindowResized));
+		dispatcher.Dispatch<MouseScrolledEvent>(ENG_BIND_EVENT_FN(CameraController::OnMouseScrolled));
+		dispatcher.Dispatch<WindowResizeEvent>(ENG_BIND_EVENT_FN(CameraController::OnWindowResized));
 	}
 
-	void CameraController::onResize(float width, float height)
+	void CameraController::OnResize(float width, float height)
 	{
 		m_aspectRatio = width / height;
-		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+		m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
 	}
 
-	void CameraController::calculateView()
+	void CameraController::CalculateView()
 	{
 		ENG_PROFILE_FUNCTION();
 
-		m_camera.setProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+		m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
 	}
 
-	bool CameraController::onMouseScrolled(MouseScrolledEvent& e)
+	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		ENG_PROFILE_FUNCTION();
 
-		m_zoomLevel -= e.getYOffset() * 0.25f;
+		m_zoomLevel -= e.GetYOffset() * 0.25f;
 		m_zoomLevel = std::max(m_zoomLevel, 0.25f);
-		calculateView();
+		CalculateView();
 
 		return false;
 	}
 
-	bool CameraController::onWindowResized(WindowResizeEvent& e)
+	bool CameraController::OnWindowResized(WindowResizeEvent& e)
 	{
 		ENG_PROFILE_FUNCTION();
 
-		onResize((float) e.getWidth(), (float) e.getHeight());
+		OnResize((float) e.GetWidth(), (float) e.GetHeight());
 
 		return false;
 	}

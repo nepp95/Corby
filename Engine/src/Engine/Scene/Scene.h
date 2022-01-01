@@ -15,17 +15,17 @@ namespace Engine
 		Scene();
 		~Scene();
 
-		Entity createEntity(const std::string& name = std::string());
-		void destroyEntity(Entity entity);
+		Entity CreateEntity(const std::string& name = std::string());
+		void DestroyEntity(Entity entity);
 
-		void onUpdateRuntime(Timestep ts);
-		void onUpdateEditor(Timestep ts, EditorCamera& camera);
-		void onViewportResize(uint32_t width, uint32_t height);
+		void OnUpdateRuntime(Timestep ts);
+		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
+		void OnViewportResize(uint32_t width, uint32_t height);
 
-		Entity getPrimaryCameraEntity();
+		Entity GetPrimaryCameraEntity();
 	private:
 		template<typename T>
-		void onComponentAdded(Entity entity, T& component);
+		void OnComponentAdded(Entity entity, T& component);
 
 	private:
 		entt::registry m_registry;

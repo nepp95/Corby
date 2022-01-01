@@ -1,6 +1,5 @@
 # Binaries
 **/bin/
-!vendor/bin/premake/
 bin-int/
 
 # Visual Studio files and folder
@@ -9,6 +8,11 @@ bin-int/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
+# Directories
+Engine/vendor/VulkanSDK
+Editor/assets/cache
+scripts/__pycache__
 
 # User files
 Sandbox/imgui.ini

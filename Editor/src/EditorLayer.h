@@ -12,21 +12,21 @@ namespace Engine
 		EditorLayer();
 		virtual ~EditorLayer() = default;
 
-		virtual void onAttach() override;
-		virtual void onDetach() override;
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
 
-		void onUpdate(Timestep ts) override;
-		virtual void onImGuiRender() override;
-		void onEvent(Event& e) override;
+		void OnUpdate(Timestep ts) override;
+		virtual void OnImGuiRender() override;
+		void OnEvent(Event& e) override;
 
 	private:
-		bool onKeyPressed(KeyPressedEvent& e);
-		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
-		void newScene();
-		void openScene();
-		void saveScene();
-		void saveSceneAs();
+		void NewScene();
+		void OpenScene();
+		void SaveScene();
+		void SaveSceneAs();
 
 	private:
 		std::string m_activeFile = "";

@@ -30,27 +30,28 @@ namespace Engine
 		glDeleteBuffers(1, &m_rendererID);
 	}
 
-	void OpenGLVertexBuffer::bind() const
+	void OpenGLVertexBuffer::Bind() const
 	{
 		ENG_PROFILE_FUNCTION();
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_rendererID);
 	}
 
-	void OpenGLVertexBuffer::unbind() const
+	void OpenGLVertexBuffer::Unbind() const
 	{
 		ENG_PROFILE_FUNCTION();
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void OpenGLVertexBuffer::setData(const void* data, uint32_t size)
+	void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_rendererID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, unsigned int count) : m_count(count)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, unsigned int count)
+		: m_count(count)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -66,14 +67,14 @@ namespace Engine
 		glDeleteBuffers(1, &m_rendererID);
 	}
 
-	void OpenGLIndexBuffer::bind() const
+	void OpenGLIndexBuffer::Bind() const
 	{
 		ENG_PROFILE_FUNCTION();
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererID);
 	}
 
-	void OpenGLIndexBuffer::unbind() const
+	void OpenGLIndexBuffer::Unbind() const
 	{
 		ENG_PROFILE_FUNCTION();
 

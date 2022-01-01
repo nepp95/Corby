@@ -7,111 +7,112 @@ namespace Engine
 {
 	SceneCamera::SceneCamera()
 	{
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	void SceneCamera::setPerspective(float verticalFOV, float nearClip, float farClip)
+	void SceneCamera::SetPerspective(float verticalFOV, float nearClip, float farClip)
 	{
 		m_projectionType = ProjectionType::Perspective;
 		m_perspectiveFOV = verticalFOV;
 		m_perspectiveNear = nearClip;
 		m_perspectiveFar = farClip;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	void SceneCamera::setOrthographic(float size, float nearClip, float farClip)
+	void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)
 	{
 		m_projectionType = ProjectionType::Orthographic;
 		m_orthographicSize = size;
 		m_orthographicNear = nearClip;
 		m_orthographicFar = farClip;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	void SceneCamera::setViewportSize(uint32_t width, uint32_t height)
+	void SceneCamera::SetViewportSize(uint32_t width, uint32_t height)
 	{
+		ENG_CORE_ASSERT(width > 0 && height > 0);
 		m_aspectRatio = (float) width / (float) height;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	float SceneCamera::getPerspectiveVerticalFOV() const
+	float SceneCamera::GetPerspectiveVerticalFOV() const
 	{
 		return m_perspectiveFOV;
 	}
 
-	void SceneCamera::setPerspectiveVerticalFOV(float verticalFOV)
+	void SceneCamera::SetPerspectiveVerticalFOV(float verticalFOV)
 	{
 		m_perspectiveFOV = verticalFOV;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	float SceneCamera::getPerspectiveNearClip() const
+	float SceneCamera::GetPerspectiveNearClip() const
 	{
 		return m_perspectiveNear;
 	}
 
-	void SceneCamera::setPerspectiveNearClip(float nearClip)
+	void SceneCamera::SetPerspectiveNearClip(float nearClip)
 	{
 		m_perspectiveNear = nearClip;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	float SceneCamera::getPerspectiveFarClip() const
+	float SceneCamera::GetPerspectiveFarClip() const
 	{
 		return m_perspectiveFar;
 	}
 
-	void SceneCamera::setPerspectiveFarClip(float farClip)
+	void SceneCamera::SetPerspectiveFarClip(float farClip)
 	{
 		m_perspectiveFar = farClip;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	float SceneCamera::getOrthographicSize() const
+	float SceneCamera::GetOrthographicSize() const
 	{
 		return m_orthographicSize;
 	}
 
-	void SceneCamera::setOrthographicSize(float size)
+	void SceneCamera::SetOrthographicSize(float size)
 	{
 		m_orthographicSize = size;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	float SceneCamera::getOrthographicNearClip() const
+	float SceneCamera::GetOrthographicNearClip() const
 	{
 		return m_orthographicNear;
 	}
 
-	void SceneCamera::setOrthographicNearClip(float nearClip)
+	void SceneCamera::SetOrthographicNearClip(float nearClip)
 	{
 		m_orthographicNear = nearClip;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	float SceneCamera::getOrthographicFarClip() const
+	float SceneCamera::GetOrthographicFarClip() const
 	{
 		return m_orthographicFar;
 	}
 
-	void SceneCamera::setOrthographicFarClip(float farClip)
+	void SceneCamera::SetOrthographicFarClip(float farClip)
 	{
 		m_orthographicFar = farClip;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	SceneCamera::ProjectionType SceneCamera::getProjectionType() const
+	SceneCamera::ProjectionType SceneCamera::GetProjectionType() const
 	{
 		return m_projectionType;
 	}
 
-	void SceneCamera::setProjectionType(ProjectionType type)
+	void SceneCamera::SetProjectionType(ProjectionType type)
 	{
 		m_projectionType = type;
-		recalculateProjection();
+		RecalculateProjection();
 	}
 
-	void SceneCamera::recalculateProjection()
+	void SceneCamera::RecalculateProjection()
 	{
 		if (m_projectionType == ProjectionType::Perspective)
 		{

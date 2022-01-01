@@ -10,14 +10,14 @@
 
 namespace Engine
 {
-	std::optional<std::string> FileDialogs::openFile(const char* filter)
+	std::string FileDialogs::OpenFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
 		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*) Application::get().getWindow().getNativeWindow());
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*) Application::Get().GetWindow().GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
 		if (GetCurrentDirectoryA(256, currentDir))
@@ -29,17 +29,17 @@ namespace Engine
 			return ofn.lpstrFile;
 		}
 
-		return std::nullopt;
+		return std::string();
 	}
 
-	std::optional<std::string> FileDialogs::saveFile(const char* filter)
+	std::string FileDialogs::SaveFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
 		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*) Application::get().getWindow().getNativeWindow());
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*) Application::Get().GetWindow().GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
 		if (GetCurrentDirectoryA(256, currentDir))
@@ -52,6 +52,6 @@ namespace Engine
 		{
 			return ofn.lpstrFile;
 		}
-		return std::nullopt;
+		return std::string();
 	}
 }

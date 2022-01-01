@@ -12,16 +12,16 @@ namespace Engine
 		SceneHierarchyPanel() = default;
 		SceneHierarchyPanel(const Ref<Scene>& context);
 
-		void setContext(const Ref<Scene>& context);
+		void SetContext(const Ref<Scene>& context);
 
-		void onImGuiRender();
+		void OnImGuiRender();
 
-		Entity getSelectedEntity() const;
-		void setSelectedEntity(Entity entity);
+		Entity GetSelectedEntity() const;
+		void SetSelectedEntity(Entity entity);
 
 	private:
-		void drawEntityNode(Entity entity);
-		void drawComponents(Entity entity);
+		void DrawEntityNode(Entity entity);
+		void DrawComponents(Entity entity);
 
 	private:
 		Ref<Scene> m_context;

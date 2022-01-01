@@ -12,13 +12,13 @@ namespace Engine
 		template<typename T>
 		T& getComponent()
 		{
-			return m_entity.getComponent<T>();
+			return m_entity.GetComponent<T>();
 		}
 
 	protected:
-		virtual void onCreate() {}
-		virtual void onDestroy() {}
-		virtual void onUpdate(Timestep ts) {}
+		virtual void OnCreate() {}
+		virtual void OnDestroy() {}
+		virtual void OnUpdate(Timestep ts) {}
 
 	private:
 		Entity m_entity;

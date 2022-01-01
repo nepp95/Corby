@@ -21,29 +21,29 @@ namespace Engine
 	{
 		FramebufferTextureSpecification() = default;
 		FramebufferTextureSpecification(FramebufferTextureFormat format)
-			: textureFormat(format)
+			: TextureFormat(format)
 		{}
 
-		FramebufferTextureFormat textureFormat = FramebufferTextureFormat::None;
+		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
 	};
 
 	struct FramebufferAttachmentSpecification
 	{
 		FramebufferAttachmentSpecification() = default;
 		FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
-			: attachments(attachments)
+			: Attachments(attachments)
 		{}
 
-		std::vector<FramebufferTextureSpecification> attachments;
+		std::vector<FramebufferTextureSpecification> Attachments;
 	};
 
 	struct FramebufferSpecification
 	{
-		FramebufferAttachmentSpecification attachments;
-		uint32_t width = 0, height = 0;
-		uint32_t samples = 1;
+		FramebufferAttachmentSpecification Attachments;
+		uint32_t Width = 0, Height = 0;
+		uint32_t Samples = 1;
 
-		bool swapChainTarget = false;
+		bool SwapChainTarget = false;
 	};
 
 	class Framebuffer
@@ -51,18 +51,18 @@ namespace Engine
 	public:
 		virtual ~Framebuffer() = default;
 
-		virtual void bind() = 0;
-		virtual void unbind() = 0;
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
-		virtual void resize(uint32_t width, uint32_t height) = 0;
-		virtual int readPixel(uint32_t attachmentIndex, int x, int y) = 0;
+		virtual void Resize(uint32_t width, uint32_t height) = 0;
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
 
-		virtual void clearAttachment(uint32_t attachmentIndex, int value) = 0;
+		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 
-		virtual uint32_t getColorAttachmentRendererID(uint32_t index = 0) const = 0;
+		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
 
-		virtual const FramebufferSpecification& getSpecification() const = 0;
+		virtual const FramebufferSpecification& GetSpecification() const = 0;
 
-		static Ref<Framebuffer> create(const FramebufferSpecification& spec);
+		static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
 	};
 }

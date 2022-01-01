@@ -1,20 +1,22 @@
 #pragma once
 
+#include "Engine/Core/Application.h"
 #include "Engine/Core/Base.h"
 
 #ifdef ENG_PLATFORM_WINDOWS
 
-extern Engine::Application* Engine::createApplication();
+extern Engine::Application* Engine::CreateApplication(ApplicationCommandLineArgs args);
 
-int main(int argc, char** argv) {
-	Engine::Log::init();
+int main(int argc, char** argv)
+{
+	Engine::Log::Init();
 
 	ENG_PROFILE_BEGIN_SESSION("Startup", "EngineProfile-Startup.json");
-	auto app = Engine::createApplication();
+	auto app = Engine::CreateApplication({ argc, argv });
 	ENG_PROFILE_END_SESSION();
 
 	ENG_PROFILE_BEGIN_SESSION("Runtime", "EngineProfile-Runtime.json");
-	app->run();
+	app->Run();
 	ENG_PROFILE_END_SESSION();
 
 	ENG_PROFILE_BEGIN_SESSION("Shutdown", "EngineProfile-Shutdown.json");

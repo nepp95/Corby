@@ -3,18 +3,18 @@
 
 namespace Engine
 {
-	void Instrumentor::beginSession(const std::string& name, const std::string& filepath)
+	void Instrumentor::BeginSession(const std::string& name, const std::string& filepath)
 	{
 		std::lock_guard lock(m_mutex);
 
 		if (m_currentSession)
 		{
-			if (Log::getCoreLogger())
+			if (Log::GetCoreLogger())
 			{
-				ENG_CORE_ERROR("Instrumentator::BeginSession('{0}') when session '{1}' already open.", name, m_currentSession->name);
+				ENG_CORE_ERROR("Instrumentator::BeginSession('{0}') when session '{1}' already open.", name, m_currentSession->Name);
 			}
 
-			internalEndSession();
+			InternalEndSession();
 		}
 
 		m_outputStream.open(filepath);
@@ -22,27 +22,27 @@ namespace Engine
 		if (m_outputStream.is_open())
 		{
 			m_currentSession = new InstrumentationSession({ name });
-			writeHeader();
+			WriteHeader();
 		} else
 		{
-			if (Log::getCoreLogger())
+			if (Log::GetCoreLogger())
 			{
 				ENG_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
 			}
 		}
 	}
 
-	void Instrumentor::endSession()
+	void Instrumentor::EndSession()
 	{
 		std::lock_guard lock(m_mutex);
-		internalEndSession();
+		InternalEndSession();
 	}
 
-	void Instrumentor::internalEndSession()
+	void Instrumentor::InternalEndSession()
 	{
 		if (m_currentSession)
 		{
-			writeFooter();
+			WriteFooter();
 			m_outputStream.close();
 
 			delete m_currentSession;
@@ -50,19 +50,19 @@ namespace Engine
 		}
 	}
 
-	void Instrumentor::writeProfile(const ProfileResult& result)
+	void Instrumentor::WriteProfile(const ProfileResult& result)
 	{
 		std::stringstream json;
 
 		json << std::setprecision(3) << std::fixed;
 		json << ",{";
 		json << "\"cat\":\"function\",";
-		json << "\"dur\":" << (result.elapsedTime.count()) << ',';
-		json << "\"name\":\"" << result.name << "\",";
+		json << "\"dur\":" << (result.ElapsedTime.count()) << ',';
+		json << "\"name\":\"" << result.Name << "\",";
 		json << "\"ph\":\"X\",";
 		json << "\"pid\":0,";
-		json << "\"tid\":" << result.threadID << ",";
-		json << "\"ts\":" << result.start.count();
+		json << "\"tid\":" << result.ThreadID << ",";
+		json << "\"ts\":" << result.Start.count();
 		json << "}";
 
 		std::lock_guard lock(m_mutex);
@@ -74,19 +74,19 @@ namespace Engine
 		}
 	}
 
-	void Instrumentor::writeHeader()
+	void Instrumentor::WriteHeader()
 	{
 		m_outputStream << "{\"otherData\": {},\"traceEvents\":[{}";
 		m_outputStream.flush();
 	}
 
-	void Instrumentor::writeFooter()
+	void Instrumentor::WriteFooter()
 	{
 		m_outputStream << "]}";
 		m_outputStream.flush();
 	}
 
-	Instrumentor& Instrumentor::get()
+	Instrumentor& Instrumentor::Get()
 	{
 		static Instrumentor instance;
 		return instance;
@@ -100,10 +100,10 @@ namespace Engine
 	InstrumentationTimer::~InstrumentationTimer()
 	{
 		if (!m_stopped)
-			stop();
+			Stop();
 	}
 
-	void InstrumentationTimer::stop()
+	void InstrumentationTimer::Stop()
 	{
 		auto endTimepoint = std::chrono::steady_clock::now();
 
@@ -111,7 +111,7 @@ namespace Engine
 		auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch()
 			- std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimepoint).time_since_epoch();
 
-		Instrumentor::get().writeProfile({ m_name, highResStart, elapsedTime, std::this_thread::get_id() });
+		Instrumentor::Get().WriteProfile({ m_name, highResStart, elapsedTime, std::this_thread::get_id() });
 
 		m_stopped = true;
 	}

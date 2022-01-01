@@ -6,20 +6,20 @@
 
 namespace Engine
 {
-	Ref<Framebuffer> Framebuffer::create(const FramebufferSpecification& spec)
+	Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 	{
-		switch (Renderer::getAPI())
+		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:
-		{
-			ENG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
-			return nullptr;
-		}
+			case RendererAPI::API::None:
+			{
+				ENG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+				return nullptr;
+			}
 
-		case RendererAPI::API::OpenGL:
-		{
-			return createRef<OpenGLFramebuffer>(spec);
-		}
+			case RendererAPI::API::OpenGL:
+			{
+				return CreateRef<OpenGLFramebuffer>(spec);
+			}
 		}
 
 		ENG_CORE_ASSERT(false, "Unknown RendererAPI!");

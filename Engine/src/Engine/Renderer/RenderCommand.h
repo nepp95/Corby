@@ -7,29 +7,29 @@ namespace Engine
 	class RenderCommand
 	{
 	public:
-		static void init()
+		static void Init()
 		{
-			s_rendererAPI->init();
+			s_rendererAPI->Init();
 		}
 
-		static void setViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 		{
-			s_rendererAPI->setViewport(x, y, width, height);
+			s_rendererAPI->SetViewport(x, y, width, height);
 		}
 
-		static void setClearColor(const glm::vec4& color)
+		static void SetClearColor(const glm::vec4& color)
 		{
-			s_rendererAPI->setClearColor(color);
+			s_rendererAPI->SetClearColor(color);
 		}
 
-		static void clear()
+		static void Clear()
 		{
-			s_rendererAPI->clear();
+			s_rendererAPI->Clear();
 		}
 
-		static void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
 		{
-			s_rendererAPI->drawIndexed(vertexArray, count);
+			s_rendererAPI->DrawIndexed(vertexArray, count);
 		}
 
 	private:
