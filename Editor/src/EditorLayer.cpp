@@ -39,7 +39,7 @@ namespace Engine
 
 		m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-		m_sceneHierarchyPanel.setContext(m_activeScene);
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -188,8 +188,8 @@ namespace Engine
 			ImGui::EndMenuBar();
 		}
 
-		m_sceneHierarchyPanel.onImGuiRender();
-		m_contentBrowserPanel.onImGuiRender();
+		m_sceneHierarchyPanel.OnImGuiRender();
+		m_contentBrowserPanel.OnImGuiRender();
 
 		// -----------------------------------------
 		//

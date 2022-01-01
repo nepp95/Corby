@@ -9,7 +9,7 @@ namespace Engine
 	public:
 		ContentBrowserPanel();
 
-		void onImGuiRender();
+		void OnImGuiRender();
 
 	private:
 		std::filesystem::path m_currentDirectory;

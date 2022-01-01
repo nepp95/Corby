@@ -11,7 +11,7 @@ namespace Engine
 		: m_currentDirectory(s_assetPath)
 	{}
 
-	void ContentBrowserPanel::onImGuiRender()
+	void ContentBrowserPanel::OnImGuiRender()
 	{
 		ImGui::Begin("Content Browser");
 
