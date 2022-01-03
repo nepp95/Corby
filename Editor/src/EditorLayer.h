@@ -25,6 +25,7 @@ namespace Engine
 
 		void NewScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
 		void SaveSceneAs();
 
@@ -37,11 +38,11 @@ namespace Engine
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_viewportBounds[2];
+		int m_gizmoType = -1;
 
 		// Panels
 		SceneHierarchyPanel m_sceneHierarchyPanel;
 		ContentBrowserPanel m_contentBrowserPanel;
-		int m_gizmoType = -1;
 
 		// Temp
 		Ref<VertexArray> m_squareVA;

@@ -235,6 +235,16 @@ namespace Engine
 		uint64_t textureID = m_framebuffer->GetColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*) payload->Data;
+				OpenScene(std::filesystem::path(g_assetPath) / path);
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		// -----------------------------------------
 		//
 		//    ImGuizmo
@@ -385,18 +395,22 @@ namespace Engine
 
 	void EditorLayer::OpenScene()
 	{
-		std::string filepath = FileDialogs::OpenFile("Engine scene (*.scene)\0*.scene\0");
+		std::string filepath = FileDialogs::OpenFile("Engine Scene (*.scene)\0*.scene\0");
 		if (!filepath.empty())
 		{
 			m_activeFile = filepath;
-
-			m_activeScene = CreateRef<Scene>();
-			m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
-			m_sceneHierarchyPanel.SetContext(m_activeScene);
-
-			SceneSerializer serializer(m_activeScene);
-			serializer.Deserialize(filepath);
+			OpenScene(filepath);
 		}
+	}
+
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		m_activeScene = CreateRef<Scene>();
+		m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
+
+		SceneSerializer serializer(m_activeScene);
+		serializer.Deserialize(path.string());
 	}
 
 	void EditorLayer::SaveScene()
