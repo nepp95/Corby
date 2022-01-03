@@ -11,7 +11,7 @@ bin-int/
 
 # Directories
 Engine/vendor/VulkanSDK
-Editor/assets/cache
+**/assets/cache
 scripts/__pycache__
 
 # User files
