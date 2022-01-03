@@ -11,6 +11,8 @@
 
 namespace Engine
 {
+	extern const std::filesystem::path g_assetPath;
+
 	EditorLayer::EditorLayer()
 		: Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f)
 	{}
@@ -68,12 +70,6 @@ namespace Engine
 			m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 		}
 
-		// Camera
-		if (m_viewportFocused)
-			m_cameraController.OnUpdate(ts);
-
-		m_editorCamera.OnUpdate(ts);
-
 		// -----------------------------------------
 		//
 		//    Render
@@ -86,9 +82,14 @@ namespace Engine
 
 		m_framebuffer->ClearAttachment(1, -1);
 
-		// Update scene
+		// Camera
+		if (m_viewportFocused)
+			m_cameraController.OnUpdate(ts);
+
+		m_editorCamera.OnUpdate(ts);
 		m_activeScene->OnUpdateEditor(ts, m_editorCamera);
 
+		// Mouse picking
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_viewportBounds[0].x;
 		my -= m_viewportBounds[0].y;
@@ -101,10 +102,9 @@ namespace Engine
 		{
 			int pixelData = m_framebuffer->ReadPixel(1, mouseX, mouseY);
 			m_hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity) pixelData, m_activeScene.get());
-
-			// Cleanup
-			m_framebuffer->Unbind();
 		}
+
+		m_framebuffer->Unbind();
 	}
 
 	void EditorLayer::OnImGuiRender()
