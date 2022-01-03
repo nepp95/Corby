@@ -10,7 +10,7 @@ bin-int/
 **.vcxproj.user
 
 # Directories
-Engine/vendor/VulkanSDK
+Corby/vendor/VulkanSDK
 **/assets/cache
 scripts/__pycache__
 

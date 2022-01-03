@@ -1,26 +1,27 @@
 
--- Engine Dependencies
+-- Corby Dependencies
 
 VULKAN_SDK = os.getenv("VULKAN_SDK")
 
 IncludeDir = {}
-IncludeDir["stb_image"] = "%{wks.location}/Engine/vendor/stb_image"
-IncludeDir["yaml_cpp"] = "%{wks.location}/Engine/vendor/yaml-cpp/include"
-IncludeDir["GLFW"] = "%{wks.location}/Engine/vendor/GLFW/include"
-IncludeDir["Glad"] = "%{wks.location}/Engine/vendor/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/Engine/vendor/ImGui"
-IncludeDir["ImGuizmo"] = "%{wks.location}/Engine/vendor/ImGuizmo"
-IncludeDir["glm"] = "%{wks.location}/Engine/vendor/glm"
-IncludeDir["entt"] = "%{wks.location}/Engine/vendor/entt/include"
-IncludeDir["shaderc"] = "%{wks.location}/Engine/vendor/shaderc"
-IncludeDir["SPIRV_Cross"] = "%{wks.location}/Engine/vendor/spirv_cross"
+IncludeDir["stb_image"] = "%{wks.location}/Corby/vendor/stb_image"
+IncludeDir["yaml_cpp"] = "%{wks.location}/Corby/vendor/yaml-cpp/include"
+IncludeDir["Box2D"] = "%{wks.location}/Corby/vendor/box2d/include"
+IncludeDir["GLFW"] = "%{wks.location}/Corby/vendor/GLFW/include"
+IncludeDir["Glad"] = "%{wks.location}/Corby/vendor/Glad/include"
+IncludeDir["ImGui"] = "%{wks.location}/Corby/vendor/ImGui"
+IncludeDir["ImGuizmo"] = "%{wks.location}/Corby/vendor/ImGuizmo"
+IncludeDir["glm"] = "%{wks.location}/Corby/vendor/glm"
+IncludeDir["entt"] = "%{wks.location}/Corby/vendor/entt/include"
+IncludeDir["shaderc"] = "%{wks.location}/Corby/vendor/shaderc"
+IncludeDir["SPIRV_Cross"] = "%{wks.location}/Corby/vendor/spirv_cross"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 
 LibraryDir = {}
 
 LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
-LibraryDir["VulkanSDK_Debug"] = "%{wks.location}/Engine/vendor/VulkanSDK/Lib"
-LibraryDir["VulkanSDK_DebugDLL"] = "%{wks.location}/Engine/vendor/VulkanSDK/Bin"
+LibraryDir["VulkanSDK_Debug"] = "%{wks.location}/Corby/vendor/VulkanSDK/Lib"
+LibraryDir["VulkanSDK_DebugDLL"] = "%{wks.location}/Corby/vendor/VulkanSDK/Bin"
 
 Library = {}
 Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"

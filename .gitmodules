@@ -1,23 +1,26 @@
-[submodule "Engine/vendor/spdlog"]
-	path = Engine/vendor/spdlog
+[submodule "Corby/vendor/spdlog"]
+	path = Corby/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 	branch = v1.x
-[submodule "Engine/vendor/GLFW"]
-	path = Engine/vendor/GLFW
+[submodule "Corby/vendor/GLFW"]
+	path = Corby/vendor/GLFW
 	url = https://github.com/nepp95/glfw
 	branch = master
-[submodule "Engine/vendor/imgui"]
-	path = Engine/vendor/imgui
+[submodule "Corby/vendor/imgui"]
+	path = Corby/vendor/imgui
 	url = https://github.com/nepp95/imgui
 	branch = docking
-[submodule "Engine/vendor/glm"]
-	path = Engine/vendor/glm
+[submodule "Corby/vendor/glm"]
+	path = Corby/vendor/glm
 	url = https://github.com/g-truc/glm
 	branch = master
-[submodule "Engine/vendor/yaml-cpp"]
-	path = Engine/vendor/yaml-cpp
+[submodule "Corby/vendor/yaml-cpp"]
+	path = Corby/vendor/yaml-cpp
 	url = https://github.com/nepp95/yaml-cpp.git
 	branch = dev
-[submodule "Engine/vendor/ImGuizmo"]
-	path = Engine/vendor/ImGuizmo
+[submodule "Corby/vendor/ImGuizmo"]
+	path = Corby/vendor/ImGuizmo
 	url = https://github.com/TheCherno/Imguizmo
+[submodule "Corby/vendor/box2d"]
+	path = Corby/vendor/box2d
+	url = https://github.com/nepp95/box2d

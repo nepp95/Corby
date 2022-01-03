@@ -1,4 +1,4 @@
-project "Sandbox"
+project "CorbyEd"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -19,7 +19,8 @@ project "Sandbox"
 		"%{wks.location}/Corby/src",
 		"%{wks.location}/Corby/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links

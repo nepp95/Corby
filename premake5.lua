@@ -1,9 +1,9 @@
 include "./vendor/premake/premake_customization/solution_items.lua"
 include "Dependencies.lua"
 
-workspace "Engine"
+workspace "Corby"
 	architecture "x86_64"
-	startproject "Editor"
+	startproject "CorbyEd"
 	
 	configurations
 	{
@@ -26,12 +26,13 @@ workspace "Engine"
 	
 	group "Dependencies"
 		include "vendor/premake"
-		include "Engine/vendor/GLFW"
-		include "Engine/vendor/glad"
-		include "Engine/vendor/imgui"
-		include "Engine/vendor/yaml-cpp"
+		include "Corby/vendor/box2d"
+		include "Corby/vendor/GLFW"
+		include "Corby/vendor/glad"
+		include "Corby/vendor/imgui"
+		include "Corby/vendor/yaml-cpp"
 	group ""
 
-	include "Engine"
+	include "Corby"
 	include "Sandbox"
-	include "Editor"
+	include "CorbyEd"
