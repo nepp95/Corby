@@ -10,8 +10,8 @@ bin-int/
 **.vcxproj.user
 
 # Directories
-Engine/vendor/VulkanSDK
-Editor/assets/cache
+Corby/vendor/VulkanSDK
+**/assets/cache
 scripts/__pycache__
 
 # User files

@@ -15,16 +15,16 @@ project "Sandbox"
 
 	includedirs
 	{
-		"%{wks.location}/Engine/vendor/spdlog/include",
-		"%{wks.location}/Engine/src",
-		"%{wks.location}/Engine/vendor",
+		"%{wks.location}/Corby/vendor/spdlog/include",
+		"%{wks.location}/Corby/src",
+		"%{wks.location}/Corby/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}"
 	}
 
 	links
 	{
-		"Engine"
+		"Corby"
 	}
 
 	filter "system:windows"
