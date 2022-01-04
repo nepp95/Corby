@@ -104,7 +104,6 @@ namespace Engine
 			}
 		}
 
-
 		// Mouse picking
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_viewportBounds[0].x;
@@ -452,11 +451,15 @@ namespace Engine
 	void EditorLayer::OnScenePlay()
 	{
 		m_sceneState = SceneState::Play;
+
+		m_activeScene->OnRuntimeStart();
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
 		m_sceneState = SceneState::Edit;
+
+		m_activeScene->OnRuntimeStop();
 	}
 
 	void EditorLayer::UI_Toolbar()
