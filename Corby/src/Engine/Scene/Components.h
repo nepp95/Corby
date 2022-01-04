@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Engine/Core/UUID.h"
 #include "Engine/Renderer/Texture.h"
 #include "Engine/Scene/SceneCamera.h"
-#include "Engine/Scene/ScriptableEntity.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,6 +12,14 @@
 
 namespace Engine
 {
+	struct IDComponent
+	{
+		UUID ID;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+	};
+
 	struct TagComponent
 	{
 		std::string Tag;
@@ -71,6 +79,7 @@ namespace Engine
 		CameraComponent(const CameraComponent&) = default;
 	};
 
+	class ScriptableEntity;
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance = nullptr;

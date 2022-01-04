@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Core/Timestep.h"
+#include "Engine/Core/UUID.h"
 #include "Engine/Renderer/EditorCamera.h"
 
 #include <entt.hpp>
@@ -18,7 +19,15 @@ namespace Engine
 		~Scene();
 
 		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
+		void DuplicateEntity(Entity entity);
+
+		template<typename Component>
+		static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap);
+		template<typename Component>
+		static void CopyComponentIfExists(Entity dst, Entity src);
+		static Ref<Scene> Copy(Ref<Scene> scene);
 
 		void OnRuntimeStart();
 		void OnRuntimeStop();
