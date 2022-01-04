@@ -4,18 +4,21 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 
-Freeplay::Freeplay() : Layer("Freeplay"), m_cameraController(1280.0f / 720.0f) {
-}
+Freeplay::Freeplay() : Layer("Freeplay"), m_cameraController(1280.0f / 720.0f)
+{}
 
-void Freeplay::onAttach() {
+void Freeplay::OnAttach()
+{
 	ENG_PROFILE_FUNCTION();
 }
 
-void Freeplay::onDetach() {
+void Freeplay::OnDetach()
+{
 	ENG_PROFILE_FUNCTION();
 }
 
-void Freeplay::onUpdate(Engine::Timestep timestep) {
+void Freeplay::OnUpdate(Engine::Timestep ts)
+{
 	ENG_PROFILE_FUNCTION();
 
 	// -----------------------------------------
@@ -23,43 +26,45 @@ void Freeplay::onUpdate(Engine::Timestep timestep) {
 	//    Update
 	//
 	// -----------------------------------------
-	m_cameraController.onUpdate(timestep);
+	m_cameraController.OnUpdate(ts);
 
 	// -----------------------------------------
 	//
 	//    Render
 	//
 	// -----------------------------------------
-	Engine::Renderer2D::resetStats();
+	Engine::Renderer2D::ResetStats();
 
 	{
 		ENG_PROFILE_SCOPE("Renderer Prep");
-		Engine::RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-		Engine::RenderCommand::clear();
+		Engine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+		Engine::RenderCommand::Clear();
 	}
 
 	{
 		ENG_PROFILE_SCOPE("Renderer Draw");
-		Engine::Renderer2D::beginScene(m_cameraController.getCamera());
-		Engine::Renderer2D::endScene();
+		Engine::Renderer2D::BeginScene(m_cameraController.GetCamera());
+		Engine::Renderer2D::EndScene();
 	}
 }
 
-void Freeplay::onImGuiRender() {
+void Freeplay::OnImGuiRender()
+{
 	ENG_PROFILE_FUNCTION();
 
 	ImGui::Begin("Settings");
 
-	auto stats = Engine::Renderer2D::getStats();
+	auto stats = Engine::Renderer2D::GetStats();
 	ImGui::Text("Renderer2D Statistics:");
-	ImGui::Text("Draw calls: %d", stats.drawCalls);
-	ImGui::Text("Quads: %d", stats.quadCount);
-	ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
-	ImGui::Text("Indices: %d", stats.getTotalIndexCount());
+	ImGui::Text("Draw calls: %d", stats.DrawCalls);
+	ImGui::Text("Quads: %d", stats.QuadCount);
+	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
 	ImGui::End();
 }
 
-void Freeplay::onEvent(Engine::Event& e) {
-	m_cameraController.onEvent(e);
+void Freeplay::OnEvent(Engine::Event& e)
+{
+	m_cameraController.OnEvent(e);
 }
