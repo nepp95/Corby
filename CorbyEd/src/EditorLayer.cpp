@@ -355,11 +355,20 @@ namespace Engine
 
 			case Key::S:
 			{
-				if (control && shift)
-					SaveSceneAs();
-				else if (control)
-					SaveScene();
+				if (control)
+				{
+					if (shift)
+						SaveSceneAs();
+					else
+						SaveScene();
+				}
 				break;
+			}
+
+			case Key::D:
+			{
+				if (control)
+					OnDuplicateEntity();
 			}
 
 			//Gizmos
@@ -409,6 +418,8 @@ namespace Engine
 		m_activeScene = CreateRef<Scene>();
 		m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 		m_sceneHierarchyPanel.SetContext(m_activeScene);
+
+		m_editorScenePath = std::filesystem::path();
 	}
 
 	void EditorLayer::OpenScene()
@@ -423,36 +434,61 @@ namespace Engine
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		m_activeScene = CreateRef<Scene>();
-		m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
-		m_sceneHierarchyPanel.SetContext(m_activeScene);
+		if (m_sceneState != SceneState::Edit)
+			OnSceneStop();
 
-		SceneSerializer serializer(m_activeScene);
-		serializer.Deserialize(path.string());
+		if (path.extension().string() != ".scene")
+		{
+			ENG_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return;
+		}
+
+		Ref<Scene> newScene = CreateRef<Scene>();
+		SceneSerializer serializer(newScene);
+		if (serializer.Deserialize(path.string()))
+		{
+			m_editorScene = newScene;
+			m_editorScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
+			m_sceneHierarchyPanel.SetContext(m_editorScene);
+
+			m_activeScene = m_editorScene;
+			m_editorScenePath = path;
+		}
+
 	}
 
 	void EditorLayer::SaveScene()
 	{
-		if (m_activeFile.empty())
-			SaveSceneAs();
+		if (!m_editorScenePath.empty())
+			SerializeScene(m_activeScene, m_editorScenePath);
 		else
-		{
-			SceneSerializer serializer(m_activeScene);
-			serializer.Serialize(m_activeFile);
-		}
+			SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		m_activeFile = FileDialogs::SaveFile("Engine scene (*.scene)\0*.scene\0");
-		SaveScene();
+		std::string filepath = FileDialogs::SaveFile("Engine scene (*.scene)\0*.scene\0");
+		if (!filepath.empty())
+		{
+			SerializeScene(m_activeScene, filepath);
+			m_editorScenePath = filepath;
+		}
+	}
+
+	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& path)
+	{
+		SceneSerializer serializer(scene);
+		serializer.Serialize(path.string());
 	}
 
 	void EditorLayer::OnScenePlay()
 	{
 		m_sceneState = SceneState::Play;
 
+		m_activeScene = Scene::Copy(m_editorScene);
 		m_activeScene->OnRuntimeStart();
+
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
 	}
 
 	void EditorLayer::OnSceneStop()
@@ -460,6 +496,19 @@ namespace Engine
 		m_sceneState = SceneState::Edit;
 
 		m_activeScene->OnRuntimeStop();
+		m_activeScene = m_editorScene;
+
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
+	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_sceneState != SceneState::Edit)
+			return;
+
+		Entity selectedEntity = m_sceneHierarchyPanel.GetSelectedEntity();
+		if (selectedEntity)
+			m_editorScene->DuplicateEntity(selectedEntity);
 	}
 
 	void EditorLayer::UI_Toolbar()

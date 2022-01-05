@@ -57,7 +57,8 @@ namespace Engine
 
 	void Scene::DuplicateEntity(Entity entity)
 	{
-		Entity newEntity = CreateEntity(entity.GetName());
+		std::string name = entity.GetName();
+		Entity newEntity = CreateEntity(name);
 
 		CopyComponentIfExists<TransformComponent>(newEntity, entity);
 		CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
