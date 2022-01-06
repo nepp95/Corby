@@ -7,6 +7,7 @@
 #include "Engine/Scene/ScriptableEntity.h"
 
 #include <box2d/b2_body.h>
+#include <box2d/b2_circle_shape.h>
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_world.h>
@@ -67,6 +68,7 @@ namespace Engine
 		CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
 		CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
 		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
+		CopyComponentIfExists<CircleCollider2DComponent>(newEntity, entity);
 	}
 
 	template<typename Component>
@@ -117,6 +119,7 @@ namespace Engine
 		CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<Rigidbody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<BoxCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<CircleCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -153,6 +156,22 @@ namespace Engine
 				fixtureDef.friction = boxCollider.Friction;
 				fixtureDef.restitution = boxCollider.Restitution;
 				fixtureDef.restitutionThreshold = boxCollider.RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+
+			if (entity.HasComponent<CircleCollider2DComponent>())
+			{
+				auto& circleCollider = entity.GetComponent<CircleCollider2DComponent>();
+				b2CircleShape circleShape;
+				circleShape.m_p.Set(circleCollider.Offset.x, circleCollider.Offset.y);
+				circleShape.m_radius = circleCollider.Radius;
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &circleShape;
+				fixtureDef.density = circleCollider.Density;
+				fixtureDef.friction = circleCollider.Friction;
+				fixtureDef.restitution = circleCollider.Restitution;
+				fixtureDef.restitutionThreshold = circleCollider.RestitutionThreshold;
 				body->CreateFixture(&fixtureDef);
 			}
 		}
@@ -366,6 +385,12 @@ namespace Engine
 
 	template<>
 	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
 	{
 
 	}

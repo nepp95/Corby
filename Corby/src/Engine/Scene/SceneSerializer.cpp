@@ -254,6 +254,22 @@ namespace Engine
 			out << YAML::EndMap;
 		}
 
+		if (entity.HasComponent<CircleCollider2DComponent>())
+		{
+			out << YAML::Key << "CircleCollider2DComponent";
+			out << YAML::BeginMap;
+
+			auto& circleCollider = entity.GetComponent<CircleCollider2DComponent>();
+			out << YAML::Key << "Offset" << YAML::Value << circleCollider.Offset;
+			out << YAML::Key << "Radius" << YAML::Value << circleCollider.Radius;
+			out << YAML::Key << "Density" << YAML::Value << circleCollider.Density;
+			out << YAML::Key << "Friction" << YAML::Value << circleCollider.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << circleCollider.Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << circleCollider.RestitutionThreshold;
+
+			out << YAML::EndMap;
+		}
+
 		ENG_CORE_TRACE("Serialized entity with name = {0}", entity.GetComponent<TagComponent>().Tag);
 
 		out << YAML::EndMap;
@@ -372,7 +388,7 @@ namespace Engine
 				}
 
 				auto boxCollider2DComponent = entity["BoxCollider2DComponent"];
-				if (rigidbody2DComponent)
+				if (boxCollider2DComponent)
 				{
 					auto& boxCollider = deserializedEntity.AddComponent<BoxCollider2DComponent>();
 					boxCollider.Offset = boxCollider2DComponent["Offset"].as<glm::vec2>();
@@ -381,6 +397,18 @@ namespace Engine
 					boxCollider.Friction = boxCollider2DComponent["Friction"].as<float>();
 					boxCollider.Restitution = boxCollider2DComponent["Restitution"].as<float>();
 					boxCollider.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+				}
+
+				auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
+				if (circleCollider2DComponent)
+				{
+					auto& circleCollider = deserializedEntity.AddComponent<CircleCollider2DComponent>();
+					circleCollider.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
+					circleCollider.Radius = circleCollider2DComponent["Radius"].as<float>();
+					circleCollider.Density = circleCollider2DComponent["Density"].as<float>();
+					circleCollider.Friction = circleCollider2DComponent["Friction"].as<float>();
+					circleCollider.Restitution = circleCollider2DComponent["Restitution"].as<float>();
+					circleCollider.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
 				}
 			}
 		}
