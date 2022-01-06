@@ -267,6 +267,15 @@ namespace Engine
 				}
 			}
 
+			if (!m_selectionContext.HasComponent<CircleRendererComponent>())
+			{
+				if (ImGui::MenuItem("Circle renderer"))
+				{
+					m_selectionContext.AddComponent<CircleRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			if (!m_selectionContext.HasComponent<Rigidbody2DComponent>())
 			{
 				if (ImGui::MenuItem("Rigidbody 2D"))
@@ -281,6 +290,15 @@ namespace Engine
 				if (ImGui::MenuItem("Box Collider 2D"))
 				{
 					m_selectionContext.AddComponent<BoxCollider2DComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (!m_selectionContext.HasComponent<CircleCollider2DComponent>())
+			{
+				if (ImGui::MenuItem("Circle Collider 2D"))
+				{
+					m_selectionContext.AddComponent<CircleCollider2DComponent>();
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -376,6 +394,12 @@ namespace Engine
 			ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
 			});
 
+		DrawComponent<CircleRendererComponent>("Circle renderer", entity, [] (auto& component) {
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+			ImGui::DragFloat("Thickness", &component.Thickness, 0.025f, 0.0f, 1.0f);
+			ImGui::DragFloat("Fade", &component.Fade, 0.00025f, 0.0f, 1.0f);
+			});
+
 		DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [] (auto& component) {
 			const char* bodyTypeTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
 			const char* currentbodyTypeTypeString = bodyTypeTypeStrings[(int) component.Type];
@@ -405,6 +429,15 @@ namespace Engine
 		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [] (auto& component) {
 			ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
 			ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
+			ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+			});
+
+		DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [] (auto& component) {
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
+			ImGui::DragFloat("Radius", &component.Radius);
 			ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
 			ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
