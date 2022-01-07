@@ -27,9 +27,19 @@ namespace Engine
 			s_rendererAPI->Clear();
 		}
 
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)
 		{
-			s_rendererAPI->DrawIndexed(vertexArray, count);
+			s_rendererAPI->DrawIndexed(vertexArray, indexCount);
+		}
+
+		static void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+		{
+			s_rendererAPI->DrawLines(vertexArray, vertexCount);
+		}
+
+		static void SetLineWidth(float width)
+		{
+			s_rendererAPI->SetLineWidth(width);
 		}
 
 	private:
