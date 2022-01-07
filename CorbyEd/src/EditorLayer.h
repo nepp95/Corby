@@ -22,6 +22,7 @@ namespace Engine
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+		void OnOverlayRender();
 
 		void NewScene();
 		void OpenScene();
@@ -44,6 +45,7 @@ namespace Engine
 		EditorCamera m_editorCamera;
 		Entity m_hoveredEntity;
 		int m_gizmoType = -1;
+		bool m_showPhysicsColliders = false;
 		bool m_primaryCamera = true;
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportBounds[2];

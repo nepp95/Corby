@@ -164,7 +164,7 @@ namespace Engine
 				auto& circleCollider = entity.GetComponent<CircleCollider2DComponent>();
 				b2CircleShape circleShape;
 				circleShape.m_p.Set(circleCollider.Offset.x, circleCollider.Offset.y);
-				circleShape.m_radius = circleCollider.Radius;
+				circleShape.m_radius = transform.Scale.x * circleCollider.Radius;
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &circleShape;
