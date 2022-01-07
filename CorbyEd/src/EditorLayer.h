@@ -22,6 +22,7 @@ namespace Engine
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+		void OnOverlayRender();
 
 		void NewScene();
 		void OpenScene();
@@ -29,8 +30,11 @@ namespace Engine
 		void SaveScene();
 		void SaveSceneAs();
 
+		void SerializeScene(Ref<Scene> scene, const std::filesystem::path& path);
+
 		void OnScenePlay();
 		void OnSceneStop();
+		void OnDuplicateEntity();
 
 		// UI Panels
 		void UI_Toolbar();
@@ -41,14 +45,17 @@ namespace Engine
 		EditorCamera m_editorCamera;
 		Entity m_hoveredEntity;
 		int m_gizmoType = -1;
+		bool m_showPhysicsColliders = false;
 		bool m_primaryCamera = true;
 		bool m_viewportFocused = false, m_viewportHovered = false;
 		glm::vec2 m_viewportBounds[2];
 		glm::vec2 m_viewportSize = { 0.0f, 0.0f };
 
-		// Rendering
+		// Rendering & Scene
 		Ref<Framebuffer> m_framebuffer;
 		Ref<Scene> m_activeScene;
+		Ref<Scene> m_editorScene;
+		std::filesystem::path m_editorScenePath;
 
 		enum class SceneState
 		{

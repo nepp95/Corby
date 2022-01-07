@@ -7,6 +7,7 @@
 #include "Engine/Scene/ScriptableEntity.h"
 
 #include <box2d/b2_body.h>
+#include <box2d/b2_circle_shape.h>
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_world.h>
@@ -57,14 +58,17 @@ namespace Engine
 
 	void Scene::DuplicateEntity(Entity entity)
 	{
-		Entity newEntity = CreateEntity(entity.GetName());
+		std::string name = entity.GetName();
+		Entity newEntity = CreateEntity(name);
 
 		CopyComponentIfExists<TransformComponent>(newEntity, entity);
 		CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
+		CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
 		CopyComponentIfExists<CameraComponent>(newEntity, entity);
 		CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
 		CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
 		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
+		CopyComponentIfExists<CircleCollider2DComponent>(newEntity, entity);
 	}
 
 	template<typename Component>
@@ -110,10 +114,12 @@ namespace Engine
 		// Copy components
 		CopyComponent<TransformComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<SpriteRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<Rigidbody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<BoxCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<CircleCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -150,6 +156,22 @@ namespace Engine
 				fixtureDef.friction = boxCollider.Friction;
 				fixtureDef.restitution = boxCollider.Restitution;
 				fixtureDef.restitutionThreshold = boxCollider.RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+
+			if (entity.HasComponent<CircleCollider2DComponent>())
+			{
+				auto& circleCollider = entity.GetComponent<CircleCollider2DComponent>();
+				b2CircleShape circleShape;
+				circleShape.m_p.Set(circleCollider.Offset.x, circleCollider.Offset.y);
+				circleShape.m_radius = transform.Scale.x * circleCollider.Radius;
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &circleShape;
+				fixtureDef.density = circleCollider.Density;
+				fixtureDef.friction = circleCollider.Friction;
+				fixtureDef.restitution = circleCollider.Restitution;
+				fixtureDef.restitutionThreshold = circleCollider.RestitutionThreshold;
 				body->CreateFixture(&fixtureDef);
 			}
 		}
@@ -224,13 +246,26 @@ namespace Engine
 		{
 			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
-			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-
-			for (auto entity : group)
+			// Draw sprites
 			{
-				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
-				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int) entity);
+				for (auto entity : group)
+				{
+					auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+					Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int) entity);
+				}
+			}
+
+			// Draw circles
+			{
+				auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
+
+				for (auto entity : view)
+				{
+					auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+					Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int) entity);
+				}
 			}
 
 			Renderer2D::EndScene();
@@ -241,12 +276,25 @@ namespace Engine
 	{
 		Renderer2D::BeginScene(camera);
 
-		auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
+		// Draw sprites
 		{
-			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+			for (auto entity : group)
+			{
+				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int) entity);
+			}
+		}
 
-			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int) entity);
+		// Draw circles
+		{
+			auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
+
+			for (auto entity : view)
+			{
+				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int) entity);
+			}
 		}
 
 		Renderer2D::EndScene();
@@ -312,6 +360,12 @@ namespace Engine
 	}
 
 	template<>
+	void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
+	{
+
+	}
+
+	template<>
 	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
 	{
 
@@ -331,6 +385,12 @@ namespace Engine
 
 	template<>
 	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
 	{
 
 	}

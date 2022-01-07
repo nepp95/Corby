@@ -119,6 +119,9 @@ namespace Engine
 			m_hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity) pixelData, m_activeScene.get());
 		}
 
+		// Render overlays
+		OnOverlayRender();
+
 		m_framebuffer->Unbind();
 	}
 
@@ -208,7 +211,7 @@ namespace Engine
 
 		// -----------------------------------------
 		//
-		//    Settings
+		//    Statistics
 		//
 		// -----------------------------------------
 		ImGui::Begin("Statistics");
@@ -225,6 +228,15 @@ namespace Engine
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
+		ImGui::End();
+
+		// -----------------------------------------
+		//
+		//    Settings
+		//
+		// -----------------------------------------
+		ImGui::Begin("Settings");
+		ImGui::Checkbox("Show physics colliders", &m_showPhysicsColliders);
 		ImGui::End();
 
 		// -----------------------------------------
@@ -355,11 +367,20 @@ namespace Engine
 
 			case Key::S:
 			{
-				if (control && shift)
-					SaveSceneAs();
-				else if (control)
-					SaveScene();
+				if (control)
+				{
+					if (shift)
+						SaveSceneAs();
+					else
+						SaveScene();
+				}
 				break;
+			}
+
+			case Key::D:
+			{
+				if (control)
+					OnDuplicateEntity();
 			}
 
 			//Gizmos
@@ -404,11 +425,65 @@ namespace Engine
 		return false;
 	}
 
+	void EditorLayer::OnOverlayRender()
+	{
+		if (m_sceneState == SceneState::Play)
+		{
+			Entity camera = m_activeScene->GetPrimaryCameraEntity();
+			Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera, camera.GetComponent<TransformComponent>().GetTransform());
+		} else
+		{
+			Renderer2D::BeginScene(m_editorCamera);
+		}
+
+		if (m_showPhysicsColliders)
+		{
+			// Box colliders
+			{
+				auto view = m_activeScene->GetAllEntitiesWith<TransformComponent, BoxCollider2DComponent>();
+				for (auto entity : view)
+				{
+					auto [tc, boxCollider] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+
+					glm::vec3 translation = tc.Translation + glm::vec3(boxCollider.Offset, 0.001f);
+					glm::vec3 scale = tc.Scale * glm::vec3(boxCollider.Size * 2.0f, 1.0f);
+
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+						* glm::rotate(glm::mat4(1.0f), tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+				}
+			}
+
+			// Circle colliders
+			{
+				auto view = m_activeScene->GetAllEntitiesWith<TransformComponent, CircleCollider2DComponent>();
+				for (auto entity : view)
+				{
+					auto [tc, circleCollider] = view.get<TransformComponent, CircleCollider2DComponent>(entity);
+
+					glm::vec3 translation = tc.Translation + glm::vec3(circleCollider.Offset, 0.001f);
+					glm::vec3 scale = tc.Scale * glm::vec3(circleCollider.Radius * 2.0f);
+
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
+				}
+			}
+		}
+
+		Renderer2D::EndScene();
+	}
+
 	void EditorLayer::NewScene()
 	{
 		m_activeScene = CreateRef<Scene>();
 		m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
 		m_sceneHierarchyPanel.SetContext(m_activeScene);
+
+		m_editorScenePath = std::filesystem::path();
 	}
 
 	void EditorLayer::OpenScene()
@@ -423,36 +498,61 @@ namespace Engine
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		m_activeScene = CreateRef<Scene>();
-		m_activeScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
-		m_sceneHierarchyPanel.SetContext(m_activeScene);
+		if (m_sceneState != SceneState::Edit)
+			OnSceneStop();
 
-		SceneSerializer serializer(m_activeScene);
-		serializer.Deserialize(path.string());
+		if (path.extension().string() != ".scene")
+		{
+			ENG_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return;
+		}
+
+		Ref<Scene> newScene = CreateRef<Scene>();
+		SceneSerializer serializer(newScene);
+		if (serializer.Deserialize(path.string()))
+		{
+			m_editorScene = newScene;
+			m_editorScene->OnViewportResize((uint32_t) m_viewportSize.x, (uint32_t) m_viewportSize.y);
+			m_sceneHierarchyPanel.SetContext(m_editorScene);
+
+			m_activeScene = m_editorScene;
+			m_editorScenePath = path;
+		}
+
 	}
 
 	void EditorLayer::SaveScene()
 	{
-		if (m_activeFile.empty())
-			SaveSceneAs();
+		if (!m_editorScenePath.empty())
+			SerializeScene(m_activeScene, m_editorScenePath);
 		else
-		{
-			SceneSerializer serializer(m_activeScene);
-			serializer.Serialize(m_activeFile);
-		}
+			SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		m_activeFile = FileDialogs::SaveFile("Engine scene (*.scene)\0*.scene\0");
-		SaveScene();
+		std::string filepath = FileDialogs::SaveFile("Engine scene (*.scene)\0*.scene\0");
+		if (!filepath.empty())
+		{
+			SerializeScene(m_activeScene, filepath);
+			m_editorScenePath = filepath;
+		}
+	}
+
+	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& path)
+	{
+		SceneSerializer serializer(scene);
+		serializer.Serialize(path.string());
 	}
 
 	void EditorLayer::OnScenePlay()
 	{
 		m_sceneState = SceneState::Play;
 
+		m_activeScene = Scene::Copy(m_editorScene);
 		m_activeScene->OnRuntimeStart();
+
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
 	}
 
 	void EditorLayer::OnSceneStop()
@@ -460,6 +560,19 @@ namespace Engine
 		m_sceneState = SceneState::Edit;
 
 		m_activeScene->OnRuntimeStop();
+		m_activeScene = m_editorScene;
+
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
+	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_sceneState != SceneState::Edit)
+			return;
+
+		Entity selectedEntity = m_sceneHierarchyPanel.GetSelectedEntity();
+		if (selectedEntity)
+			m_editorScene->DuplicateEntity(selectedEntity);
 	}
 
 	void EditorLayer::UI_Toolbar()
