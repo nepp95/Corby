@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Core/Base.h"
-#include "Engine/Events/event.h"
+#include "Engine/Events/Event.h"
 
 #include <sstream>
 

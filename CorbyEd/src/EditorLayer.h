@@ -56,6 +56,7 @@ namespace Engine
 		Ref<Scene> m_activeScene;
 		Ref<Scene> m_editorScene;
 		std::filesystem::path m_editorScenePath;
+		Timestep m_timestep;
 
 		enum class SceneState
 		{

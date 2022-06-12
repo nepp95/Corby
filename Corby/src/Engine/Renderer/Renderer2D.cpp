@@ -190,19 +190,9 @@ namespace Engine
 	{
 		ENG_PROFILE_FUNCTION();
 
-		s_data.QuadIndexCount = 0;
-		s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
-
-		s_data.CircleIndexCount = 0;
-		s_data.CircleVertexBufferPtr = s_data.CircleVertexBufferBase;
-
-		s_data.LineVertexCount = 0;
-		s_data.LineVertexBufferPtr = s_data.LineVertexBufferBase;
-
-		s_data.TextureSlotIndex = 1;
-
 		delete[] s_data.QuadVertexBufferBase;
 		delete[] s_data.CircleVertexBufferBase;
+		delete[] s_data.LineVertexBufferBase;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)

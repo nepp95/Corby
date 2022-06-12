@@ -21,8 +21,6 @@ namespace Engine
 	{
 		ENG_PROFILE_FUNCTION();
 
-		m_cameraController.SetZoomLevel(5.0f);
-
 		m_iconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
 		m_iconStop = Texture2D::Create("Resources/Icons/StopButton.png");
 
@@ -61,6 +59,7 @@ namespace Engine
 		//    Update
 		//
 		// -----------------------------------------
+		m_timestep = ts;
 
 		// Resize
 		if (FramebufferSpecification spec = m_framebuffer->GetSpecification();
@@ -227,6 +226,7 @@ namespace Engine
 		ImGui::Text("Quads: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+		ImGui::Text("Frametime: %.2fms\n", m_timestep.GetMilliseconds());
 
 		ImGui::End();
 
