@@ -59,7 +59,17 @@ namespace Engine
 		//    Update
 		//
 		// -----------------------------------------
-		m_timestep = ts;
+		if (m_avgTimestep > 1.0f)
+		{
+			m_timestep = m_avgTimestep / m_avgTimestepCounter;
+			m_avgTimestepCounter = 0;
+			m_avgTimestep = 0.0f;
+		} else
+		{
+			m_avgTimestep += ts;
+			m_avgTimestepCounter++;
+
+		}
 
 		// Resize
 		if (FramebufferSpecification spec = m_framebuffer->GetSpecification();
@@ -226,7 +236,7 @@ namespace Engine
 		ImGui::Text("Quads: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-		ImGui::Text("Frametime: %.2fms\n", m_timestep.GetMilliseconds());
+		ImGui::Text("Avg. Frametime: %.2fms\n", m_timestep.GetMilliseconds());
 
 		ImGui::End();
 

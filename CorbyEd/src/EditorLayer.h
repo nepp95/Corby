@@ -56,6 +56,10 @@ namespace Engine
 		Ref<Scene> m_activeScene;
 		Ref<Scene> m_editorScene;
 		std::filesystem::path m_editorScenePath;
+
+		// Timesteps
+		Timestep m_avgTimestep = 0.0f;
+		uint8_t m_avgTimestepCounter = 0;
 		Timestep m_timestep;
 
 		enum class SceneState
