@@ -32,7 +32,9 @@ namespace Engine
 	{}
 
 	Scene::~Scene()
-	{}
+	{
+		delete m_physicsWorld;
+	}
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
@@ -126,61 +128,22 @@ namespace Engine
 
 	void Scene::OnRuntimeStart()
 	{
-		m_physicsWorld = new b2World({ 0.0f, -9.8f });
-
-		auto view = m_registry.view<Rigidbody2DComponent>();
-		for (auto e : view)
-		{
-			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
-			auto& rigidbody = entity.GetComponent<Rigidbody2DComponent>();
-
-			b2BodyDef bodyDef;
-			bodyDef.type = CorbyRigidbody2DTypeToBox2DBodyType(rigidbody.Type);
-			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
-			bodyDef.angle = transform.Rotation.z;
-
-			b2Body* body = m_physicsWorld->CreateBody(&bodyDef);
-			body->SetFixedRotation(rigidbody.FixedRotation);
-			rigidbody.RuntimeBody = body;
-
-			if (entity.HasComponent<BoxCollider2DComponent>())
-			{
-				auto& boxCollider = entity.GetComponent<BoxCollider2DComponent>();
-				b2PolygonShape boxShape;
-				boxShape.SetAsBox(boxCollider.Size.x * transform.Scale.x, boxCollider.Size.y * transform.Scale.y);
-
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &boxShape;
-				fixtureDef.density = boxCollider.Density;
-				fixtureDef.friction = boxCollider.Friction;
-				fixtureDef.restitution = boxCollider.Restitution;
-				fixtureDef.restitutionThreshold = boxCollider.RestitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
-
-			if (entity.HasComponent<CircleCollider2DComponent>())
-			{
-				auto& circleCollider = entity.GetComponent<CircleCollider2DComponent>();
-				b2CircleShape circleShape;
-				circleShape.m_p.Set(circleCollider.Offset.x, circleCollider.Offset.y);
-				circleShape.m_radius = transform.Scale.x * circleCollider.Radius;
-
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &circleShape;
-				fixtureDef.density = circleCollider.Density;
-				fixtureDef.friction = circleCollider.Friction;
-				fixtureDef.restitution = circleCollider.Restitution;
-				fixtureDef.restitutionThreshold = circleCollider.RestitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
-		}
+		OnPhysicsStart();
 	}
 
 	void Scene::OnRuntimeStop()
 	{
-		delete m_physicsWorld;
-		m_physicsWorld = nullptr;
+		OnPhysicsStop();
+	}
+
+	void Scene::OnSimulateStart()
+	{
+		OnPhysicsStart();
+	}
+
+	void Scene::OnSimulateStop()
+	{
+		OnPhysicsStop();
 	}
 
 	void Scene::OnUpdateRuntime(Timestep ts)
@@ -272,32 +235,37 @@ namespace Engine
 		}
 	}
 
+	void Scene::OnUpdateSimulate(Timestep ts, EditorCamera& camera)
+	{
+		// Simulate physics
+		const int32_t velocityIterations = 6;
+		const int32_t positionIterations = 2;
+		m_physicsWorld->Step(ts, velocityIterations, positionIterations);
+
+		{
+			auto view = m_registry.view<Rigidbody2DComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& transform = entity.GetComponent<TransformComponent>();
+				auto& rigidbody = entity.GetComponent<Rigidbody2DComponent>();
+
+				b2Body* body = (b2Body*)rigidbody.RuntimeBody;
+				const auto& position = body->GetPosition();
+				transform.Translation.x = position.x;
+				transform.Translation.y = position.y;
+				transform.Rotation.z = body->GetAngle();
+			}
+		}
+
+		// Render
+		RenderScene(camera);
+	}
+
 	void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		Renderer2D::BeginScene(camera);
-
-		// Draw sprites
-		{
-			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-			for (auto entity : group)
-			{
-				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int) entity);
-			}
-		}
-
-		// Draw circles
-		{
-			auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
-
-			for (auto entity : view)
-			{
-				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int) entity);
-			}
-		}
-
-		Renderer2D::EndScene();
+		// Render
+		RenderScene(camera);
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)
@@ -326,6 +294,93 @@ namespace Engine
 				return Entity{ entity, this };
 		}
 		return {};
+	}
+
+	void Scene::OnPhysicsStart()
+	{
+		m_physicsWorld = new b2World({ 0.0f, -9.8f });
+
+		auto view = m_registry.view<Rigidbody2DComponent>();
+		for (auto e : view)
+		{
+			Entity entity = { e, this };
+			auto& transform = entity.GetComponent<TransformComponent>();
+			auto& rigidbody = entity.GetComponent<Rigidbody2DComponent>();
+
+			b2BodyDef bodyDef;
+			bodyDef.type = CorbyRigidbody2DTypeToBox2DBodyType(rigidbody.Type);
+			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
+			bodyDef.angle = transform.Rotation.z;
+
+			b2Body* body = m_physicsWorld->CreateBody(&bodyDef);
+			body->SetFixedRotation(rigidbody.FixedRotation);
+			rigidbody.RuntimeBody = body;
+
+			if (entity.HasComponent<BoxCollider2DComponent>())
+			{
+				auto& boxCollider = entity.GetComponent<BoxCollider2DComponent>();
+				b2PolygonShape boxShape;
+				boxShape.SetAsBox(boxCollider.Size.x * transform.Scale.x, boxCollider.Size.y * transform.Scale.y);
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &boxShape;
+				fixtureDef.density = boxCollider.Density;
+				fixtureDef.friction = boxCollider.Friction;
+				fixtureDef.restitution = boxCollider.Restitution;
+				fixtureDef.restitutionThreshold = boxCollider.RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+
+			if (entity.HasComponent<CircleCollider2DComponent>())
+			{
+				auto& circleCollider = entity.GetComponent<CircleCollider2DComponent>();
+				b2CircleShape circleShape;
+				circleShape.m_p.Set(circleCollider.Offset.x, circleCollider.Offset.y);
+				circleShape.m_radius = transform.Scale.x * circleCollider.Radius;
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &circleShape;
+				fixtureDef.density = circleCollider.Density;
+				fixtureDef.friction = circleCollider.Friction;
+				fixtureDef.restitution = circleCollider.Restitution;
+				fixtureDef.restitutionThreshold = circleCollider.RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+		}
+	}
+
+	void Scene::OnPhysicsStop()
+	{
+		delete m_physicsWorld;
+		m_physicsWorld = nullptr;
+	}
+
+	void Scene::RenderScene(EditorCamera& camera)
+	{
+		Renderer2D::BeginScene(camera);
+
+		// Draw sprites
+		{
+			auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+			for (auto entity : group)
+			{
+				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+			}
+		}
+
+		// Draw circles
+		{
+			auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
+
+			for (auto entity : view)
+			{
+				auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+				Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+			}
+		}
+
+		Renderer2D::EndScene();
 	}
 
 	template<typename T>

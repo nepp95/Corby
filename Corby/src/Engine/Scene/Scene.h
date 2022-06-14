@@ -32,7 +32,11 @@ namespace Engine
 		void OnRuntimeStart();
 		void OnRuntimeStop();
 
+		void OnSimulateStart();
+		void OnSimulateStop();
+
 		void OnUpdateRuntime(Timestep ts);
+		void OnUpdateSimulate(Timestep ts, EditorCamera& camera);
 		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
@@ -46,6 +50,11 @@ namespace Engine
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
+
+		void OnPhysicsStart();
+		void OnPhysicsStop();
+
+		void RenderScene(EditorCamera& camera);
 
 	private:
 		entt::registry m_registry;

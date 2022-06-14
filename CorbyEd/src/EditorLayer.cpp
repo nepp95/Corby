@@ -22,6 +22,7 @@ namespace Engine
 		ENG_PROFILE_FUNCTION();
 
 		m_iconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
+		m_iconSimulate = Texture2D::Create("Resources/Icons/SimulateButton.png");
 		m_iconStop = Texture2D::Create("Resources/Icons/StopButton.png");
 
 		FramebufferSpecification fbSpec;
@@ -30,7 +31,8 @@ namespace Engine
 		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		m_framebuffer = Framebuffer::Create(fbSpec);
 
-		m_activeScene = CreateRef<Scene>();
+		m_editorScene = CreateRef<Scene>();
+		m_activeScene = m_editorScene;
 
 		auto commandLineArgs = Application::Get().GetCommandLineArgs();
 		if (commandLineArgs.Count > 1)
@@ -109,6 +111,13 @@ namespace Engine
 			case SceneState::Play:
 			{
 				m_activeScene->OnUpdateRuntime(ts);
+				break;
+			}
+
+			case SceneState::Simulate:
+			{
+				m_editorCamera.OnUpdate(ts);
+				m_activeScene->OnUpdateSimulate(ts, m_editorCamera);
 				break;
 			}
 		}
@@ -440,6 +449,8 @@ namespace Engine
 		if (m_sceneState == SceneState::Play)
 		{
 			Entity camera = m_activeScene->GetPrimaryCameraEntity();
+			if (!camera)
+				return;
 			Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera, camera.GetComponent<TransformComponent>().GetTransform());
 		} else
 		{
@@ -557,6 +568,9 @@ namespace Engine
 
 	void EditorLayer::OnScenePlay()
 	{
+		if (m_sceneState == SceneState::Simulate)
+			OnSceneStop();
+
 		m_sceneState = SceneState::Play;
 
 		m_activeScene = Scene::Copy(m_editorScene);
@@ -565,11 +579,30 @@ namespace Engine
 		m_sceneHierarchyPanel.SetContext(m_activeScene);
 	}
 
+	void EditorLayer::OnSceneSimulate()
+	{
+		if (m_sceneState == SceneState::Play)
+			OnSceneStop();
+
+		m_sceneState = SceneState::Simulate;
+
+		m_activeScene = Scene::Copy(m_editorScene);
+		m_activeScene->OnSimulateStart();
+
+		m_sceneHierarchyPanel.SetContext(m_activeScene);
+	}
+
 	void EditorLayer::OnSceneStop()
 	{
+		ENG_CORE_ASSERT(m_sceneState == SceneState::Simulate || m_sceneState == SceneState::Play);
+
+		if (m_sceneState == SceneState::Simulate)
+			m_activeScene->OnSimulateStop();
+		else if (m_sceneState == SceneState::Play)
+			m_activeScene->OnRuntimeStop();
+		
 		m_sceneState = SceneState::Edit;
 
-		m_activeScene->OnRuntimeStop();
 		m_activeScene = m_editorScene;
 
 		m_sceneHierarchyPanel.SetContext(m_activeScene);
@@ -598,16 +631,36 @@ namespace Engine
 
 		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-		float size = ImGui::GetWindowHeight() - 4.0f;
-		Ref<Texture2D> icon = m_sceneState == SceneState::Edit ? m_iconPlay : m_iconStop;
-		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		bool toolbarEnabled = (bool)m_activeScene;
 
-		if (ImGui::ImageButton((ImTextureID) icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		ImVec4 tintColor = ImVec4(1, 1, 1, 1);
+		if (!toolbarEnabled)
+			tintColor.w = 0.5f;
+
+		float size = ImGui::GetWindowHeight() - 4.0f;
 		{
-			if (m_sceneState == SceneState::Edit)
-				OnScenePlay();
-			else if (m_sceneState == SceneState::Play)
-				OnSceneStop();
+			Ref<Texture2D> icon = (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Simulate) ? m_iconPlay : m_iconStop;
+			ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+
+			if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), tintColor) && toolbarEnabled)
+			{
+				if (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Simulate)
+					OnScenePlay();
+				else if (m_sceneState == SceneState::Play)
+					OnSceneStop();
+			}
+		}
+		ImGui::SameLine();
+		{
+			Ref<Texture2D> icon = (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Play) ? m_iconSimulate : m_iconStop;
+
+			if (ImGui::ImageButton((ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), tintColor) && toolbarEnabled)
+			{
+				if (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Play)
+					OnSceneSimulate();
+				else if (m_sceneState == SceneState::Simulate)
+					OnSceneStop();
+			}
 		}
 
 		ImGui::PopStyleVar(2);
