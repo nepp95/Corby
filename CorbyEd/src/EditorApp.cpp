@@ -9,7 +9,7 @@ namespace Engine
 	{
 	public:
 		Editor(ApplicationCommandLineArgs args)
-			: Application("Engine Editor", args)
+			: Application("CorbyEd", args)
 		{
 			PushLayer(new EditorLayer());
 		}

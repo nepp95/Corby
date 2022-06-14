@@ -98,7 +98,7 @@ namespace Engine
 
 			if (timePassed >= 1.0f)
 			{
-				std::string title = std::to_string(frames) + "FPS";
+				std::string title = "CorbyEd - " + std::to_string(frames) + "FPS";
 				glfwSetWindowTitle((GLFWwindow*) m_window->GetNativeWindow(), title.c_str());
 
 				timePassed = 0.0f;

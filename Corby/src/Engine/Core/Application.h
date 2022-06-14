@@ -27,7 +27,7 @@ namespace Engine
 	class Application
 	{
 	public:
-		Application(const std::string& name = "Engine App", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
+		Application(const std::string& name = "CorbyEd", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
 		virtual ~Application();
 
 		void Close();

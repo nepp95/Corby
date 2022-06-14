@@ -271,7 +271,7 @@ namespace Engine
 
 			// Create draw call
 			s_data.LineShader->Bind();
-			RenderCommand::SetLineWidth(s_data.LineWidth);
+			//RenderCommand::SetLineWidth(s_data.LineWidth);
 			RenderCommand::DrawLines(s_data.LineVertexArray, s_data.LineVertexCount);
 			s_data.Stats.DrawCalls++;
 		}
