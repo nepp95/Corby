@@ -38,11 +38,6 @@ project "Sandbox"
 		runtime "Debug"
 		symbols "on"
 
-		postbuildcommands
-		{
-			"{COPYDIR} \"%{LibraryDir.VulkanSDK_DebugDLL}\" \"%{cfg.targetdir}\""
-		}
-
 	filter "configurations:Release"
 		defines "ENG_RELEASE"
 		runtime "Release"
