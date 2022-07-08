@@ -311,6 +311,7 @@ namespace Engine
 			data = YAML::LoadFile(filepath);
 		} catch (YAML::ParserException e)
 		{
+			ENG_CORE_ERROR("Failed to load .scene file '{0}'\n    {1}", filepath, e.what());
 			return false;
 		}
 
