@@ -23,16 +23,16 @@ namespace Engine
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const KeyCode keycode, const uint16_t repeatCount)
-			: KeyEvent(keycode), m_repeatCount(repeatCount)
+		KeyPressedEvent(const KeyCode keycode, bool isRepeat = false)
+			: KeyEvent(keycode), m_isRepeat(isRepeat)
 		{}
 
-		uint16_t GetRepeatCount() const { return m_repeatCount; }
+		bool IsRepeat() const { return m_isRepeat; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_keyCode << " (" << m_repeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << m_keyCode << " (repeat = " << m_isRepeat << ")";
 
 			return ss.str();
 		}
@@ -40,7 +40,7 @@ namespace Engine
 		EVENT_CLASS_TYPE(KeyPressed);
 
 	private:
-		uint16_t m_repeatCount;
+		bool m_isRepeat;
 	};
 
 	class KeyReleasedEvent : public KeyEvent
