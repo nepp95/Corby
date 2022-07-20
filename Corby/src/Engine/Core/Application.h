@@ -24,10 +24,17 @@ namespace Engine
 		}
 	};
 
+	struct ApplicationSpecification
+	{
+		std::string Name = "Application";
+		std::string WorkingDirectory;
+		ApplicationCommandLineArgs CommandLineArgs;
+	};
+
 	class Application
 	{
 	public:
-		Application(const std::string& name = "CorbyEd", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
+		Application(const ApplicationSpecification& specification);
 		virtual ~Application();
 
 		void Close();
@@ -39,7 +46,7 @@ namespace Engine
 		Window& GetWindow() { return *m_window; }
 		static Application& Get() { return *s_instance; }
 
-		ApplicationCommandLineArgs GetCommandLineArgs() const { return m_commandLineArgs; }
+		const ApplicationSpecification& GetSpecification() const { return m_specification; }
 
 	private:
 		void Run();
@@ -47,7 +54,7 @@ namespace Engine
 		bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
-		ApplicationCommandLineArgs m_commandLineArgs;
+		ApplicationSpecification m_specification;
 		Scope<Window> m_window;
 		ImGuiLayer* m_imGuiLayer;
 		bool m_running = true;

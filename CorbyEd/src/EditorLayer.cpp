@@ -34,7 +34,7 @@ namespace Engine
 		m_editorScene = CreateRef<Scene>();
 		m_activeScene = m_editorScene;
 
-		auto commandLineArgs = Application::Get().GetCommandLineArgs();
+		auto commandLineArgs = Application::Get().GetSpecification().CommandLineArgs;
 		if (commandLineArgs.Count > 1)
 		{
 			auto sceneFilePath = commandLineArgs[1];

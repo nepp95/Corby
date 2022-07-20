@@ -8,8 +8,8 @@ namespace Engine
 	class Editor : public Application
 	{
 	public:
-		Editor(ApplicationCommandLineArgs args)
-			: Application("CorbyEd", args)
+		Editor(const ApplicationSpecification& specification)
+			: Application(specification)
 		{
 			PushLayer(new EditorLayer());
 		}
@@ -19,6 +19,10 @@ namespace Engine
 
 	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return new Editor(args);
+		ApplicationSpecification spec;
+		spec.Name = "CorbyEd";
+		spec.CommandLineArgs = args;
+
+		return new Editor(spec);
 	}
 }

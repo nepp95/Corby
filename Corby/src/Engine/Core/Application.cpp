@@ -11,8 +11,8 @@ namespace Engine
 {
 	Application* Application::s_instance = nullptr;
 
-	Application::Application(const std::string& name, ApplicationCommandLineArgs args)
-		: m_commandLineArgs(args)
+	Application::Application(const ApplicationSpecification& specification)
+		: m_specification(specification)
 	{
 		ENG_PROFILE_FUNCTION();
 
@@ -20,8 +20,12 @@ namespace Engine
 		ENG_CORE_ASSERT(!s_instance, "Application already exists!");
 		s_instance = this;
 
+		// Set working directory
+		if (!m_specification.WorkingDirectory.empty())
+			std::filesystem::current_path(m_specification.WorkingDirectory);
+
 		// Create window and bind event callback
-		m_window = Scope<Window>(Window::Create(WindowProps(name)));
+		m_window = Scope<Window>(Window::Create(WindowProps(m_specification.Name)));
 		m_window->SetEventCallback(ENG_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();

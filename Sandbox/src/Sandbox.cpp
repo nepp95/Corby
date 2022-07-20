@@ -7,7 +7,8 @@
 class Sandbox : public Engine::Application
 {
 public:
-	Sandbox(Engine::ApplicationCommandLineArgs args)
+	Sandbox(const Engine::ApplicationSpecification& specification)
+		: Engine::Application(specification)
 	{
 		//pushLayer(new ExampleLayer());
 		PushLayer(new Sandbox2D());
@@ -19,5 +20,10 @@ public:
 
 Engine::Application* Engine::CreateApplication(Engine::ApplicationCommandLineArgs args)
 {
-	return new Sandbox(args);
+	ApplicationSpecification spec;
+	spec.Name = "Sandbox";
+	spec.WorkingDirectory = "../CorbyEd";
+	spec.CommandLineArgs = args;
+
+	return new Sandbox(spec);
 }
