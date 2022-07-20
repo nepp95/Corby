@@ -4,8 +4,9 @@
 #include "Engine/Core/Input.h"
 #include "Engine/Core/Log.h"
 #include "Engine/Renderer/Renderer.h"
+#include "Engine/Utils/PlatformUtils.h"
 
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 
 namespace Engine
 {
@@ -92,7 +93,7 @@ namespace Engine
 		{
 			ENG_PROFILE_SCOPE("RunLoop");
 
-			float time = (float) glfwGetTime();
+			float time = (float) Time::GetTime();
 			Timestep ts = time - m_lastFrameTime;
 			m_lastFrameTime = time;
 

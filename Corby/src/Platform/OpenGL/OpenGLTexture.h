@@ -25,7 +25,7 @@ namespace Engine
 
 		virtual bool operator==(const Texture& other) const override
 		{
-			return m_rendererID == ((OpenGLTexture2D&) other).m_rendererID;
+			return m_rendererID == other.GetRendererID();
 		}
 
 	private:

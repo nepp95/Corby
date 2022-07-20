@@ -45,6 +45,8 @@ namespace Engine
 		m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		m_sceneHierarchyPanel.SetContext(m_activeScene);
+
+		Renderer2D::SetLineWidth(4.0f);
 	}
 
 	void EditorLayer::OnDetach()
@@ -352,7 +354,9 @@ namespace Engine
 	void EditorLayer::OnEvent(Event& e)
 	{
 		m_cameraController.OnEvent(e);
-		m_editorCamera.OnEvent(e);
+
+		if (m_sceneState == SceneState::Edit)
+			m_editorCamera.OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(ENG_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
@@ -493,6 +497,13 @@ namespace Engine
 					Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
 				}
 			}
+		}
+
+		// Draw selected entity outline
+		if (Entity selectedEntity = m_sceneHierarchyPanel.GetSelectedEntity())
+		{
+			const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
+			Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
 		}
 
 		Renderer2D::EndScene();
